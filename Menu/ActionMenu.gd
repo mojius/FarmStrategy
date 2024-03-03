@@ -13,7 +13,6 @@ func setup(move_func: Callable, wait_func: Callable):
 	wait.pressed.connect(wait_func)
 	move.grab_focus()
 
-
 func _on_move_pressed():
 	queue_free()
 	

@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://yp3tn4o3ikwt"]
+[gd_scene load_steps=11 format=3 uid="uid://yp3tn4o3ikwt"]
 
 [ext_resource type="PackedScene" uid="uid://de53ukdqyusan" path="res://Background/Map.tscn" id="1_khjdm"]
 [ext_resource type="Script" path="res://GameBoard/GameBoard.gd" id="2_hx4vu"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://cefp73bur6v0t" path="res://UnitOverlay/UnitOverlay.tscn" id="4_sf86o"]
 [ext_resource type="PackedScene" uid="uid://bmuue0dlmkw5u" path="res://GameBoard/Cursor/Cursor.tscn" id="4_xbrol"]
 [ext_resource type="PackedScene" uid="uid://bxbdtgea1xr7" path="res://GameBoard/UnitPath.tscn" id="6_xwtul"]
+[ext_resource type="Texture2D" uid="uid://ck05qwlp8ti8h" path="res://Units/squirrel.png" id="8_bib8g"]
 [ext_resource type="Texture2D" uid="uid://b8ihnph4238fy" path="res://Units/bear.png" id="8_r13vx"]
 [ext_resource type="Texture2D" uid="uid://bncyyswwdl0lc" path="res://Units/bugcat.png" id="9_mrwsr"]
 
@@ -30,6 +31,7 @@ script = ExtResource("3_qyirp")
 
 [node name="Skwele" parent="GameBoard" instance=ExtResource("2_n3f5l")]
 position = Vector2(354, 446)
+skin = ExtResource("8_bib8g")
 move_speed = 500
 
 [node name="Bear" parent="GameBoard" instance=ExtResource("2_n3f5l")]

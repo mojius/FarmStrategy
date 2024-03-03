@@ -12,6 +12,29 @@ extends Path2D
 # We'll use this to limit the cells the unit can move to.
 @export var move_range := 6
 
+enum Faction
+{
+	PLAYER,
+	ALLY,
+	ENEMY
+}
+
+@export var _faction: Faction
+
+func set_faction(value: Faction):
+	remove_from_group("Player")
+	remove_from_group("Ally")
+	remove_from_group("Enemy")
+	_faction = value
+	print("Faction changed!")
+	match value:
+		Faction.PLAYER:
+			add_to_group("Player")
+		Faction.ALLY:
+			add_to_group("Ally")
+		Faction.ENEMY:
+			add_to_group("Enemy")
+
 # Texture representing the unit.
 # With the `tool` mode, assigning a new texture to this property in the inspector will update the
 # unit's sprite instantly. See `set_skin()` below.
@@ -36,6 +59,25 @@ var _is_walking := false : set = _set_is_walking
 @onready var _anim_player: AnimationPlayer = $AnimationPlayer
 @onready var _path_follow: PathFollow2D = $PathFollow2D
 
+var _anim_state = "idle" :
+	set(value):
+		_anim_state = value
+		_anim_player.play(value)
+
+# Ben D: Sets whether or not a unit is exhausted.
+var _exhausted := false : set = set_exhausted, get = is_exhausted
+
+# Making this into its own function so maybe later we can do stuff with making the unit grayed out.
+func set_exhausted(exhausted: bool) -> void:
+	_exhausted = exhausted
+	if (exhausted):
+		_anim_state = "exhausted"
+	elif not exhausted:
+		_anim_state = "idle"
+
+func is_exhausted() -> bool:
+	return _exhausted
+
 # When changing the `cell`'s value, we don't want to allow coordinates outside the grid, so we clamp
 # them.
 func set_cell(value: Vector2) -> void:
@@ -45,9 +87,11 @@ func set_cell(value: Vector2) -> void:
 func set_is_selected(value: bool) -> void:
 	is_selected = value
 	if is_selected:
-		_anim_player.play("selected")
+		_anim_state = "selected"
 	else:
-		_anim_player.play("idle")
+		# Ben D.: Doing this hacky little thing for exhaust.
+		if (_anim_state != "exhausted"):
+			_anim_state = "idle"
 		
 # Both setters below manipulate the unit's Sprite node.
 # Here, we update the sprite's texture.
@@ -80,6 +124,7 @@ func _set_is_walking(value: bool) -> void:
 signal walk_finished
 
 func _ready() -> void:
+	set_faction(_faction)
 	# We'll use the `_process()` callback to move the unit along a path. Unless it has a path to
 	# walk, we don't want it to update every frame. See `walk_along()` below.
 	set_process(false)

@@ -61,7 +61,7 @@ func _ready() -> void:
 	
 func _add_action_menu() -> void:
 	var menu = _action_menu.instantiate()
-	menu.setup(Callable(self, "_try_move_unit"), Callable(self, "_cancel"))
+	menu.setup(Callable(self, "_try_move_unit"), Callable(self, "_exhaust"))
 	_menu_manager.add_child(menu)
 	_state = GameState.DISABLED
 	
@@ -81,10 +81,10 @@ func _reinitialize() -> void:
 	# In this demo, we loop over the node's children and filter them to find the units. As your game
 	# becomes more complex, you may want to use the node group feature instead to place your units
 	# anywhere in the scene tree.
-	for child in get_children():
+	for member in get_tree().get_nodes_in_group("Unit"):
 		# We can use the "as" keyword to cast the child to a given type. If the child is not of type
 		# Unit, the variable will be null.
-		var unit := child as Unit
+		var unit := member as Unit
 		if not unit:
 			continue
 		# As mentioned when introducing the units variable, we use the grid coordinates for the key
@@ -162,6 +162,8 @@ func _select_unit(cell: Vector2) -> void:
 	if not _units.has(cell):
 		return
 
+	if _units[cell].is_exhausted():
+		return
 	# When selecting a unit, we turn on the overlay and path drawing. We could use signals on the
 	# unit itself to do so, but that would split the logic between several files without a big
 	# maintenance benefit and we'd need to pass extra data to the unit.
@@ -210,7 +212,8 @@ func _move_active_unit(new_cell: Vector2) -> void:
 	_active_unit.walk_along(_unit_path.current_path)
 	await _active_unit.walk_finished
 	
-	# This is where you'd put menu stuff to confirm movement.
+	# Now that the unit is done moving, set it as exhausted.
+	_active_unit.set_exhausted(true)
 	
 	# Finally, we clear the `_active_unit`, which also clears the `_walkable_cells` array.
 	_clear_active_unit()
@@ -244,3 +247,9 @@ func _cancel():
 		_clear_active_unit()
 		_state = GameState.FREE
 		_kill_action_menu()
+
+func _exhaust():
+	if _active_unit:
+		_active_unit.set_exhausted(true)
+	_cancel()
+
