@@ -5,6 +5,9 @@
 class_name Cursor
 extends Node2D
 
+@onready var arrow = $CursorArrow
+@onready var dumb_timer = $DumbTimer
+
 # We'll use signals to keep the cursor decoupled from other nodes.
 # When the player moves the cursor or wants to interact with a cell, we emit a signal and let
 # another node handle the interaction.
@@ -20,6 +23,17 @@ signal moved(new_cell)
 # Time before the cursor can move again in seconds.
 # You can see how we use it in the unhandled input function below.
 @export var ui_cooldown := 0.2
+
+var enabled := true:
+	set(value):
+		enabled = value
+
+		if enabled:
+			arrow.show()
+			queue_redraw()
+		elif not enabled:
+			arrow.hide()
+			
 
 ## Coordinates of the current cell the cursor is hovering.
 var cell := Vector2.ZERO:
@@ -46,8 +60,10 @@ var cell := Vector2.ZERO:
 func _ready() -> void:
 	_timer.wait_time = ui_cooldown
 	position = grid.calculate_map_position(cell)
+	enabled = false
 
 func _unhandled_input(event: InputEvent) -> void:
+	if not enabled: return
 	# If the user moves the mouse, we capture that input and update the node's cell in priority.
 	if event is InputEventMouseMotion:
 		self.cell = grid.calculate_grid_coordinates(event.position)
@@ -57,6 +73,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		#  In that case, we emit a signal to let another node handle that input. The game board will
 		#  have the responsibility of looking at the cell's content.
 		emit_signal("accept_pressed", cell)
+		
 		get_viewport().set_input_as_handled()
 
 	# The code below is for the cursor's movement.
@@ -86,6 +103,7 @@ func _unhandled_input(event: InputEvent) -> void:
 # We use the draw callback to a rectangular outline the size of a grid cell, with a width of two
 # pixels.
 func _draw() -> void:
+	if not enabled: return
 	# Rect2 is built from the position of the rectangle's top-left corner and its size. To draw the
 	# square around the cell, the start position needs to be `-grid.cell_size / 2`.
 	draw_rect(Rect2(-grid.cell_size / 2, grid.cell_size), Color.ALICE_BLUE, false, 2.0)
@@ -105,3 +123,7 @@ func set_cell(value: Vector2) -> void:
 	position = grid.calculate_map_position(cell)
 	emit_signal("moved", cell)
 	_timer.start()
+
+
+func _on_dumb_timer_timeout():
+	enabled = true

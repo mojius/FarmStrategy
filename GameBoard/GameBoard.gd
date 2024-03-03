@@ -95,12 +95,11 @@ func _flood_fill(cell: Vector2, max_distance: int) -> Array:
 		# Unused for now.
 		var cost = _map.get_movement_cost_at_tile(current)
 
-		var difference: Vector2 = (current - cell).abs() 
-		var distance := int((difference.x) + (difference.y))
-
+		var difference: Vector2 = (current - cell).abs()
+		var distance := int(difference.x + difference.y)
 		if distance > max_distance:
 			continue
-
+			
 		# If we meet all the conditions, we "fill" the `current` cell. To be more accurate, we store
 		# it in our output `array` to later use them with the UnitPath and UnitOverlay classes.
 		array.append(current)
