@@ -1,6 +1,8 @@
-[gd_scene format=3 uid="uid://p1k7ttutslso"]
+[gd_scene load_steps=2 format=3 uid="uid://p1k7ttutslso"]
 
-[node name="MoveMenu" type="PanelContainer"]
+[ext_resource type="Script" path="res://Menu/ActionMenu.gd" id="1_imsb6"]
+
+[node name="ActionMenu" type="PanelContainer"]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -12,6 +14,7 @@ offset_right = 25.5
 offset_bottom = 33.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_imsb6")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -46,3 +49,6 @@ text = "Items"
 custom_minimum_size = Vector2(100, 60)
 layout_mode = 2
 text = "Wait"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Move" to="." method="_on_move_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Wait" to="." method="_on_wait_pressed"]

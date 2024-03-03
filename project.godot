@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Tactical RPG Movement (start)"
+config/name="CMPM171 Group 6"
 run/main_scene="res://Main.tscn"
 config/features=PackedStringArray("4.2")
 config/icon="res://icon.png"

@@ -17,6 +17,26 @@ const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
 # Mapping of coordinates of a cell to a reference to the unit it contains.
 var _units := {}
 
+
+# Ben: Let's try to streamline this a bit.
+enum GameState 
+{
+	FREE,
+	DISABLED,
+	TRY_MOVE,
+	TRY_ATTACK
+}
+
+var _state := GameState.FREE :
+	set(value):
+		_state = value
+		if (value == GameState.DISABLED):
+			cursor_enable.emit(false)
+		elif (value == GameState.FREE or
+			value == GameState.TRY_MOVE or
+			value == GameState.TRY_ATTACK):
+			cursor_enable.emit(true)
+
 # The board is going to move one unit at a time. When we select a unit, we will save it as our
 # `_active_unit` and populate the walkable cells below. This allows us to clear the unit, the
 # overlay, and the interactive path drawing later on when the player decides to deselect it.
@@ -28,13 +48,26 @@ var _walkable_cells := []
 @onready var _unit_overlay: UnitOverlay = $UnitOverlay
 @onready var _unit_path: UnitPath = $UnitPath
 @onready var _map: TileMap = $Map
+@onready var _menu_manager: CanvasLayer = $MenuManager
+@export var _action_menu := preload("res://Menu/ActionMenu.tscn")
+
+# Ben D: This is a signal i'm gonna use for now to control the cursor from the gameboard.
+signal cursor_enable(enabled: bool)
 
 # At the start of the game, we initialize the game board. Look at the `_reinitialize()` function below.
 # It populates our `_units` dictionary.
 func _ready() -> void:
 	_reinitialize()
-
-
+	
+func _add_action_menu() -> void:
+	var menu = _action_menu.instantiate()
+	menu.setup(Callable(self, "_try_move_unit"), Callable(self, "_cancel"))
+	_menu_manager.add_child(menu)
+	_state = GameState.DISABLED
+	
+func _kill_action_menu() -> void:
+	if (_menu_manager.get_child(0)):
+		_menu_manager.get_child(0).queue_free()
 
 # Returns `true` if the cell is occupied by a unit.
 func is_occupied(cell: Vector2) -> bool:
@@ -136,6 +169,12 @@ func _select_unit(cell: Vector2) -> void:
 	# in one place. I find it easy to keep track of what the class does this way.
 	_active_unit = _units[cell]
 	_active_unit.is_selected = true
+	
+	_state = GameState.DISABLED
+	_add_action_menu()
+	
+func _try_move_unit():
+	_state = GameState.TRY_MOVE
 	_walkable_cells = get_walkable_cells(_active_unit)
 	_unit_overlay.draw(_walkable_cells)
 	_unit_path.initialize(_walkable_cells)
@@ -146,7 +185,7 @@ func _deselect_active_unit() -> void:
 	_active_unit.is_selected = false
 	_unit_overlay.clear()
 	_unit_path.stop()
-
+	
 # Clears the reference to the _active_unit and the corresponding walkable cells.
 # We need it for the `_move_active_unit()` function below.
 func _clear_active_unit() -> void:
@@ -176,12 +215,13 @@ func _move_active_unit(new_cell: Vector2) -> void:
 	# Finally, we clear the `_active_unit`, which also clears the `_walkable_cells` array.
 	_clear_active_unit()
 
-
 # Updates the interactive path's drawing if there's an active and selected unit.
 func _on_cursor_moved(new_cell: Vector2) -> void:
 	# When the cursor moves, and we already have an active unit selected, we want to update the
 	# interactive path drawing.
-	if _active_unit and _active_unit.is_selected:
+
+	
+	if _active_unit and _active_unit.is_selected and _state == GameState.TRY_MOVE:
 		_unit_path.draw(_active_unit.cell, new_cell)
 
 # Selects or moves a unit based on where the cursor is.
@@ -195,6 +235,12 @@ func _on_cursor_accept_pressed(cell: Vector2) -> void:
 		_move_active_unit(cell)
 
 func _unhandled_input(event: InputEvent) -> void:
-	if _active_unit and event.is_action_pressed("ui_cancel"):
+	if event.is_action_pressed("ui_cancel"):
+		_cancel()
+		
+func _cancel():
+	if _active_unit:
 		_deselect_active_unit()
 		_clear_active_unit()
+		_state = GameState.FREE
+		_kill_action_menu()

@@ -18,7 +18,6 @@ var _half_cell_size = cell_size / 2
 func calculate_map_position(grid_position: Vector2) -> Vector2:
 	return grid_position * cell_size + _half_cell_size
 
-
 # Returns the coordinates of the cell on the grid given a position on the map.
 # This is the complementary of `calculate_map_position()` above.
 # When designing a level, you'll place units visually in the editor. We'll use this function to find
