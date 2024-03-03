@@ -27,6 +27,7 @@ var _walkable_cells := []
 
 @onready var _unit_overlay: UnitOverlay = $UnitOverlay
 @onready var _unit_path: UnitPath = $UnitPath
+@onready var _map: TileMap = $Map
 
 # At the start of the game, we initialize the game board. Look at the `_reinitialize()` function below.
 # It populates our `_units` dictionary.
@@ -80,14 +81,23 @@ func _flood_fill(cell: Vector2, max_distance: int) -> Array:
 		# 1. We didn't go past the grid's limits.
 		# 2. We haven't already visited and filled this cell
 		# 3. We are within the `max_distance`, a number of cells.
+		# 4. The cell is passable. (Ben D. was here!) 
 		if not grid.is_within_bounds(current):
 			continue
 		if current in array:
 			continue
 
+		# Check passability here.
+		if _map.get_impassable_at_tile(current):
+			continue
+
 		# This is where we check for the distance between the starting `cell` and the `current` one.
-		var difference: Vector2 = (current - cell).abs()
-		var distance := int(difference.x + difference.y)
+		# Unused for now.
+		var cost = _map.get_movement_cost_at_tile(current)
+
+		var difference: Vector2 = (current - cell).abs() 
+		var distance := int((difference.x) + (difference.y))
+
 		if distance > max_distance:
 			continue
 
@@ -161,6 +171,9 @@ func _move_active_unit(new_cell: Vector2) -> void:
 	# finished.
 	_active_unit.walk_along(_unit_path.current_path)
 	await _active_unit.walk_finished
+	
+	# This is where you'd put menu stuff to confirm movement.
+	
 	# Finally, we clear the `_active_unit`, which also clears the `_walkable_cells` array.
 	_clear_active_unit()
 

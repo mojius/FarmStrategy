@@ -110,7 +110,7 @@ func _process(delta: float) -> void:
 		# curve.
 		# In the process loop, we only moved the sprite, and not the unit itself. The following
 		# lines move the unit in a way that's transparent to the player.
-		_path_follow.progress = 0.0
+		_path_follow.progress = 0.00000001
 		position = grid.calculate_map_position(cell)
 		curve.clear_points()
 		# Finally, we emit a signal. We'll use this one with the game board.
