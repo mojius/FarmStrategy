@@ -12,28 +12,21 @@ extends Path2D
 # We'll use this to limit the cells the unit can move to.
 @export var move_range := 6
 
-enum Faction
-{
-	PLAYER,
-	ALLY,
-	ENEMY
-}
+signal turn_exhausted(unit: Unit)
 
-@export var _faction: Faction
+# Ben D: These are currently a little convoluted since they're basically conflated with groups. 
+# We can fix it a little later if you want.
+@export_enum("Player", "Ally", "Enemy") var _faction: String = "Player"
 
-func set_faction(value: Faction):
+func set_faction(value: String):
 	remove_from_group("Player")
 	remove_from_group("Ally")
 	remove_from_group("Enemy")
 	_faction = value
-	print("Faction changed!")
-	match value:
-		Faction.PLAYER:
-			add_to_group("Player")
-		Faction.ALLY:
-			add_to_group("Ally")
-		Faction.ENEMY:
-			add_to_group("Enemy")
+	add_to_group(value)
+
+func get_faction() -> String:
+	return _faction
 
 # Texture representing the unit.
 # With the `tool` mode, assigning a new texture to this property in the inspector will update the
@@ -72,6 +65,7 @@ func set_exhausted(exhausted: bool) -> void:
 	_exhausted = exhausted
 	if (exhausted):
 		_anim_state = "exhausted"
+		turn_exhausted.emit(self)
 	elif not exhausted:
 		_anim_state = "idle"
 
@@ -179,5 +173,5 @@ func walk_along(path: PackedVector2Array) -> void:
 	cell = path[-1]
 	# The `_is_walking` property triggers the move animation and turns on `_process()`. See
 	# `_set_is_walking()` below.
-	self._is_walking = true	
+	self._is_walking = true
 

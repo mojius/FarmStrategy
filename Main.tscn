@@ -35,7 +35,9 @@ skin = ExtResource("8_bib8g")
 move_speed = 500
 
 [node name="Bear" parent="GameBoard" instance=ExtResource("2_n3f5l")]
+modulate = Color(0, 1, 1, 1)
 position = Vector2(1097, 288)
+_faction = "Enemy"
 skin = ExtResource("8_r13vx")
 move_speed = 500
 

@@ -17,8 +17,10 @@ const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
 # Mapping of coordinates of a cell to a reference to the unit it contains.
 var _units := {}
 
+var _active_faction : String = "Player"
 
-# Ben: Let's try to streamline this a bit.
+# Ben D: Hopefully this streamlines things a bit.
+# Possibly migrate this to cursor?
 enum GameState 
 {
 	FREE,
@@ -61,7 +63,7 @@ func _ready() -> void:
 	
 func _add_action_menu() -> void:
 	var menu = _action_menu.instantiate()
-	menu.setup(Callable(self, "_try_move_unit"), Callable(self, "_exhaust"))
+	menu.setup(_try_move_unit, _exhaust)
 	_menu_manager.add_child(menu)
 	_state = GameState.DISABLED
 	
@@ -76,6 +78,7 @@ func is_occupied(cell: Vector2) -> bool:
 
 # Clears, and refills the `_units` dictionary with game objects that are on the board.
 func _reinitialize() -> void:
+	_active_faction = "Player"
 	_units.clear()
 
 	# In this demo, we loop over the node's children and filter them to find the units. As your game
@@ -91,11 +94,12 @@ func _reinitialize() -> void:
 		# and a reference to the unit for the value. This allows us to access a unit given its grid
 		# coordinates.
 		_units[unit.cell] = unit
+		unit.turn_exhausted.connect(_on_unit_exhausted)
+		
 
 # Returns an array of cells a given unit can walk using the flood fill algorithm.
 func get_walkable_cells(unit: Unit) -> Array:
 	return _flood_fill(unit.cell, unit.move_range)
-
 
 # Returns an array with all the coordinates of walkable cells based on the `max_distance`.
 func _flood_fill(cell: Vector2, max_distance: int) -> Array:
@@ -132,7 +136,7 @@ func _flood_fill(cell: Vector2, max_distance: int) -> Array:
 		var distance := int(difference.x + difference.y)
 		if distance > max_distance:
 			continue
-			
+	
 		# If we meet all the conditions, we "fill" the `current` cell. To be more accurate, we store
 		# it in our output `array` to later use them with the UnitPath and UnitOverlay classes.
 		array.append(current)
@@ -163,6 +167,9 @@ func _select_unit(cell: Vector2) -> void:
 		return
 
 	if _units[cell].is_exhausted():
+		return
+		
+	if not _units[cell].is_in_group("Player"):
 		return
 	# When selecting a unit, we turn on the overlay and path drawing. We could use signals on the
 	# unit itself to do so, but that would split the logic between several files without a big
@@ -253,3 +260,25 @@ func _exhaust():
 		_active_unit.set_exhausted(true)
 	_cancel()
 
+func _on_unit_exhausted(current_unit: Unit):
+	# If all are exhausted, turn control over to the next faction.
+	var faction_units := get_tree().get_nodes_in_group(current_unit.get_faction())
+	for unit: Unit in faction_units:
+		if not unit.is_exhausted():
+			return
+	
+	print("All units exhausted -- do something new!")
+	if current_unit.get_faction() == "Player":
+		_active_faction = "Enemy"
+	elif current_unit.get_faction() == "Enemy":
+		_active_faction = "Player"
+	
+
+func _refresh_group(faction: String):
+	# TODO: Validate these later, or find a better way to do it.
+	
+	var faction_units := get_tree().get_nodes_in_group(faction)
+	
+	for unit: Unit in faction_units:
+		unit.set_exhausted(false)
+	
