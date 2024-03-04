@@ -23,6 +23,8 @@ var _active_faction : String = "Player" :
 		
 		_active_faction = value
 		
+		await get_tree().create_timer(0.4).timeout
+		
 		_refresh_groups()
 		var phase: Phase = _phase.instantiate()
 		_menu_manager.add_child(phase)
@@ -103,7 +105,7 @@ func player_select_unit(cell: Vector2) -> void:
 	if not _units.has(cell):
 		return
 
-	if _units[cell].is_exhausted():
+	if _units[cell].get_state() == "Exhausted":
 		return
 		
 	if not _units[cell].is_in_group("Player"):
@@ -149,11 +151,7 @@ func _move_active_unit(new_cell: Vector2) -> void:
 	
 	_state = GameState.FREE
 	# Now that the unit is done moving, set it as exhausted.
-	_units[new_cell].set_exhausted(true)
-
-	
-	# Finally, we clear the `_active_unit`, which also clears the `_walkable_cells` array.
-
+	_units[new_cell].set_state("Exhausted")
 
 # Updates the interactive path's drawing if there's an active and selected unit.
 func _on_cursor_moved(new_cell: Vector2) -> void:
@@ -185,7 +183,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func _exhaust() -> void:
 	if _active_unit:
 		_state = GameState.FREE
-		_active_unit.set_exhausted(true)
+		_active_unit.set_state("Exhausted")
 		_deselect_active_unit()
 
 
@@ -195,7 +193,7 @@ func _on_unit_exhausted() -> void:
 func _check_should_turn_end():
 	var faction_units := get_tree().get_nodes_in_group(_active_faction)
 	for unit: Unit in faction_units:
-		if not unit.is_exhausted():
+		if not unit.get_state() == "Exhausted":
 			return
 
 	# Change this to get_enemy_faction at some point.
@@ -211,7 +209,7 @@ func _refresh_group(faction: String) -> void:
 	
 	var faction_units := get_tree().get_nodes_in_group(faction)
 	for unit: Unit in faction_units:
-		unit.set_exhausted(false)
+		unit.set_state("Idle")
 
 func _refresh_groups() -> void:
 	_refresh_group("Player")

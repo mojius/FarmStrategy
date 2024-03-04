@@ -57,20 +57,21 @@ var _anim_state = "idle" :
 		_anim_state = value
 		_anim_player.play(value)
 
+
 # Ben D: Sets whether or not a unit is exhausted.
-var _exhausted := false : set = set_exhausted, get = is_exhausted
+var _state := "Idle" : set = set_state, get = get_state
 
 # Making this into its own function so maybe later we can do stuff with making the unit grayed out.
-func set_exhausted(exhausted: bool) -> void:
-	_exhausted = exhausted
-	if (exhausted):
+func set_state(state: String) -> void:
+	_state = state
+	if (state == "Exhausted"):
 		_anim_state = "exhausted"
 		turn_exhausted.emit()
-	elif not exhausted:
+	else:
 		_anim_state = "idle"
 
-func is_exhausted() -> bool:
-	return _exhausted
+func get_state() -> String:
+	return _state
 
 # When changing the `cell`'s value, we don't want to allow coordinates outside the grid, so we clamp
 # them.
@@ -131,7 +132,7 @@ func _ready() -> void:
 		# We create the curve resource here because creating it in the editor prevents us from
 		# moving the unit.
 		curve = Curve2D.new()
-	
+
 # When active, moves the unit along its `curve` with the help of the PathFollow2D node.
 func _process(delta: float) -> void:
 	# Every frame, the `PathFollow2D.offset` property moves the sprites along the `curve`.
