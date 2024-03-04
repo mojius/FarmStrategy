@@ -65,7 +65,7 @@ func set_exhausted(exhausted: bool) -> void:
 	_exhausted = exhausted
 	if (exhausted):
 		_anim_state = "exhausted"
-		turn_exhausted.emit(self)
+		turn_exhausted.emit()
 	elif not exhausted:
 		_anim_state = "idle"
 

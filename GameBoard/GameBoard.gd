@@ -19,15 +19,14 @@ var _units := {}
 
 var _active_faction : String = "Player" :
 	set(value):
+		
+		_refresh_groups()
 		var phase: Phase = _phase.instantiate()
 		_menu_manager.add_child(phase)
 		await phase.done
 		
-		_refresh_groups()
 		_active_faction = value
-		if (value == "Enemy"):
-			_state = GameState.DISABLED
-		elif (value == "Ally"):
+		if (value != "Player"):
 			_state = GameState.DISABLED
 		elif (value == "Player"):
 			_state = GameState.FREE
@@ -97,8 +96,6 @@ func _reinitialize() -> void:
 		_units[unit.cell] = unit
 		unit.turn_exhausted.connect(_on_unit_exhausted)
 
-
-
 # Selects the unit in the `cell` if there's one there.
 func _select_unit(cell: Vector2) -> void:
 	# Here's some optional defensive code: we return early from the function if the unit's not
@@ -124,18 +121,13 @@ func _try_move_unit() -> void:
 	_unit_overlay.draw(_walkable_cells)
 	_unit_path_arrow.initialize(_walkable_cells)
 
-# Deselects the active unit, clearing the cells overlay and interactive path drawing.
-# We need it for the `_move_active_unit()` function below, and we'll use it again in a moment.
+
 func _deselect_active_unit() -> void:
 	_active_unit.is_selected = false
 	_unit_overlay.clear()
 	_unit_path_arrow.stop()
-	
-# Clears the reference to the _active_unit and the corresponding walkable cells.
-# We need it for the `_move_active_unit()` function below.
-func _clear_active_unit() -> void:
 	_active_unit = null
-	_walkable_cells.clear()
+	_walkable_cells.clear()	
 
 # Updates the _units dictionary with the target position for the unit and asks the _active_unit to
 # walk to it.
@@ -148,19 +140,17 @@ func _move_active_unit(new_cell: Vector2) -> void:
 	# While it's walking, the player won't be able to issue new commands.
 	_units.erase(_active_unit.cell)
 	_units[new_cell] = _active_unit
-	# We also deselect it, clearing up the overlay and path.
+	# Finally, we clear the active unit, we won't need it after this.
 	_deselect_active_unit()
-	# We then ask the unit to walk along the path stored in the UnitPath instance and wait until it
-	# finished.
-	
-	_active_unit.walk_along(_active_path)
-	await _active_unit.walk_finished
+
+	_units[new_cell].walk_along(_active_path)
+	await _units[new_cell].walk_finished
 	
 	# Now that the unit is done moving, set it as exhausted.
 	_units[new_cell].set_exhausted(true)
 	
 	# Finally, we clear the `_active_unit`, which also clears the `_walkable_cells` array.
-	_clear_active_unit()
+
 
 # Updates the interactive path's drawing if there's an active and selected unit.
 func _on_cursor_moved(new_cell: Vector2) -> void:
@@ -183,32 +173,34 @@ func _on_cursor_accept_pressed(cell: Vector2) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
-		_cancel()
+		if _active_unit:
+			_deselect_active_unit()
+			_state = GameState.FREE
+			_menu_manager.kill_action_menu()
 		
-func _cancel() -> void:
-	if _active_unit:
-		_deselect_active_unit()
-		_clear_active_unit()
-		_state = GameState.FREE
-		_menu_manager.kill_action_menu()
 
 # Sets the active unit to exhausted and disables it. Probably something we can get rid of later.
 func _exhaust() -> void:
 	if _active_unit:
 		_active_unit.set_exhausted(true)
-	_cancel()
+		_deselect_active_unit()
+		_state = GameState.FREE
 
-func _on_unit_exhausted(current_unit: Unit) -> void:
-	# If all are exhausted, turn control over to the next faction.
-	var faction_units := get_tree().get_nodes_in_group(current_unit.get_faction())
+func _on_unit_exhausted() -> void:
+	_check_should_end_turn()
+	
+func _check_should_end_turn():
+	var faction_units := get_tree().get_nodes_in_group(_active_faction)
 	for unit: Unit in faction_units:
 		if not unit.is_exhausted():
 			return
 
-	if current_unit.get_faction() == "Player":
+	if _active_faction == "Player":
 		_active_faction = "Enemy"
-	elif current_unit.get_faction() == "Enemy":
-		_active_faction = "Player"
+		return
+	elif _active_faction == "Enemy":
+		_active_faction = "Player"	
+		return
 
 func _refresh_group(faction: String) -> void:
 	# TODO: Validate these later, or find a better way to do it.
@@ -253,7 +245,6 @@ func _cpu_turn(faction: String) -> void:
 		# If we can't immediately attack an enemy in range or we're right next to them,
 		if path.is_empty() or path.size() == 9999 or path.size() <= 1:
 				_deselect_active_unit()
-				_clear_active_unit()
 				continue
 		
 		# Shorten the path so you don't go right ONTO your target. 
@@ -264,17 +255,17 @@ func _cpu_turn(faction: String) -> void:
 		
 		# If we can't immediately attack an enemy in range or we're right next to them,
 		if path.is_empty() or path.size() == 9999 or path.size() <= 1:
-				_cancel()
+				_deselect_active_unit()
 				continue
 				
 		if is_occupied(target_cell) or not target_cell in _walkable_cells:
-				_cancel()
+				_deselect_active_unit()
 				continue
 						
 		_active_path = path
 		# Move the enemy to the last element in the path.
 		_move_active_unit(target_cell)
-		await _active_unit.walk_finished 
+		await unit.walk_finished 
 	
 	_active_faction = target_faction
 
