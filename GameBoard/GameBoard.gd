@@ -17,8 +17,14 @@ const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
 # Mapping of coordinates of a cell to a reference to the unit it contains.
 var _units := {}
 
+@onready var _phase = preload("res://Juice/Phase.tscn")
+
 var _active_faction : String = "Player" :
 	set(value):
+		var phase: Phase = _phase.instantiate()
+		_menu_manager.add_child(phase)
+		await phase.done
+		
 		_refresh_groups()
 		_active_faction = value
 		if (value == "Enemy"):
