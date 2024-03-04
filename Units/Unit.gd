@@ -32,7 +32,7 @@ func get_faction() -> String:
 # With the `tool` mode, assigning a new texture to this property in the inspector will update the
 # unit's sprite instantly. See `set_skin()` below.
 @export var skin: Texture : set = set_skin
-		
+	
 # Our unit's skin is just a sprite in this demo and depending on its size, we need to offset it so
 # the sprite aligns with the shadow.
 @export var skin_offset := Vector2.ZERO : set = set_skin_offset
@@ -175,3 +175,10 @@ func walk_along(path: PackedVector2Array) -> void:
 	# `_set_is_walking()` below.
 	self._is_walking = true
 
+func get_enemy_faction() -> String:
+	if _faction == ("Player"):
+		return ("Enemy")
+	elif _faction == ("Enemy"):
+		return ("Player")
+		
+	return ("Enemy")
