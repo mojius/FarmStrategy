@@ -30,7 +30,7 @@ script = ExtResource("3_qyirp")
 [node name="UnitPathArrow" parent="GameBoard" instance=ExtResource("6_xwtul")]
 
 [node name="Skwele" parent="GameBoard" instance=ExtResource("2_n3f5l")]
-position = Vector2(354, 446)
+position = Vector2(800, 216)
 skin = ExtResource("8_bib8g")
 move_speed = 500
 
@@ -41,8 +41,15 @@ _faction = "Enemy"
 skin = ExtResource("8_r13vx")
 move_speed = 500
 
+[node name="Bear2" parent="GameBoard" instance=ExtResource("2_n3f5l")]
+modulate = Color(0, 1, 1, 1)
+position = Vector2(1056, 528)
+_faction = "Enemy"
+skin = ExtResource("8_r13vx")
+move_speed = 500
+
 [node name="Kitty" parent="GameBoard" instance=ExtResource("2_n3f5l")]
-position = Vector2(521, 341)
+position = Vector2(864, 464)
 skin = ExtResource("9_mrwsr")
 move_speed = 500
 

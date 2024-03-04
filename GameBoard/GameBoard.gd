@@ -17,7 +17,21 @@ const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
 # Mapping of coordinates of a cell to a reference to the unit it contains.
 var _units := {}
 
-var _active_faction : String = "Player"
+var _active_faction : String = "Player" :
+	set(value):
+		_refresh_groups()
+		_active_faction = value
+		if (value == "Enemy"):
+			_state = GameState.DISABLED
+		elif (value == "Ally"):
+			_state = GameState.DISABLED
+		elif (value == "Player"):
+			_state = GameState.FREE
+		
+		if not value == "Player":
+			_cpu_turn(value)
+
+var _active_path : PackedVector2Array
 
 # Ben D: Hopefully this streamlines things a bit.
 # Possibly migrate this to cursor?
@@ -53,13 +67,14 @@ var _walkable_cells := []
 @onready var _menu_manager: CanvasLayer = $MenuManager
 @export var _action_menu := preload("res://Menu/ActionMenu.tscn")
 
-# Ben D: This is a signal i'm gonna use for now to control the cursor from the gameboard.
+# Ben D: This is a signal I'm gonna use for now to control the cursor from the gameboard.
 signal cursor_enable(enabled: bool)
 
 # At the start of the game, we initialize the game board. Look at the `_reinitialize()` function below.
 # It populates our `_units` dictionary.
 func _ready() -> void:
 	_reinitialize()
+	_active_faction = "Enemy"
 	
 func _add_action_menu() -> void:
 	var menu = _action_menu.instantiate()
@@ -74,7 +89,7 @@ func _kill_action_menu() -> void:
 # Returns `true` if the cell is occupied by a unit.
 func is_occupied(cell: Vector2) -> bool:
 	return true if _units.has(cell) else false
-
+	
 # Clears, and refills the `_units` dictionary with game objects that are on the board.
 func _reinitialize() -> void:
 	_active_faction = "Player"
@@ -94,7 +109,6 @@ func _reinitialize() -> void:
 		# coordinates.
 		_units[unit.cell] = unit
 		unit.turn_exhausted.connect(_on_unit_exhausted)
-		
 
 # Returns an array of cells a given unit can walk using the flood fill algorithm.
 func get_walkable_cells(unit: Unit) -> Array:
@@ -146,8 +160,8 @@ func _flood_fill(cell: Vector2, max_distance: int) -> Array:
 			var coordinates: Vector2 = current + direction
 			# This is an "optimization". It does the same thing as our `if current in array:` above
 			# but repeating it here with the neighbors skips some instructions.
-			if is_occupied(coordinates):
-				continue
+			#if is_occupied(coordinates):
+				#continue
 			if coordinates in array:
 				continue
 
@@ -215,11 +229,12 @@ func _move_active_unit(new_cell: Vector2) -> void:
 	_deselect_active_unit()
 	# We then ask the unit to walk along the path stored in the UnitPath instance and wait until it
 	# finished.
-	_active_unit.walk_along(_unit_path_arrow.current_path)
+	
+	_active_unit.walk_along(_active_path)
 	await _active_unit.walk_finished
 	
 	# Now that the unit is done moving, set it as exhausted.
-	_active_unit.set_exhausted(true)
+	_units[new_cell].set_exhausted(true)
 	
 	# Finally, we clear the `_active_unit`, which also clears the `_walkable_cells` array.
 	_clear_active_unit()
@@ -229,7 +244,6 @@ func _on_cursor_moved(new_cell: Vector2) -> void:
 	# When the cursor moves, and we already have an active unit selected, we want to update the
 	# interactive path drawing.
 
-	
 	if _active_unit and _active_unit.is_selected and _state == GameState.TRY_MOVE:
 		_unit_path_arrow.draw(_active_unit.cell, new_cell)
 
@@ -241,6 +255,7 @@ func _on_cursor_accept_pressed(cell: Vector2) -> void:
 	if not _active_unit:
 		_select_unit(cell)
 	elif _active_unit.is_selected:
+		_active_path = _unit_path_arrow.current_path
 		_move_active_unit(cell)
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -254,6 +269,7 @@ func _cancel() -> void:
 		_state = GameState.FREE
 		_kill_action_menu()
 
+# Sets the active unit to exhausted and disables it. Probably something we can get rid of later.
 func _exhaust() -> void:
 	if _active_unit:
 		_active_unit.set_exhausted(true)
@@ -265,23 +281,25 @@ func _on_unit_exhausted(current_unit: Unit) -> void:
 	for unit: Unit in faction_units:
 		if not unit.is_exhausted():
 			return
-	
-	print("All units exhausted -- do something new!")
+
 	if current_unit.get_faction() == "Player":
 		_active_faction = "Enemy"
 	elif current_unit.get_faction() == "Enemy":
 		_active_faction = "Player"
-	
 
 func _refresh_group(faction: String) -> void:
 	# TODO: Validate these later, or find a better way to do it.
 	
 	var faction_units := get_tree().get_nodes_in_group(faction)
-	
 	for unit: Unit in faction_units:
 		unit.set_exhausted(false)
-	
 
+func _refresh_groups() -> void:
+	_refresh_group("Player")
+	_refresh_group("Ally")
+	_refresh_group("Enemy")
+
+# Have the CPU take a turn. This AI is very rough and simple right now.
 func _cpu_turn(faction: String) -> void:
 	
 	# Change this later.
@@ -291,7 +309,38 @@ func _cpu_turn(faction: String) -> void:
 	var faction_units := get_tree().get_nodes_in_group(faction)
 	for unit: Unit in faction_units:
 		
+		_active_unit = unit
+		_active_unit.is_selected = true
+	
+		var closest_cell: Vector2 = Vector2(999,999)
+
+		# First get the walkable points, then init a path.
+		_walkable_cells = get_walkable_cells(unit)
+		var pathfinder = PathFinder.new(grid, _walkable_cells)
+		var path := PackedVector2Array()
+		path.resize(9999)
+		
 		# Find the closest unit of the target faction units.
 		for enemy: Unit in target_faction_units:
-			pass
- 			
+			var new_path := pathfinder.calculate_point_path(unit.cell, enemy.cell)
+			
+			if (not new_path.is_empty() and new_path.size() < path.size()):
+				path = new_path
+
+		# If we can't immediately attack an enemy in range or we're right next to them,
+		if path.is_empty() or path.size() == 9999 or path.size() <= 1:
+				_deselect_active_unit()
+				_clear_active_unit()
+				continue
+		
+		# Shorten the path so you don't go right ONTO your target. 
+		# Later we scale this by the attack range of the enemy.
+		path.remove_at(path.size() - 1)
+		_active_path = path
+		
+		# Move the enemy to the last element in the path.
+		_move_active_unit(path[path.size() - 1])
+		await _active_unit.walk_finished 
+	
+	_active_faction = target_faction
+
