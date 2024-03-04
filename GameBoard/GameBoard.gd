@@ -48,7 +48,7 @@ var _active_unit: Unit
 var _walkable_cells := []
 
 @onready var _unit_overlay: UnitOverlay = $UnitOverlay
-@onready var _unit_path: UnitPath = $UnitPath
+@onready var _unit_path_arrow: UnitPathArrow = $UnitPathArrow
 @onready var _map: TileMap = $Map
 @onready var _menu_manager: CanvasLayer = $MenuManager
 @export var _action_menu := preload("res://Menu/ActionMenu.tscn")
@@ -74,7 +74,6 @@ func _kill_action_menu() -> void:
 # Returns `true` if the cell is occupied by a unit.
 func is_occupied(cell: Vector2) -> bool:
 	return true if _units.has(cell) else false
-
 
 # Clears, and refills the `_units` dictionary with game objects that are on the board.
 func _reinitialize() -> void:
@@ -130,7 +129,7 @@ func _flood_fill(cell: Vector2, max_distance: int) -> Array:
 
 		# This is where we check for the distance between the starting `cell` and the `current` one.
 		# Unused for now.
-		var cost = _map.get_movement_cost_at_tile(current)
+		# var cost = _map.get_movement_cost_at_tile(current)
 
 		var difference: Vector2 = (current - cell).abs()
 		var distance := int(difference.x + difference.y)
@@ -182,18 +181,18 @@ func _select_unit(cell: Vector2) -> void:
 	_state = GameState.DISABLED
 	_add_action_menu()
 	
-func _try_move_unit():
+func _try_move_unit() -> void:
 	_state = GameState.TRY_MOVE
 	_walkable_cells = get_walkable_cells(_active_unit)
 	_unit_overlay.draw(_walkable_cells)
-	_unit_path.initialize(_walkable_cells)
+	_unit_path_arrow.initialize(_walkable_cells)
 
 # Deselects the active unit, clearing the cells overlay and interactive path drawing.
 # We need it for the `_move_active_unit()` function below, and we'll use it again in a moment.
 func _deselect_active_unit() -> void:
 	_active_unit.is_selected = false
 	_unit_overlay.clear()
-	_unit_path.stop()
+	_unit_path_arrow.stop()
 	
 # Clears the reference to the _active_unit and the corresponding walkable cells.
 # We need it for the `_move_active_unit()` function below.
@@ -216,7 +215,7 @@ func _move_active_unit(new_cell: Vector2) -> void:
 	_deselect_active_unit()
 	# We then ask the unit to walk along the path stored in the UnitPath instance and wait until it
 	# finished.
-	_active_unit.walk_along(_unit_path.current_path)
+	_active_unit.walk_along(_unit_path_arrow.current_path)
 	await _active_unit.walk_finished
 	
 	# Now that the unit is done moving, set it as exhausted.
@@ -232,7 +231,7 @@ func _on_cursor_moved(new_cell: Vector2) -> void:
 
 	
 	if _active_unit and _active_unit.is_selected and _state == GameState.TRY_MOVE:
-		_unit_path.draw(_active_unit.cell, new_cell)
+		_unit_path_arrow.draw(_active_unit.cell, new_cell)
 
 # Selects or moves a unit based on where the cursor is.
 func _on_cursor_accept_pressed(cell: Vector2) -> void:
@@ -248,19 +247,19 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		_cancel()
 		
-func _cancel():
+func _cancel() -> void:
 	if _active_unit:
 		_deselect_active_unit()
 		_clear_active_unit()
 		_state = GameState.FREE
 		_kill_action_menu()
 
-func _exhaust():
+func _exhaust() -> void:
 	if _active_unit:
 		_active_unit.set_exhausted(true)
 	_cancel()
 
-func _on_unit_exhausted(current_unit: Unit):
+func _on_unit_exhausted(current_unit: Unit) -> void:
 	# If all are exhausted, turn control over to the next faction.
 	var faction_units := get_tree().get_nodes_in_group(current_unit.get_faction())
 	for unit: Unit in faction_units:
@@ -274,7 +273,7 @@ func _on_unit_exhausted(current_unit: Unit):
 		_active_faction = "Player"
 	
 
-func _refresh_group(faction: String):
+func _refresh_group(faction: String) -> void:
 	# TODO: Validate these later, or find a better way to do it.
 	
 	var faction_units := get_tree().get_nodes_in_group(faction)
@@ -282,3 +281,17 @@ func _refresh_group(faction: String):
 	for unit: Unit in faction_units:
 		unit.set_exhausted(false)
 	
+
+func _cpu_turn(faction: String) -> void:
+	
+	# Change this later.
+	var target_faction := "Player"
+	var target_faction_units := get_tree().get_nodes_in_group(target_faction)
+	
+	var faction_units := get_tree().get_nodes_in_group(faction)
+	for unit: Unit in faction_units:
+		
+		# Find the closest unit of the target faction units.
+		for enemy: Unit in target_faction_units:
+			pass
+ 			

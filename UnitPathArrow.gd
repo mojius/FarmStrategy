@@ -1,5 +1,5 @@
 # Draws the unit's movement path using an autotile.
-class_name UnitPath
+class_name UnitPathArrow
 extends TileMap
 
 @export var grid: Resource

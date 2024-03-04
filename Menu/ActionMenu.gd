@@ -5,8 +5,6 @@ class_name ActionMenu extends PanelContainer
 @onready var items: Button = $MarginContainer/VBoxContainer/Items
 @onready var wait: Button = $MarginContainer/VBoxContainer/Wait
 
-var _unit: Unit
-
 func setup(move_func: Callable, wait_func: Callable):
 	await self.ready
 	move.pressed.connect(move_func)

@@ -27,7 +27,7 @@ script = ExtResource("3_qyirp")
 
 [node name="UnitOverlay" parent="GameBoard" instance=ExtResource("4_sf86o")]
 
-[node name="UnitPath" parent="GameBoard" instance=ExtResource("6_xwtul")]
+[node name="UnitPathArrow" parent="GameBoard" instance=ExtResource("6_xwtul")]
 
 [node name="Skwele" parent="GameBoard" instance=ExtResource("2_n3f5l")]
 position = Vector2(354, 446)
