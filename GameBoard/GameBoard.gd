@@ -19,17 +19,17 @@ var _units := {}
 
 var _active_faction : String = "Player" :
 	set(value):
+		_state = GameState.DISABLED		
+		
+		_active_faction = value
 		
 		_refresh_groups()
 		var phase: Phase = _phase.instantiate()
 		_menu_manager.add_child(phase)
-		await phase.done
+		await phase.done	
 		
-		_active_faction = value
-		if (value != "Player"):
-			_state = GameState.DISABLED
-		elif (value == "Player"):
-			_state = GameState.FREE
+		if (value == "Player"):
+			_state = GameState.FREE	
 		
 		if not value == "Player":
 			_cpu_turn(value)
@@ -97,7 +97,7 @@ func _reinitialize() -> void:
 		unit.turn_exhausted.connect(_on_unit_exhausted)
 
 # Selects the unit in the `cell` if there's one there.
-func _select_unit(cell: Vector2) -> void:
+func player_select_unit(cell: Vector2) -> void:
 	# Here's some optional defensive code: we return early from the function if the unit's not
 	# registered in the `cell`.
 	if not _units.has(cell):
@@ -143,11 +143,14 @@ func _move_active_unit(new_cell: Vector2) -> void:
 	# Finally, we clear the active unit, we won't need it after this.
 	_deselect_active_unit()
 
+	_state = GameState.DISABLED
 	_units[new_cell].walk_along(_active_path)
 	await _units[new_cell].walk_finished
 	
+	_state = GameState.FREE
 	# Now that the unit is done moving, set it as exhausted.
 	_units[new_cell].set_exhausted(true)
+
 	
 	# Finally, we clear the `_active_unit`, which also clears the `_walkable_cells` array.
 
@@ -166,7 +169,7 @@ func _on_cursor_accept_pressed(cell: Vector2) -> void:
 	# on the board's current state, this interaction means either that we want to select a unit all
 	# that we want to give it a move order.
 	if not _active_unit:
-		_select_unit(cell)
+		player_select_unit(cell)
 	elif _active_unit.is_selected:
 		_active_path = _unit_path_arrow.current_path
 		_move_active_unit(cell)
@@ -177,24 +180,25 @@ func _unhandled_input(event: InputEvent) -> void:
 			_deselect_active_unit()
 			_state = GameState.FREE
 			_menu_manager.kill_action_menu()
-		
 
 # Sets the active unit to exhausted and disables it. Probably something we can get rid of later.
 func _exhaust() -> void:
 	if _active_unit:
+		_state = GameState.FREE
 		_active_unit.set_exhausted(true)
 		_deselect_active_unit()
-		_state = GameState.FREE
+
 
 func _on_unit_exhausted() -> void:
-	_check_should_end_turn()
+	_check_should_turn_end()
 	
-func _check_should_end_turn():
+func _check_should_turn_end():
 	var faction_units := get_tree().get_nodes_in_group(_active_faction)
 	for unit: Unit in faction_units:
 		if not unit.is_exhausted():
 			return
 
+	# Change this to get_enemy_faction at some point.
 	if _active_faction == "Player":
 		_active_faction = "Enemy"
 		return
