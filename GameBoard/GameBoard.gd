@@ -4,10 +4,6 @@
 class_name GameBoard
 extends Node2D
 
-# This constant represents the directions in which a unit can move on the board. We will reference
-# the constant later in the script.
-const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
-
 # Once again, we use our grid resource that we explicitly define in the class.
 @export var grid: Resource = preload("res://GameBoard/Grid.tres")
 
@@ -18,6 +14,8 @@ const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
 var _units := {}
 
 @onready var _phase = preload("res://Juice/Phase.tscn")
+
+@export_enum("Player", "Ally", "Enemy") var starting_faction: String = "Player"
 
 var _active_faction : String = "Player" :
 	set(value):
@@ -71,7 +69,6 @@ var _walkable_cells := []
 @onready var _unit_path_arrow: UnitPathArrow = $UnitPathArrow
 @onready var _map: TileMap = $Map
 @onready var _menu_manager: CanvasLayer = $MenuManager
-@export var _action_menu := preload("res://Menu/ActionMenu.tscn")
 
 # Ben D: This is a signal I'm gonna use for now to control the cursor from the gameboard.
 signal cursor_enable(enabled: bool)
@@ -80,17 +77,6 @@ signal cursor_enable(enabled: bool)
 # It populates our `_units` dictionary.
 func _ready() -> void:
 	_reinitialize()
-	_active_faction = "Enemy"
-	
-func _add_action_menu() -> void:
-	var menu = _action_menu.instantiate()
-	menu.setup(_try_move_unit, _exhaust)
-	_menu_manager.add_child(menu)
-	_state = GameState.DISABLED
-	
-func _kill_action_menu() -> void:
-	if (_menu_manager.get_child(0)):
-		_menu_manager.get_child(0).queue_free()
 
 # Returns `true` if the cell is occupied by a unit.
 func is_occupied(cell: Vector2) -> bool:
@@ -98,87 +84,22 @@ func is_occupied(cell: Vector2) -> bool:
 	
 # Clears, and refills the `_units` dictionary with game objects that are on the board.
 func _reinitialize() -> void:
-	_active_faction = "Player"
+	_active_faction = starting_faction
 	_units.clear()
 
-	# In this demo, we loop over the node's children and filter them to find the units. As your game
-	# becomes more complex, you may want to use the node group feature instead to place your units
-	# anywhere in the scene tree.
+	# Loop over the nodes in the unit group.
 	for member in get_tree().get_nodes_in_group("Unit"):
-		# We can use the "as" keyword to cast the child to a given type. If the child is not of type
-		# Unit, the variable will be null.
 		var unit := member as Unit
 		if not unit:
 			continue
-		# As mentioned when introducing the units variable, we use the grid coordinates for the key
-		# and a reference to the unit for the value. This allows us to access a unit given its grid
-		# coordinates.
+		
+		# Using a dictionary of grid coordinates here.
 		_units[unit.cell] = unit
 		unit.turn_exhausted.connect(_on_unit_exhausted)
 
-# Returns an array of cells a given unit can walk using the flood fill algorithm.
-func get_walkable_cells(unit: Unit) -> Array:
-	return _flood_fill(unit.cell, unit.move_range)
 
-# Returns an array with all the coordinates of walkable cells based on the `max_distance`.
-func _flood_fill(cell: Vector2, max_distance: int) -> Array:
-	# This is the array of walkable cells the algorithm outputs.
-	var array := []
-	# The way we implemented the flood fill here is by using a stack. In that stack, we store every
-	# cell we want to apply the flood fill algorithm to.
-	var stack := [cell]
-	# We loop over cells in the stack, popping one cell on every loop iteration.
-	while not stack.is_empty():
-		var current = stack.pop_back()
-
-		# For each cell, we ensure that we can fill further.
-		#
-		# The conditions are:
-		# 1. We didn't go past the grid's limits.
-		# 2. We haven't already visited and filled this cell
-		# 3. We are within the `max_distance`, a number of cells.
-		# 4. The cell is passable. (Ben D. was here!) 
-		if not grid.is_within_bounds(current):
-			continue
-		if current in array:
-			continue
-
-		# Check passability here.
-		if _map.get_impassable_at_tile(current):
-			continue
-
-		# This is where we check for the distance between the starting `cell` and the `current` one.
-		# Unused for now.
-		# var cost = _map.get_movement_cost_at_tile(current)
-
-		var difference: Vector2 = (current - cell).abs()
-		var distance := int(difference.x + difference.y)
-		if distance > max_distance:
-			continue
-	
-		# If we meet all the conditions, we "fill" the `current` cell. To be more accurate, we store
-		# it in our output `array` to later use them with the UnitPath and UnitOverlay classes.
-		array.append(current)
-		# We then look at the `current` cell's neighbors and, if they're not occupied and we haven't
-		# visited them already, we add them to the stack for the next iteration.
-		# This mechanism keeps the loop running until we found all cells the unit can walk.
-		for direction in DIRECTIONS:
-			var coordinates: Vector2 = current + direction
-			# This is an "optimization". It does the same thing as our `if current in array:` above
-			# but repeating it here with the neighbors skips some instructions.
-			#if is_occupied(coordinates):
-				#continue
-			if coordinates in array:
-				continue
-
-			# This is where we extend the stack.
-			stack.append(coordinates)
-	return array
 
 # Selects the unit in the `cell` if there's one there.
-# Sets it as the `_active_unit` and draws its walkable cells and interactive move path.
-# The board reacts to the signals emitted by the cursor. And it does so by calling functions that
-# select and move a unit.
 func _select_unit(cell: Vector2) -> void:
 	# Here's some optional defensive code: we return early from the function if the unit's not
 	# registered in the `cell`.
@@ -190,20 +111,16 @@ func _select_unit(cell: Vector2) -> void:
 		
 	if not _units[cell].is_in_group("Player"):
 		return
-	# When selecting a unit, we turn on the overlay and path drawing. We could use signals on the
-	# unit itself to do so, but that would split the logic between several files without a big
-	# maintenance benefit and we'd need to pass extra data to the unit.
-	# I decided to group everything in the GameBoard class because it keeps all the selection logic
-	# in one place. I find it easy to keep track of what the class does this way.
+	# See the notes in previous commits for more info.
 	_active_unit = _units[cell]
 	_active_unit.is_selected = true
 	
 	_state = GameState.DISABLED
-	_add_action_menu()
+	_menu_manager.add_action_menu(_try_move_unit, _exhaust)
 	
 func _try_move_unit() -> void:
 	_state = GameState.TRY_MOVE
-	_walkable_cells = get_walkable_cells(_active_unit)
+	_walkable_cells = _map.get_walkable_cells(_active_unit)
 	_unit_overlay.draw(_walkable_cells)
 	_unit_path_arrow.initialize(_walkable_cells)
 
@@ -273,7 +190,7 @@ func _cancel() -> void:
 		_deselect_active_unit()
 		_clear_active_unit()
 		_state = GameState.FREE
-		_kill_action_menu()
+		_menu_manager.kill_action_menu()
 
 # Sets the active unit to exhausted and disables it. Probably something we can get rid of later.
 func _exhaust() -> void:
@@ -321,7 +238,7 @@ func _cpu_turn(faction: String) -> void:
 		var closest_cell: Vector2 = Vector2(999,999)
 
 		# First get the walkable points, then init a path.
-		_walkable_cells = get_walkable_cells(unit)
+		_walkable_cells = _map.get_walkable_cells(unit)
 		var pathfinder = PathFinder.new(grid, _walkable_cells)
 		var path := PackedVector2Array()
 		path.resize(9999)
@@ -342,10 +259,21 @@ func _cpu_turn(faction: String) -> void:
 		# Shorten the path so you don't go right ONTO your target. 
 		# Later we scale this by the attack range of the enemy.
 		path.remove_at(path.size() - 1)
-		_active_path = path
 		
+		var target_cell: Vector2 = path[path.size() - 1]
+		
+		# If we can't immediately attack an enemy in range or we're right next to them,
+		if path.is_empty() or path.size() == 9999 or path.size() <= 1:
+				_cancel()
+				continue
+				
+		if is_occupied(target_cell) or not target_cell in _walkable_cells:
+				_cancel()
+				continue
+						
+		_active_path = path
 		# Move the enemy to the last element in the path.
-		_move_active_unit(path[path.size() - 1])
+		_move_active_unit(target_cell)
 		await _active_unit.walk_finished 
 	
 	_active_faction = target_faction
