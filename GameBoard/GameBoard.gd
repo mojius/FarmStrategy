@@ -104,36 +104,34 @@ func _reinitialize() -> void:
 func player_select_unit(cell: Vector2) -> void:
 	# Here's some optional defensive code: we return early from the function if the unit's not
 	# registered in the `cell`.
-	if not _units.has(cell):
-		return
-
-	if _units[cell].get_state() == "Exhausted":
+	if (not _units.has(cell)):
 		return
 		
-	if not _units[cell].is_in_group("Player"):
+	if _units[cell].get_state() == "Exhausted" or not _units[cell].is_in_group("Player"):
 		return
+
 	# See the notes in previous commits for more info.
 	_active_unit = _units[cell]
 	_active_unit.is_selected = true
 	
 	_state = GameState.DISABLED
-	_menu_manager.add_action_menu(_exhaust_active_unit, _try_move_unit)
-	
-func _try_move_unit() -> void:
+	_menu_manager.add_action_menu(_exhaust_active_unit, _show_movement_info)
+
+
+func _show_movement_info() -> void:
 	_state = GameState.TRY_MOVE
 	_walkable_cells = _map.get_walkable_cells(_active_unit)
 	_unit_overlay.draw(_walkable_cells)
 	_unit_path_arrow.initialize(_walkable_cells)
 
-
 # Deselects the active unit and gets rid of its... Shtuff.
 func _deselect_active_unit() -> void:
 	_active_unit.is_selected = false
 	_active_unit = null
-	_clear_active_unit()
+	_clear_movement_info()
 	
 # Clears the stuff RELATED to the active unit, but not the unit itself.
-func _clear_active_unit() -> void:
+func _clear_movement_info() -> void:
 	_unit_overlay.clear()
 	_unit_path_arrow.stop()
 	_walkable_cells.clear()
@@ -207,7 +205,8 @@ func _exhaust_active_unit() -> void:
 func _on_unit_state_changed(unit: Unit) -> void:
 	var state = unit.get_state()
 	if (state == "Exhausted"):
-		_check_should_turn_end()
+		#_check_should_turn_end()
+		pass
 	elif (state == "Moved"):
 		pass
 	
@@ -217,16 +216,11 @@ func _check_should_turn_end():
 		if not unit.get_state() == "Exhausted":
 			return
 
-	# Change this to get_enemy_faction at some point.
-	if _active_faction == "Player":
-		_active_faction = "Enemy"
-		return
-	elif _active_faction == "Enemy":
-		_active_faction = "Player"	
-		return
+	# Get enemy faction goes here. deleted for now since enemies are broken.
+	
 
 func _refresh_group(faction: String) -> void:
-	# TODO: Validate these later, or find a better way to do it.
+	# TODO: Validate the states later, or find a better way to do it.
 	
 	var faction_units := get_tree().get_nodes_in_group(faction)
 	for unit: Unit in faction_units:
