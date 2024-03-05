@@ -71,7 +71,7 @@ var _old_cell: Vector2
 @onready var _unit_overlay: UnitOverlay = $UnitOverlay
 @onready var _unit_path_arrow: UnitPathArrow = $UnitPathArrow
 @onready var _map: TileMap = $Map
-@onready var _menu_manager: CanvasLayer = $MenuManager
+@onready var _menu_manager: MenuManager = $MenuManager
 
 # Ben D: This is a signal I'm gonna use for now to control the cursor from the gameboard.
 signal cursor_enable(enabled: bool)
@@ -117,7 +117,7 @@ func player_select_unit(cell: Vector2) -> void:
 	_active_unit.is_selected = true
 	
 	_state = GameState.DISABLED
-	_menu_manager.add_action_menu(_try_move_unit, _exhaust)
+	_menu_manager.add_action_menu(_exhaust_active_unit, _try_move_unit)
 	
 func _try_move_unit() -> void:
 	_state = GameState.TRY_MOVE
@@ -126,13 +126,18 @@ func _try_move_unit() -> void:
 	_unit_path_arrow.initialize(_walkable_cells)
 
 
+# Deselects the active unit and gets rid of its... Shtuff.
 func _deselect_active_unit() -> void:
 	_active_unit.is_selected = false
+	_active_unit = null
+	_clear_active_unit()
+	
+# Clears the stuff RELATED to the active unit, but not the unit itself.
+func _clear_active_unit() -> void:
 	_unit_overlay.clear()
 	_unit_path_arrow.stop()
-	_active_unit = null
-	_walkable_cells.clear()	
-
+	_walkable_cells.clear()
+	
 # Teleports a unit instantly to a position. Used for undoing movement for now.
 func _teleport_active_unit(new_cell: Vector2) -> void:
 	if is_occupied(new_cell):
@@ -161,9 +166,9 @@ func _move_active_unit(new_cell: Vector2) -> void:
 	await _units[new_cell].walk_finished
 	
 	_state = GameState.FREE
-	# Now that the unit is done moving, set it as exhausted.
-
+	
 	_units[new_cell].set_state("Exhausted")
+
 
 # Updates the interactive path's drawing if there's an active and selected unit.
 func _on_cursor_moved(new_cell: Vector2) -> void:
@@ -192,7 +197,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			_menu_manager.kill_action_menu()
 
 # Sets the active unit to exhausted and disables it. Probably something we can get rid of later.
-func _exhaust() -> void:
+func _exhaust_active_unit() -> void:
 	if _active_unit:
 		_state = GameState.FREE
 		_active_unit.set_state("Exhausted")
@@ -286,4 +291,3 @@ func _cpu_turn(faction: String) -> void:
 		await unit.walk_finished 
 	
 	_active_faction = target_faction
-
