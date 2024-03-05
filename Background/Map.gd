@@ -41,7 +41,7 @@ func _flood_fill(cell: Vector2, max_distance: int) -> Array:
 		# 1. We didn't go past the grid's limits.
 		# 2. We haven't already visited and filled this cell
 		# 3. We are within the `max_distance`, a number of cells.
-		# 4. The cell is passable. (Ben D. was here!) 
+		# 4. The cell is passable. (BD. was here!) 
 		if not grid.is_within_bounds(current):
 			continue
 		if current in array:

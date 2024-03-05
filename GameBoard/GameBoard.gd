@@ -36,16 +36,21 @@ var _active_faction : String = "Player" :
 		if not value == "Player":
 			_cpu_turn(value)
 
-var _active_path : PackedVector2Array
 
 # The board is going to move one unit at a time. When we select a unit, we will save it as our
 # `_active_unit` and populate the walkable cells below. This allows us to clear the unit, the
 # overlay, and the interactive path drawing later on when the player decides to deselect it.
 var _active_unit: Unit
+
+# This is kind of hacky, I know. I think we mostly need it for enemies.
+var _active_path : PackedVector2Array
+
+
 # This is an array of all the cells the `_active_unit` can move to. We will populate the array when
 # selecting a unit and use it in the `_move_active_unit()` function below.
 var _walkable_cells := []
 
+# The cell we were at before deciding to try and move.
 var _old_cell: Vector2 
 
 @onready var _unit_overlay: UnitOverlay = $UnitOverlay
@@ -53,7 +58,7 @@ var _old_cell: Vector2
 @onready var _map: TileMap = $Map
 @onready var _menu_manager: MenuManager = $MenuManager
 
-# Ben D: This is a signal I'm gonna use for now to control the cursor from the gameboard.
+# BD: This is a signal I'm gonna use for now to control the cursor from the gameboard.
 signal cursor_enable(enabled: bool)
 
 var _cursor_enabled: bool :
@@ -103,19 +108,20 @@ func player_select_unit(cell: Vector2) -> void:
 	_menu_manager.add_action_menu(_exhaust_active_unit, _show_movement_info)
 
 
+# Shows the movement arrows and the yellow highlight, yadda yadda.
 func _show_movement_info() -> void:
 	_cursor_enabled = true
 	_walkable_cells = _map.get_walkable_cells(_active_unit)
 	_unit_overlay.draw(_walkable_cells)
 	_unit_path_arrow.initialize(_walkable_cells)
 
-# Deselects the active unit and gets rid of its... Shtuff.
+# Deselects the active unit and gets rid of its... Shtuff. 
 func _deselect_active_unit() -> void:
 	_active_unit.is_selected = false
 	_active_unit = null
 	_clear_movement_info()
 	
-# Clears the stuff RELATED to the active unit, but not the unit itself.
+# Clears the movement-related stuff to the active unit. For player units.
 func _clear_movement_info() -> void:
 	_unit_overlay.clear()
 	_unit_path_arrow.stop()

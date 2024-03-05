@@ -14,7 +14,7 @@ extends Path2D
 
 signal state_changed(unit: Unit)
 
-# Ben D: These are currently a little convoluted since they're basically conflated with groups. 
+# BD: These are currently a little convoluted since they're basically conflated with groups. 
 # We can fix it a little later if you want.
 @export_enum("Player", "Ally", "Enemy") var _faction: String = "Player"
 
@@ -58,7 +58,7 @@ var _anim_state = "idle" :
 		_anim_player.play(value)
 
 
-# Ben D: Sets whether or not a unit is exhausted.
+# BD: Sets whether or not a unit is exhausted.
 var _state := "Idle" : set = set_state, get = get_state
 
 # Making this into its own function so maybe later we can do stuff with making the unit grayed out.
@@ -84,7 +84,7 @@ func set_is_selected(value: bool) -> void:
 	if is_selected:
 		_anim_state = "selected"
 	else:
-		# Ben D.: Doing this hacky little thing for exhaust.
+		# BD.: Doing this hacky little thing for exhaust.
 		if (_anim_state != "exhausted"):
 			_anim_state = "idle"
 		
@@ -100,7 +100,7 @@ func set_skin(value: Texture) -> void:
 		await self.ready
 	_sprite.texture = value
 
-# Ben D: Assumedly this is to move the sprite how we want 
+# BD: Assumedly this is to move the sprite how we want 
 # without moving the position of the actual unit.
 func set_skin_offset(value: Vector2) -> void:
 	skin_offset = value
