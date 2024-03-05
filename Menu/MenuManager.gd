@@ -3,9 +3,9 @@ class_name MenuManager extends CanvasLayer
 
 var menu: ActionMenu
 
-func add_action_menu(attack: Callable, wait: Callable) -> void:
+func add_action_menu(wait: Callable = Callable(), move: Callable = Callable(), attack: Callable = Callable()) -> void:
 	menu = _action_menu.instantiate()
-	menu.setup(attack, wait)
+	menu.setup(move, wait, attack)
 	add_child(menu)
 	
 func kill_action_menu() -> void:

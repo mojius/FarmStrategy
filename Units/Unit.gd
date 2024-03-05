@@ -12,7 +12,7 @@ extends Path2D
 # We'll use this to limit the cells the unit can move to.
 @export var move_range := 6
 
-signal turn_exhausted(unit: Unit)
+signal state_changed(unit: Unit)
 
 # Ben D: These are currently a little convoluted since they're basically conflated with groups. 
 # We can fix it a little later if you want.
@@ -64,9 +64,9 @@ var _state := "Idle" : set = set_state, get = get_state
 # Making this into its own function so maybe later we can do stuff with making the unit grayed out.
 func set_state(state: String) -> void:
 	_state = state
+	state_changed.emit(self)
 	if (state == "Exhausted"):
 		_anim_state = "exhausted"
-		turn_exhausted.emit()
 	else:
 		_anim_state = "idle"
 

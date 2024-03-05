@@ -28,6 +28,7 @@ layout_mode = 2
 theme_override_constants/separation = 5
 
 [node name="Move" type="Button" parent="MarginContainer/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(100, 60)
 layout_mode = 2
 text = "Move
@@ -46,9 +47,11 @@ layout_mode = 2
 text = "Items"
 
 [node name="Wait" type="Button" parent="MarginContainer/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(100, 60)
 layout_mode = 2
 text = "Wait"
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Move" to="." method="_on_move_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Attack" to="." method="_on_attack_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Wait" to="." method="_on_wait_pressed"]

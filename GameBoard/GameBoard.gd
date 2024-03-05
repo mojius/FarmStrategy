@@ -66,6 +66,8 @@ var _active_unit: Unit
 # selecting a unit and use it in the `_move_active_unit()` function below.
 var _walkable_cells := []
 
+var _old_cell: Vector2 
+
 @onready var _unit_overlay: UnitOverlay = $UnitOverlay
 @onready var _unit_path_arrow: UnitPathArrow = $UnitPathArrow
 @onready var _map: TileMap = $Map
@@ -96,7 +98,7 @@ func _reinitialize() -> void:
 		
 		# Using a dictionary of grid coordinates here.
 		_units[unit.cell] = unit
-		unit.turn_exhausted.connect(_on_unit_exhausted)
+		unit.state_changed.connect(_on_unit_state_changed)
 
 # Selects the unit in the `cell` if there's one there.
 func player_select_unit(cell: Vector2) -> void:
@@ -131,15 +133,24 @@ func _deselect_active_unit() -> void:
 	_active_unit = null
 	_walkable_cells.clear()	
 
+# Teleports a unit instantly to a position. Used for undoing movement for now.
+func _teleport_active_unit(new_cell: Vector2) -> void:
+	if is_occupied(new_cell):
+		return
+	
+	_units.erase(_active_unit.cell)
+	_units[new_cell] = _active_unit
+	
+	_active_unit.position = grid.calculate_map_position(new_cell)
+
 # Updates the _units dictionary with the target position for the unit and asks the _active_unit to
 # walk to it.
 func _move_active_unit(new_cell: Vector2) -> void:
 	if is_occupied(new_cell) or not new_cell in _walkable_cells:
 		return
 
-	# When moving a unit, we need to update our `_units` dictionary. We instantly save it in the
-	# target cell even if the unit itself will take time to walk there.
-	# While it's walking, the player won't be able to issue new commands.
+	_old_cell = _active_unit.cell
+	
 	_units.erase(_active_unit.cell)
 	_units[new_cell] = _active_unit
 	# Finally, we clear the active unit, we won't need it after this.
@@ -151,6 +162,7 @@ func _move_active_unit(new_cell: Vector2) -> void:
 	
 	_state = GameState.FREE
 	# Now that the unit is done moving, set it as exhausted.
+
 	_units[new_cell].set_state("Exhausted")
 
 # Updates the interactive path's drawing if there's an active and selected unit.
@@ -187,8 +199,12 @@ func _exhaust() -> void:
 		_deselect_active_unit()
 
 
-func _on_unit_exhausted() -> void:
-	_check_should_turn_end()
+func _on_unit_state_changed(unit: Unit) -> void:
+	var state = unit.get_state()
+	if (state == "Exhausted"):
+		_check_should_turn_end()
+	elif (state == "Moved"):
+		pass
 	
 func _check_should_turn_end():
 	var faction_units := get_tree().get_nodes_in_group(_active_faction)
