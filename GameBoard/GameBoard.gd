@@ -130,6 +130,7 @@ func _teleport_active_unit(new_cell: Vector2) -> void:
 	_units[new_cell] = _active_unit
 	
 	_active_unit.position = grid.calculate_map_position(new_cell)
+	_active_unit.cell = new_cell
 
 # Updates the _units dictionary with the target position for the unit and asks the _active_unit to
 # walk to it.
@@ -142,15 +143,13 @@ func _move_active_unit(new_cell: Vector2) -> void:
 	_units.erase(_active_unit.cell)
 	_units[new_cell] = _active_unit
 	# Finally, we clear the active unit, we won't need it after this.
-	_deselect_active_unit()
+	_clear_movement_info()
 
 	_cursor_enabled = false
 	_units[new_cell].walk_along(_active_path)
 	await _units[new_cell].walk_finished
 	
-	_cursor_enabled = true
-	
-	_units[new_cell].set_state("Exhausted")
+	_menu_manager.add_action_menu(_exhaust_active_unit)
 
 # Updates the interactive path's drawing if there's an active and selected unit.
 func _on_cursor_moved(new_cell: Vector2) -> void:
@@ -174,9 +173,15 @@ func _on_cursor_accept_pressed(cell: Vector2) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		if _active_unit:
+			if (_old_cell):
+				_teleport_active_unit(_old_cell)
+				
 			_deselect_active_unit()
 			_cursor_enabled = true
 			_menu_manager.kill_action_menu()
+			
+			# Undoes the finalization of the movement
+
 
 # Sets the active unit to exhausted and disables it. Probably something we can get rid of later.
 func _exhaust_active_unit() -> void:
