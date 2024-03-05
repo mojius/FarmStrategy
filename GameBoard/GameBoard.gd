@@ -163,7 +163,7 @@ func _move_active_unit(new_cell: Vector2) -> void:
 	
 	_units[new_cell].set_state("Moved")
 	_find_targets_in_range()
-	_menu_manager.add_action_menu(_exhaust_active_unit)
+	_add_post_move_menu()
 
 # Updates the interactive path's drawing if there's an active and selected unit.
 func _on_cursor_moved(new_cell: Vector2) -> void:
@@ -186,8 +186,9 @@ func _on_cursor_accept_pressed(cell: Vector2) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
-		if _active_unit and _active_unit.get_state() == "Moved":
-			if (_old_cell):
+		if _active_unit:
+			
+			if _active_unit.get_state() == "Moved" and (_old_cell):
 				_teleport_active_unit(_old_cell)
 				
 			_deselect_active_unit()
@@ -289,6 +290,7 @@ func _cpu_turn(faction: String) -> void:
 	
 	_active_faction = target_faction
 	
+# Finds all targets in range.
 func _find_targets_in_range():
 	
 	# Putting this duplicate code here is hacky... Man whatever.
@@ -299,3 +301,18 @@ func _find_targets_in_range():
 		
 		if _units.has(coordinates) and _units.get(coordinates).get_faction() == "Enemy" and _units.get(coordinates) not in _active_targets:
 			_active_targets.append(_units[coordinates])
+
+# Adds a menu after moving. Let's make this a builder later or something. This is a mess.
+func _add_post_move_menu():
+	if (_active_targets.size() > 0):
+		_menu_manager.add_action_menu(_exhaust_active_unit, Callable(), player_try_attack)
+	else:
+		_menu_manager.add_action_menu(_exhaust_active_unit)
+	
+func player_try_attack():
+	if (_active_targets.size() <= 0):
+		return
+		
+	_menu_manager._add_attack_menu(_active_targets)
+	
+	

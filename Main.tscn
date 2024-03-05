@@ -18,6 +18,8 @@
 [node name="GameBoard" type="Node2D" parent="."]
 y_sort_enabled = true
 script = ExtResource("2_hx4vu")
+grid = null
+starting_faction = null
 
 [node name="MenuManager" type="CanvasLayer" parent="GameBoard"]
 script = ExtResource("2_li06t")

@@ -18,7 +18,7 @@ func setup(wait_func: Callable, move_func: Callable, attack_func: Callable):
 		wait.pressed.connect(wait_func)
 		wait.show()
 	if (attack_func):
-		attack.pressed.connect(wait_func)
+		attack.pressed.connect(attack_func)
 		attack.show()
 
 # The way the menu appears and disappears needs tweaking.
