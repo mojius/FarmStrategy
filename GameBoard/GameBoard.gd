@@ -45,6 +45,7 @@ var _active_unit: Unit
 # This is kind of hacky, I know. I think we mostly need it for enemies.
 var _active_path : PackedVector2Array
 
+var _active_targets : Array = []
 
 # This is an array of all the cells the `_active_unit` can move to. We will populate the array when
 # selecting a unit and use it in the `_move_active_unit()` function below.
@@ -121,11 +122,15 @@ func _deselect_active_unit() -> void:
 	_active_unit = null
 	_clear_movement_info()
 	
+	# Come back to this.
+	_active_targets.clear()
+	
 # Clears the movement-related stuff to the active unit. For player units.
 func _clear_movement_info() -> void:
 	_unit_overlay.clear()
 	_unit_path_arrow.stop()
 	_walkable_cells.clear()
+
 	
 # Teleports a unit instantly to a position. Used for undoing movement for now.
 func _teleport_active_unit(new_cell: Vector2) -> void:
@@ -137,6 +142,7 @@ func _teleport_active_unit(new_cell: Vector2) -> void:
 	
 	_active_unit.position = grid.calculate_map_position(new_cell)
 	_active_unit.cell = new_cell
+
 
 # Updates the _units dictionary with the target position for the unit and asks the _active_unit to
 # walk to it.
@@ -155,6 +161,8 @@ func _move_active_unit(new_cell: Vector2) -> void:
 	_units[new_cell].walk_along(_active_path)
 	await _units[new_cell].walk_finished
 	
+	_units[new_cell].set_state("Moved")
+	_find_targets_in_range()
 	_menu_manager.add_action_menu(_exhaust_active_unit)
 
 # Updates the interactive path's drawing if there's an active and selected unit.
@@ -178,7 +186,7 @@ func _on_cursor_accept_pressed(cell: Vector2) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
-		if _active_unit:
+		if _active_unit and _active_unit.get_state() == "Moved":
 			if (_old_cell):
 				_teleport_active_unit(_old_cell)
 				
@@ -280,3 +288,14 @@ func _cpu_turn(faction: String) -> void:
 		await unit.walk_finished 
 	
 	_active_faction = target_faction
+	
+func _find_targets_in_range():
+	
+	# Putting this duplicate code here is hacky... Man whatever.
+	const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
+
+	for direction in DIRECTIONS:
+		var coordinates: Vector2 = _active_unit.cell + direction
+		
+		if _units.has(coordinates) and _units.get(coordinates).get_faction() == "Enemy" and _units.get(coordinates) not in _active_targets:
+			_active_targets.append(_units[coordinates])
