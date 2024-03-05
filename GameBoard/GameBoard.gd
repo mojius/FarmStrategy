@@ -19,7 +19,7 @@ var _units := {}
 
 var _active_faction : String = "Player" :
 	set(value):
-		_state = GameState.DISABLED		
+		_cursor_enabled = false
 		
 		_active_faction = value
 		
@@ -31,32 +31,12 @@ var _active_faction : String = "Player" :
 		await phase.done	
 		
 		if (value == "Player"):
-			_state = GameState.FREE	
+			_cursor_enabled = true
 		
 		if not value == "Player":
 			_cpu_turn(value)
 
 var _active_path : PackedVector2Array
-
-# Ben D: Hopefully this streamlines things a bit.
-# Possibly migrate this to cursor?
-enum GameState 
-{
-	FREE,
-	DISABLED,
-	TRY_MOVE,
-	TRY_ATTACK
-}
-
-var _state := GameState.FREE :
-	set(value):
-		_state = value
-		if (value == GameState.DISABLED):
-			cursor_enable.emit(false)
-		elif (value == GameState.FREE or
-			value == GameState.TRY_MOVE or
-			value == GameState.TRY_ATTACK):
-			cursor_enable.emit(true)
 
 # The board is going to move one unit at a time. When we select a unit, we will save it as our
 # `_active_unit` and populate the walkable cells below. This allows us to clear the unit, the
@@ -75,6 +55,11 @@ var _old_cell: Vector2
 
 # Ben D: This is a signal I'm gonna use for now to control the cursor from the gameboard.
 signal cursor_enable(enabled: bool)
+
+var _cursor_enabled: bool :
+	set(value):
+		_cursor_enabled = value
+		cursor_enable.emit(value)
 
 # At the start of the game, we initialize the game board. Look at the `_reinitialize()` function below.
 # It populates our `_units` dictionary.
@@ -114,12 +99,12 @@ func player_select_unit(cell: Vector2) -> void:
 	_active_unit = _units[cell]
 	_active_unit.is_selected = true
 	
-	_state = GameState.DISABLED
+	_cursor_enabled = false
 	_menu_manager.add_action_menu(_exhaust_active_unit, _show_movement_info)
 
 
 func _show_movement_info() -> void:
-	_state = GameState.TRY_MOVE
+	_cursor_enabled = true
 	_walkable_cells = _map.get_walkable_cells(_active_unit)
 	_unit_overlay.draw(_walkable_cells)
 	_unit_path_arrow.initialize(_walkable_cells)
@@ -159,21 +144,20 @@ func _move_active_unit(new_cell: Vector2) -> void:
 	# Finally, we clear the active unit, we won't need it after this.
 	_deselect_active_unit()
 
-	_state = GameState.DISABLED
+	_cursor_enabled = false
 	_units[new_cell].walk_along(_active_path)
 	await _units[new_cell].walk_finished
 	
-	_state = GameState.FREE
+	_cursor_enabled = true
 	
 	_units[new_cell].set_state("Exhausted")
-
 
 # Updates the interactive path's drawing if there's an active and selected unit.
 func _on_cursor_moved(new_cell: Vector2) -> void:
 	# When the cursor moves, and we already have an active unit selected, we want to update the
 	# interactive path drawing.
 
-	if _active_unit and _active_unit.is_selected and _state == GameState.TRY_MOVE:
+	if _active_unit and _active_unit.is_selected and _cursor_enabled:
 		_unit_path_arrow.draw(_active_unit.cell, new_cell)
 
 # Selects or moves a unit based on where the cursor is.
@@ -191,13 +175,13 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		if _active_unit:
 			_deselect_active_unit()
-			_state = GameState.FREE
+			_cursor_enabled = true
 			_menu_manager.kill_action_menu()
 
 # Sets the active unit to exhausted and disables it. Probably something we can get rid of later.
 func _exhaust_active_unit() -> void:
 	if _active_unit:
-		_state = GameState.FREE
+		_cursor_enabled = true
 		_active_unit.set_state("Exhausted")
 		_deselect_active_unit()
 
