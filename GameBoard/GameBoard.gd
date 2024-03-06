@@ -232,7 +232,7 @@ func _exhaust_active_unit() -> void:
 func _on_unit_state_changed(unit: Unit) -> void:
 	var state = unit.get_state()
 	if (state == "Exhausted"):
-		#_check_should_turn_end()
+		_check_should_turn_end()
 		pass
 	elif (state == "Moved"):
 		pass
@@ -280,18 +280,23 @@ func _cpu_turn(faction: String) -> void:
 		# Find the closest unit of the target faction units.
 		for enemy: Unit in target_faction_units:
 			var new_path := pathfinder.calculate_point_path(unit.cell, enemy.cell)
-			
 			if (not new_path.is_empty() and new_path.size() < path.size()):
 				path = new_path
 
 		# If we can't immediately attack an enemy in range or we're right next to them,
-		if path.is_empty() or path.size() == 9999 or path.size() <= 1:
+		if path.is_empty() or path.size() == 9999:
 				_deselect_active_unit()
 				continue
 		
 		# Shorten the path so you don't go right ONTO your target. 
 		# Later we scale this by the attack range of the enemy.
 		path.remove_at(path.size() - 1)
+		
+		if (path.size() <= 1):		
+			_find_targets_in_range()
+			if (_active_targets.size() > 0):
+				attack(_active_targets.pick_random())
+				continue
 		
 		var target_cell: Vector2 = path[path.size() - 1]
 		
@@ -306,8 +311,12 @@ func _cpu_turn(faction: String) -> void:
 						
 		_active_path = path
 		# Move the enemy to the last element in the path.
-		_move_active_unit(target_cell)
+		_move_active_unit(target_cell, false)
 		await unit.walk_finished 
+		
+		_find_targets_in_range()
+		if (_active_targets.size() > 0):
+			attack(_active_targets.pick_random())
 	
 	_active_faction = target_faction
 	
