@@ -205,7 +205,6 @@ func _on_cursor_accept_pressed(cell: Vector2) -> void:
 	# on the board's current state, this interaction means either that we want to select a unit or
 	# that we want to give it a move order.
 	if not _active_unit:
-		SoundNode.Menu_Select_Sound()
 		player_select_unit(cell)
 	elif _active_unit.is_selected:
 		_active_path = _unit_path_arrow.current_path
@@ -214,7 +213,6 @@ func _on_cursor_accept_pressed(cell: Vector2) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		if _active_unit:
-			
 			if _active_unit.get_state() == "Moved" and (_old_cell):
 				_teleport_active_unit(_old_cell)
 				
@@ -352,6 +350,7 @@ func player_try_attack():
 
 func attack(unit: Unit):
 	unit.queue_free()
+	SoundNode.Hit_Sound()
 	_units.erase(unit.cell)
 	_exhaust_active_unit()
 
