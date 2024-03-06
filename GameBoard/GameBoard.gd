@@ -90,6 +90,7 @@ var _cursor_enabled: bool :
 # At the start of the game, we initialize the game board. Look at the `_reinitialize()` function below.
 # It populates our `_units` dictionary.
 func _ready() -> void:
+	randomize()
 	_reinitialize()
 
 # Returns `true` if the cell is occupied by a unit.
@@ -201,9 +202,10 @@ func _on_cursor_moved(new_cell: Vector2) -> void:
 # Selects or moves a unit based on where the cursor is.
 func _on_cursor_accept_pressed(cell: Vector2) -> void:
 	# The cursor's "accept_pressed" means that the player wants to interact with a cell. Depending
-	# on the board's current state, this interaction means either that we want to select a unit all
+	# on the board's current state, this interaction means either that we want to select a unit or
 	# that we want to give it a move order.
 	if not _active_unit:
+		SoundNode.Menu_Select_Sound()
 		player_select_unit(cell)
 	elif _active_unit.is_selected:
 		_active_path = _unit_path_arrow.current_path

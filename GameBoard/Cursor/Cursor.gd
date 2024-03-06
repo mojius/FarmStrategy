@@ -49,6 +49,7 @@ var cell := Vector2.ZERO:
 		#	at which the cursor moves when we keep the direction key held
 		#	down
 		position = grid.calculate_map_position(cell)
+		SoundNode.Cursor_Move_Sound()
 		emit_signal("moved", cell)
 		_timer.start()
 
