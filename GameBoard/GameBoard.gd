@@ -7,16 +7,38 @@ extends Node2D
 # Once again, we use our grid resource that we explicitly define in the class.
 @export var grid: Resource = preload("res://GameBoard/Grid.tres")
 
+@onready var _action_menu = preload("res://Menu/ActionMenu.tscn")
+@onready var _attack_menu = preload("res://Menu/AttackMenu.tscn")
+@onready var _ui_container: CanvasLayer = $UIContainer
+
+var _active_menu: Control : 
+	set(value):
+		if not (_active_menu == null):
+			var _old_menu = _active_menu
+			_ui_container.remove_child(_old_menu)
+		
+		_active_menu = value
+		if not (value == null):
+			_ui_container.add_child(_active_menu)
+			
+			var enable_cursor = func():
+				_cursor_enabled = true
+			
+			_cursor_enabled = false
+			_active_menu.connect("tree_exiting", enable_cursor)
+
 # We use a dictionary to keep track of the units that are on the board. Each key-value pair in the
 # dictionary represents a unit. The key is the position in grid coordinates, while the value is a
 # reference to the unit.
 # Mapping of coordinates of a cell to a reference to the unit it contains.
 var _units := {}
 
+# Phase animation.
 @onready var _phase = preload("res://Juice/Phase.tscn")
 
 @export_enum("Player", "Ally", "Enemy") var starting_faction: String = "Player"
 
+# The player's active faction.
 var _active_faction : String = "Player" :
 	set(value):
 		_cursor_enabled = false
@@ -27,7 +49,7 @@ var _active_faction : String = "Player" :
 		
 		_refresh_groups()
 		var phase: Phase = _phase.instantiate()
-		_menu_manager.add_child(phase)
+		_ui_container.add_child(phase)
 		await phase.done	
 		
 		if (value == "Player"):
@@ -35,7 +57,6 @@ var _active_faction : String = "Player" :
 		
 		if not value == "Player":
 			_cpu_turn(value)
-
 
 # The board is going to move one unit at a time. When we select a unit, we will save it as our
 # `_active_unit` and populate the walkable cells below. This allows us to clear the unit, the
@@ -57,7 +78,6 @@ var _old_cell: Vector2
 @onready var _unit_overlay: UnitOverlay = $UnitOverlay
 @onready var _unit_path_arrow: UnitPathArrow = $UnitPathArrow
 @onready var _map: TileMap = $Map
-@onready var _menu_manager: MenuManager = $MenuManager
 
 # BD: This is a signal I'm gonna use for now to control the cursor from the gameboard.
 signal cursor_enable(enabled: bool)
@@ -106,7 +126,9 @@ func player_select_unit(cell: Vector2) -> void:
 	_active_unit.is_selected = true
 	
 	_cursor_enabled = false
-	_menu_manager.add_action_menu(_exhaust_active_unit, _show_movement_info)
+	
+	_active_menu = _action_menu.instantiate()
+	_active_menu.setup(_exhaust_active_unit, _show_movement_info, Callable())
 
 
 # Shows the movement arrows and the yellow highlight, yadda yadda.
@@ -146,7 +168,7 @@ func _teleport_active_unit(new_cell: Vector2) -> void:
 
 # Updates the _units dictionary with the target position for the unit and asks the _active_unit to
 # walk to it.
-func _move_active_unit(new_cell: Vector2) -> void:
+func _move_active_unit(new_cell: Vector2, is_player: bool = true) -> void:
 	if is_occupied(new_cell) or not new_cell in _walkable_cells:
 		return
 
@@ -162,6 +184,9 @@ func _move_active_unit(new_cell: Vector2) -> void:
 	await _units[new_cell].walk_finished
 	
 	_units[new_cell].set_state("Moved")
+	
+	if not is_player: return
+	
 	_find_targets_in_range()
 	_add_post_move_menu()
 
@@ -193,10 +218,9 @@ func _unhandled_input(event: InputEvent) -> void:
 				
 			_deselect_active_unit()
 			_cursor_enabled = true
-			_menu_manager.kill_action_menu()
+			_active_menu = null
 			
 			# Undoes the finalization of the movement
-
 
 # Sets the active unit to exhausted and disables it. Probably something we can get rid of later.
 func _exhaust_active_unit() -> void:
@@ -204,7 +228,6 @@ func _exhaust_active_unit() -> void:
 		_cursor_enabled = true
 		_active_unit.set_state("Exhausted")
 		_deselect_active_unit()
-
 
 func _on_unit_state_changed(unit: Unit) -> void:
 	var state = unit.get_state()
@@ -220,7 +243,7 @@ func _check_should_turn_end():
 		if not unit.get_state() == "Exhausted":
 			return
 
-	# Get enemy faction goes here. deleted for now since enemies are broken.
+	_active_faction = "Enemy" if _active_faction == "Player" else "Player"
 	
 
 func _refresh_group(faction: String) -> void:
@@ -247,8 +270,6 @@ func _cpu_turn(faction: String) -> void:
 		
 		_active_unit = unit
 		_active_unit.is_selected = true
-	
-		var closest_cell: Vector2 = Vector2(999,999)
 
 		# First get the walkable points, then init a path.
 		_walkable_cells = _map.get_walkable_cells(unit)
@@ -299,20 +320,27 @@ func _find_targets_in_range():
 	for direction in DIRECTIONS:
 		var coordinates: Vector2 = _active_unit.cell + direction
 		
-		if _units.has(coordinates) and _units.get(coordinates).get_faction() == "Enemy" and _units.get(coordinates) not in _active_targets:
+		if _units.has(coordinates) and _units.get(coordinates).get_faction() == _active_unit.get_enemy_faction() and _units.get(coordinates) not in _active_targets:
 			_active_targets.append(_units[coordinates])
 
 # Adds a menu after moving. Let's make this a builder later or something. This is a mess.
 func _add_post_move_menu():
+	_active_menu = _action_menu.instantiate()
+	
 	if (_active_targets.size() > 0):
-		_menu_manager.add_action_menu(_exhaust_active_unit, Callable(), player_try_attack)
+		_active_menu.setup(_exhaust_active_unit, Callable(), player_try_attack)
 	else:
-		_menu_manager.add_action_menu(_exhaust_active_unit)
+		_active_menu.setup(_exhaust_active_unit)
 	
 func player_try_attack():
 	if (_active_targets.size() <= 0):
 		return
 		
-	_menu_manager._add_attack_menu(_active_targets)
-	
-	
+	_active_menu = _attack_menu.instantiate()
+	_active_menu.setup(attack, _active_targets)
+
+func attack(unit: Unit):
+	unit.queue_free()
+	_units.erase(unit.cell)
+	_exhaust_active_unit()
+

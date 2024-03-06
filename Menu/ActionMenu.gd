@@ -8,8 +8,8 @@ class_name ActionMenu extends PanelContainer
 signal delete
 
 # Figure out how to pass null callable.
-func setup(wait_func: Callable, move_func: Callable, attack_func: Callable):
-	await self.ready
+func setup(wait_func: Callable, move_func: Callable = Callable(), attack_func: Callable = Callable()):
+
 	if (move_func):
 		move.pressed.connect(move_func)
 		move.show()
@@ -23,10 +23,10 @@ func setup(wait_func: Callable, move_func: Callable, attack_func: Callable):
 
 # The way the menu appears and disappears needs tweaking.
 func _on_move_pressed():
-	delete.emit()
+	queue_free()
 	
 func _on_wait_pressed():
-	delete.emit()
+	queue_free()
 
 func _on_attack_pressed():
-	delete.emit()
+	queue_free()
