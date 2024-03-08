@@ -112,7 +112,7 @@ func set_skin_offset(value: Vector2) -> void:
 func _set_is_walking(value: bool) -> void:
 	_is_walking = value
 	set_process(_is_walking)
-	SoundNode.Walk_Sound_Play()
+	SoundManager.Walk_Sound_Play()
 
 # Emitted when the unit reached the end of a path along which it was walking.
 # We'll use this to notify the game board that a unit reached its destination and we can let the
@@ -156,7 +156,7 @@ func _process(delta: float) -> void:
 		curve.clear_points()
 		# Finally, we emit a signal. We'll use this one with the game board.
 		emit_signal("walk_finished")
-		SoundNode.Walk_Sound_Stop()
+		SoundManager.Walk_Sound_Stop()
 	
 # Starts walking along the `path`.
 # `path` is an array of grid coordinates that the function converts to map coordinates.

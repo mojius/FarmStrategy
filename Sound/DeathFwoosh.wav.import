@@ -2,13 +2,13 @@
 
 importer="wav"
 type="AudioStreamWAV"
-uid="uid://bmwbik4rqcy87"
-path="res://.godot/imported/CompleteHit3.wav-b1088ce5d87377f32752dc95f89438b6.sample"
+uid="uid://bdi2gqpblcme0"
+path="res://.godot/imported/DeathFwoosh.wav-fb7b9b08f2f77988b48035ae49e0cb2d.sample"
 
 [deps]
 
-source_file="res://Sounds/CompleteHit3.wav"
-dest_files=["res://.godot/imported/CompleteHit3.wav-b1088ce5d87377f32752dc95f89438b6.sample"]
+source_file="res://Sound/DeathFwoosh.wav"
+dest_files=["res://.godot/imported/DeathFwoosh.wav-fb7b9b08f2f77988b48035ae49e0cb2d.sample"]
 
 [params]
 

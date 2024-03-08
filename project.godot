@@ -17,7 +17,7 @@ config/icon="res://icon.png"
 
 [autoload]
 
-SoundNode="*res://sound_node.tscn"
+SoundManager="*res://Sound/sound_manager.tscn"
 
 [display]
 

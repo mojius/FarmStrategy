@@ -2,13 +2,13 @@
 
 importer="wav"
 type="AudioStreamWAV"
-uid="uid://ndy27e0ca3cy"
-path="res://.godot/imported/MissWhiff.wav-80ab8874ae3f96e77d04eb47ca2d8f4c.sample"
+uid="uid://cjv4hfpg63hdr"
+path="res://.godot/imported/CompleteHit4.wav-57b889148e65f322558b6abca7a083ed.sample"
 
 [deps]
 
-source_file="res://Sounds/MissWhiff.wav"
-dest_files=["res://.godot/imported/MissWhiff.wav-80ab8874ae3f96e77d04eb47ca2d8f4c.sample"]
+source_file="res://Sound/CompleteHit4.wav"
+dest_files=["res://.godot/imported/CompleteHit4.wav-57b889148e65f322558b6abca7a083ed.sample"]
 
 [params]
 

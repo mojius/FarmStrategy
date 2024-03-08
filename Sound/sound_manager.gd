@@ -1,5 +1,6 @@
 extends Node
 
+
 func Walk_Sound_Play():
 	$"WalkSound".play()
 	

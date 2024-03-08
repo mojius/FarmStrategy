@@ -33,7 +33,7 @@ grid = ExtResource("5_jx4tg")
 [node name="UnitPathArrow" parent="GameBoard" instance=ExtResource("6_xwtul")]
 
 [node name="Skwele" parent="GameBoard" instance=ExtResource("2_n3f5l")]
-position = Vector2(920, 360)
+position = Vector2(600, 200)
 skin = ExtResource("8_bib8g")
 move_speed = 500
 
@@ -52,10 +52,9 @@ skin = ExtResource("8_r13vx")
 move_speed = 500
 
 [node name="Kitty" parent="GameBoard" instance=ExtResource("2_n3f5l")]
-position = Vector2(600, 360)
+position = Vector2(440, 360)
 skin = ExtResource("9_mrwsr")
 move_speed = 500
 
-[connection signal="cursor_enable" from="GameBoard" to="GameBoard/Cursor" method="_on_game_board_cursor_enable"]
 [connection signal="accept_pressed" from="GameBoard/Cursor" to="GameBoard" method="_on_cursor_accept_pressed"]
 [connection signal="moved" from="GameBoard/Cursor" to="GameBoard" method="_on_cursor_moved"]
