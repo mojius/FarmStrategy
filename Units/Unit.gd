@@ -6,8 +6,12 @@
 class_name Unit
 extends Path2D
 
-# Preload the `Grid.tres` resource you created in the previous part.
+# Singleton with information about the size of the grid.
 @export var grid: Resource = preload("res://GameBoard/Grid.tres")
+
+# Unit stats.
+@export var stats: Resource = preload("res://Units/Stats.tres")
+
 # Distance to which the unit can walk in cells.
 # We'll use this to limit the cells the unit can move to.
 @export var move_range := 6
@@ -83,7 +87,8 @@ func set_is_selected(value: bool) -> void:
 	is_selected = value
 	if is_selected:
 		if(_faction == "Player"):
-			SoundManager.Menu_Select_Sound()
+			#SoundManager.Menu_Select_Sound()
+			pass
 		_anim_state = "selected"
 	else:
 		# BD.: Doing this hacky little thing for exhaust.

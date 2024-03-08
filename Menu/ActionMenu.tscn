@@ -1,5 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://p1k7ttutslso"]
+[gd_scene load_steps=3 format=3 uid="uid://p1k7ttutslso"]
 
+[ext_resource type="Theme" uid="uid://f3cwprpras7p" path="res://Menu/theme.tres" id="1_e4pik"]
 [ext_resource type="Script" path="res://Menu/ActionMenu.gd" id="1_imsb6"]
 
 [node name="ActionMenu" type="PanelContainer"]
@@ -14,6 +15,7 @@ offset_right = 25.5
 offset_bottom = 33.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_e4pik")
 script = ExtResource("1_imsb6")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
