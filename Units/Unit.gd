@@ -82,6 +82,8 @@ func set_cell(value: Vector2) -> void:
 func set_is_selected(value: bool) -> void:
 	is_selected = value
 	if is_selected:
+		if(_faction == "Player"):
+			SoundManager.Menu_Select_Sound()
 		_anim_state = "selected"
 	else:
 		# BD.: Doing this hacky little thing for exhaust.

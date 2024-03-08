@@ -17,7 +17,6 @@
 [node name="GameBoard" type="Node2D" parent="."]
 y_sort_enabled = true
 script = ExtResource("2_hx4vu")
-starting_faction = "Enemy"
 
 [node name="UIContainer" type="CanvasLayer" parent="GameBoard"]
 
