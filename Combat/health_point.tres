@@ -7,6 +7,6 @@
 resource_local_to_scene = true
 frames = 2
 pause = true
-frame_0/texture = ExtResource("1_keexm")
-frame_1/texture = ExtResource("2_kjj5p")
+frame_0/texture = ExtResource("2_kjj5p")
+frame_1/texture = ExtResource("1_keexm")
 frame_1/duration = 1.0

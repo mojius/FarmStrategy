@@ -23,9 +23,11 @@ var _active_menu: Control :
 			
 			var enable_cursor = func():
 				_cursor_enabled = true
-			
+	
+			_active_menu.connect("tree_exiting", enable_cursor)		
+
 			_cursor_enabled = false
-			_active_menu.connect("tree_exiting", enable_cursor)
+
 
 # We use a dictionary to keep track of the units that are on the board. Each key-value pair in the
 # dictionary represents a unit. The key is the position in grid coordinates, while the value is a
@@ -244,6 +246,8 @@ func _on_unit_state_changed(unit: Unit) -> void:
 		pass
 	elif (state == "Moved"):
 		pass
+	elif (state == "Dead"):
+		_units.erase(unit.cell)
 	
 func _check_should_turn_end():
 	var faction_units := get_tree().get_nodes_in_group(_active_faction)
@@ -360,7 +364,6 @@ func add_attack_menu():
 	_active_menu.setup(attack, _active_targets)
 
 func attack(unit: Unit):
-	
 	_cursor_enabled = false
 	var combat_object: CombatObject = load("res://Combat/CombatObject.tscn").instantiate()
 	_ui_container.add_child(combat_object)

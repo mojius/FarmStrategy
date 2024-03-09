@@ -52,7 +52,6 @@ layout_mode = 2
 size_flags_vertical = 4
 
 [node name="HealthPoints" type="HBoxContainer" parent="Box1/MarginContainer/NameStatsSeparator/TextHPSeparator/HealthPointsStack"]
-layout_direction = 3
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 0
@@ -90,7 +89,6 @@ layout_mode = 2
 size_flags_vertical = 4
 
 [node name="HealthPoints" type="HBoxContainer" parent="Box2/MarginContainer/NameStatsSeparator/TextHPSeparator/HealthPointsStack"]
-layout_direction = 3
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 0

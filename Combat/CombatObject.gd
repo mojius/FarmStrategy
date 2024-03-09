@@ -3,7 +3,7 @@
 class_name CombatObject extends HBoxContainer
 
 @export var attack_speed = 0.2
-@export var pause_time = 0.4
+@export var pause_time = 1
 @export var nudge_distance = 2
 
 # The PanelContainers that contain their individual HP info, as well as their properties.
@@ -39,7 +39,7 @@ func setup(attacker: Unit, target: Unit):
 		for n in range(unit.stats.max_hp):
 			var health_point = _health_point.instantiate()
 			health_points.add_child(health_point)
-			if (n > unit.stats.hp):
+			if (n < unit.stats.hp):
 				health_point.texture.current_frame = 1
 			
 		box.find_child("UnitName").text = unit.name
@@ -53,6 +53,8 @@ func fight():
 	if not was_setup: return
 	
 	await volley(_attacker, _target)
+	if (_target.get_state() == "Dead"):
+		return
 	await volley(_target, _attacker)
 	
 	queue_free()
@@ -72,17 +74,27 @@ func chip_damage(unit: Unit, damage: int):
 	
 	var health_points: HBoxContainer = unit_boxes[unit].find_child("HealthPoints")
 	
-	for element in health_points.get_children():
+	var reversed := health_points.get_children()
+	reversed.reverse()
+	
+	for element in reversed:
+		if element.texture.current_frame == 0: continue
 		if damage == -1: break
-		element.texture.current_frame = 1
+		element.texture.current_frame = 0
 		damage -= 1
 		unit.stats.hp -= 1
-		await get_tree().create_timer(attack_speed / unit.stats.hp).timeout
+		await get_tree().create_timer(0.02).timeout
+		
+		if unit.stats.hp <= 0:
+			await get_tree().create_timer(pause_time / 2).timeout
+			await unit.die()
+			queue_free()
+			attack_finished.emit()
 	
 
 # Animates the actual battle going on.
 func animate_volley(attacker: Unit, target: Unit):
-	await get_tree().create_timer(pause_time).timeout
+	# await get_tree().create_timer(pause_time).timeout
 	var source_pos: Vector2 = attacker.position
 	var dest_pos: Vector2 = (attacker.position + target.position) / 2
 	# dest_pos = (dest_pos.normalized() * nudge_distance)
@@ -95,6 +107,7 @@ func animate_volley(attacker: Unit, target: Unit):
 func calculate_damage(attacker: Unit, target: Unit) -> int:
 	return attacker.stats.attack - target.stats.defense
 
+# Hack to make the text update on the menus.
 func _process(delta):
 	_box1.find_child("HealthPointsText").text = str(_attacker.stats.hp)
 	_box2.find_child("HealthPointsText").text = str(_target.stats.hp)	

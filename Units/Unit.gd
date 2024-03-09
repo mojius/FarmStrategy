@@ -115,7 +115,6 @@ func set_skin_offset(value: Vector2) -> void:
 		await self.ready
 	_sprite.position = value
 
-
 func _set_is_walking(value: bool) -> void:
 	_is_walking = value
 	set_process(_is_walking)
@@ -197,3 +196,11 @@ func get_enemy_faction() -> String:
 		return ("Player")
 		
 	return ("Enemy")
+
+func die():
+	set_state("Dead")	
+	_anim_state = "death"
+	await _anim_player.animation_finished
+	queue_free()
+
+
