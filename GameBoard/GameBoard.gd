@@ -128,8 +128,14 @@ func player_select_unit(cell: Vector2) -> void:
 	
 	_cursor_enabled = false
 	
+	_find_targets_in_range()
+	var attackable: Callable = Callable()
+	
+	if (_active_targets.size() > 0):
+		attackable = add_attack_menu
+	
 	_active_menu = _action_menu.instantiate()
-	_active_menu.setup(_exhaust_active_unit, _show_movement_info, Callable())
+	_active_menu.setup(_exhaust_active_unit, _show_movement_info, attackable)
 
 
 # Shows the movement arrows and the yellow highlight, yadda yadda.
@@ -297,7 +303,7 @@ func _cpu_turn(faction: String) -> void:
 		if (path.size() <= 1):		
 			_find_targets_in_range()
 			if (_active_targets.size() > 0):
-				attack(_active_targets.pick_random())
+				await attack(_active_targets.pick_random())
 				continue
 		
 		var target_cell: Vector2 = path[path.size() - 1]
@@ -346,13 +352,25 @@ func _add_post_move_menu():
 func player_try_attack():
 	if (_active_targets.size() <= 0):
 		return
-		
+	
+	add_attack_menu()
+
+func add_attack_menu():
 	_active_menu = _attack_menu.instantiate()
 	_active_menu.setup(attack, _active_targets)
 
 func attack(unit: Unit):
-	unit.queue_free()
-	SoundManager.Hit_Sound()
-	_units.erase(unit.cell)
+	
+	_cursor_enabled = false
+	var combat_object: CombatObject = load("res://Combat/CombatObject.tscn").instantiate()
+	_ui_container.add_child(combat_object)
+	combat_object.setup(_active_unit, unit)
+	
+	await combat_object.attack_finished
+	
 	_exhaust_active_unit()
+	#unit.queue_free()
+	#SoundManager.Hit_Sound()
+	#_units.erase(unit.cell)
+
 

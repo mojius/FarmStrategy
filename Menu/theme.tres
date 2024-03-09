@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=8 format=3 uid="uid://f3cwprpras7p"]
+[gd_resource type="Theme" load_steps=9 format=3 uid="uid://f3cwprpras7p"]
 
 [ext_resource type="StyleBox" uid="uid://bsf31ydpkaewi" path="res://Menu/Button/theme_button_disabled.tres" id="1_57iry"]
 [ext_resource type="SystemFont" uid="uid://dj1bgtyee74sy" path="res://Menu/theme_font.tres" id="1_xf715"]
@@ -7,13 +7,26 @@
 [ext_resource type="StyleBox" uid="uid://cc7nu0ow0ppoq" path="res://Menu/Button/theme_button_hover.tres" id="2_ibwuy"]
 [ext_resource type="StyleBox" uid="uid://c3qcwedxbr021" path="res://Menu/Button/theme_button_toggled.tres" id="3_45bo4"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_82lfc"]
+bg_color = Color(1, 1, 1, 1)
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+corner_detail = 5
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_djvp3"]
 
 [resource]
 default_font = ExtResource("1_xf715")
 default_font_size = 30
 Button/styles/disabled = ExtResource("1_57iry")
-Button/styles/focus = null
+Button/styles/focus = SubResource("StyleBoxFlat_82lfc")
 Button/styles/hover = ExtResource("2_ibwuy")
 Button/styles/normal = ExtResource("2_26mvc")
 Button/styles/pressed = ExtResource("3_45bo4")

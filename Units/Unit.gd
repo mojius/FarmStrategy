@@ -127,7 +127,12 @@ func _set_is_walking(value: bool) -> void:
 signal walk_finished
 
 func _ready() -> void:
+	if stats.hp_override:
+		stats.hp = stats.override
+	else:
+		stats.hp = stats.max_hp
 	set_faction(_faction)
+	
 	# We'll use the `_process()` callback to move the unit along a path. Unless it has a path to
 	# walk, we don't want it to update every frame. See `walk_along()` below.
 	set_process(false)
