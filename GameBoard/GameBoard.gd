@@ -97,7 +97,8 @@ func _ready() -> void:
 
 # Returns `true` if the cell is occupied by a unit.
 func is_occupied(cell: Vector2) -> bool:
-	return true if _units.has(cell) and _units[cell].get_faction() != _active_unit.get_faction() else false
+	
+	return true if _units.has(cell) and _units[cell].get_faction() != "Player" and _units[cell].get_faction() == "Enemy" else false
 	
 # Clears, and refills the `_units` dictionary with game objects that are on the board.
 func _reinitialize() -> void:
