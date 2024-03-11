@@ -147,6 +147,7 @@ func _ready() -> void:
 
 # When active, moves the unit along its `curve` with the help of the PathFollow2D node.
 func _process(delta: float) -> void:
+	if Engine.is_editor_hint(): return
 	# Every frame, the `PathFollow2D.offset` property moves the sprites along the `curve`.
 	# The great thing about this is it moves an exact number of pixels taking turns into account.
 	_path_follow.progress += move_speed * delta

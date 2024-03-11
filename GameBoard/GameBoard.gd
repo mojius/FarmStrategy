@@ -10,6 +10,10 @@ extends Node2D
 @onready var _action_menu = preload("res://Menu/ActionMenu.tscn")
 @onready var _attack_menu = preload("res://Menu/AttackMenu.tscn")
 @onready var _ui_container: CanvasLayer = $UIContainer
+@onready var _cursor: Cursor = $Cursor
+
+
+const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
 
 var _active_menu: Control : 
 	set(value):
@@ -20,11 +24,6 @@ var _active_menu: Control :
 		_active_menu = value
 		if not (value == null):
 			_ui_container.add_child(_active_menu)
-			
-			var enable_cursor = func():
-				_cursor_enabled = true
-	
-			_active_menu.connect("tree_exiting", enable_cursor)		
 
 			_cursor_enabled = false
 
@@ -97,7 +96,7 @@ func _ready() -> void:
 
 # Returns `true` if the cell is occupied by a unit.
 func is_occupied(cell: Vector2) -> bool:
-	return true if _units.has(cell) else false
+	return true if _units.has(cell) and _units[cell].get_faction() != _active_unit.get_faction() else false
 	
 # Clears, and refills the `_units` dictionary with game objects that are on the board.
 func _reinitialize() -> void:
@@ -143,7 +142,7 @@ func player_select_unit(cell: Vector2) -> void:
 # Shows the movement arrows and the yellow highlight, yadda yadda.
 func _show_movement_info() -> void:
 	_cursor_enabled = true
-	_walkable_cells = _map.get_walkable_cells(_active_unit)
+	_walkable_cells = get_walkable_cells(_active_unit)
 	_unit_overlay.draw(_walkable_cells)
 	_unit_path_arrow.initialize(_walkable_cells)
 
@@ -216,7 +215,7 @@ func _on_cursor_accept_pressed(cell: Vector2) -> void:
 		SoundManager.Menu_Select_Sound()
 
 		player_select_unit(cell)
-	elif _active_unit.is_selected:
+	elif _active_unit.is_selected and not _units.has(cell):
 		_active_path = _unit_path_arrow.current_path
 		_move_active_unit(cell)
 
@@ -226,9 +225,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			if _active_unit.get_state() == "Moved" and (_old_cell):
 				_teleport_active_unit(_old_cell)
 				
-			_deselect_active_unit()
-			_cursor_enabled = true
-			_active_menu = null
+			if _active_unit.get_state() != "Attacking" and _active_unit.get_state() != "Dead":
+				_deselect_active_unit()
+				_cursor_enabled = true
+				_active_menu = null
 			
 			# Undoes the finalization of the movement
 
@@ -284,7 +284,7 @@ func _cpu_turn(faction: String) -> void:
 		_active_unit.is_selected = true
 
 		# First get the walkable points, then init a path.
-		_walkable_cells = _map.get_walkable_cells(unit)
+		_walkable_cells = get_walkable_cells(unit)
 		var pathfinder = PathFinder.new(grid, _walkable_cells)
 		var path := PackedVector2Array()
 		path.resize(9999)
@@ -334,9 +334,7 @@ func _cpu_turn(faction: String) -> void:
 	
 # Finds all targets in range.
 func _find_targets_in_range():
-	
-	# Putting this duplicate code here is hacky... Man whatever.
-	const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
+	_active_targets.clear()
 
 	for direction in DIRECTIONS:
 		var coordinates: Vector2 = _active_unit.cell + direction
@@ -364,16 +362,82 @@ func add_attack_menu():
 	_active_menu.setup(attack, _active_targets)
 
 func attack(unit: Unit):
+	_active_unit.set_state("Attacking")
 	_cursor_enabled = false
 	var combat_object: CombatObject = load("res://Combat/CombatObject.tscn").instantiate()
+	_active_menu = combat_object
 	_ui_container.add_child(combat_object)
 	combat_object.setup(_active_unit, unit)
 	
 	await combat_object.attack_finished
+	_active_menu = null
 	
 	_exhaust_active_unit()
-	#unit.queue_free()
-	#SoundManager.Hit_Sound()
-	#_units.erase(unit.cell)
 
 
+# Gets the movement cost of a tile on the map.
+func get_movement_cost_at_tile(cell: Vector2):
+	var data: TileData = _map.get_cell_tile_data(0, cell)
+	if data:
+		return data.get_custom_data("Move Cost") as int
+
+# Gets the impassability of a tile on the map. false = passable.
+func get_impassable_at_tile(cell: Vector2):
+	var data: TileData = _map.get_cell_tile_data(0, cell)
+	if data:
+		return data.get_custom_data("Impassable") as bool
+
+# Returns an array of cells a given unit can walk using the flood fill algorithm.
+func get_walkable_cells(unit: Unit) -> Array:
+	return _flood_fill(unit.cell, unit.move_range)
+
+# Returns an array with all the coordinates of walkable cells based on the `max_distance`.
+func _flood_fill(cell: Vector2, max_distance: int) -> Array:
+	# This is the array of walkable cells the algorithm outputs.
+	var array := []
+	# The way we implemented the flood fill here is by using a stack. In that stack, we store every
+	# cell we want to apply the flood fill algorithm to.
+	var stack := [cell]
+	# We loop over cells in the stack, popping one cell on every loop iteration.
+	while not stack.is_empty():
+		var current = stack.pop_back()
+
+		# For each cell, we ensure that we can fill further.
+		#
+		# The conditions are:
+		# 1. We didn't go past the grid's limits.
+		# 2. We haven't already visited and filled this cell
+		# 3. We are within the `max_distance`, a number of cells.
+		# 4. The cell is passable. (BD. was here!) 
+		if not grid.is_within_bounds(current):
+			continue
+		if current in array:
+			continue
+
+		# Check passability here.
+		if get_impassable_at_tile(current):
+			continue
+
+		var difference: Vector2 = (current - cell).abs()
+		var distance := int(difference.x + difference.y)
+		if distance > max_distance:
+			continue
+	
+		# If we meet all the conditions, we "fill" the `current` cell. To be more accurate, we store
+		# it in our output `array` to later use them with the UnitPath and UnitOverlay classes.
+		array.append(current)
+		# We then look at the `current` cell's neighbors and, if they're not occupied and we haven't
+		# visited them already, we add them to the stack for the next iteration.
+		# This mechanism keeps the loop running until we found all cells the unit can walk.
+		for direction in DIRECTIONS:
+			var coordinates: Vector2 = current + direction
+			# This is an "optimization". It does the same thing as our `if current in array:` above
+			# but repeating it here with the neighbors skips some instructions.
+			if is_occupied(coordinates):
+				continue
+			if coordinates in array:
+				continue
+
+			# This is where we extend the stack.
+			stack.append(coordinates)
+	return array

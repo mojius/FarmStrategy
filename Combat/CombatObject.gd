@@ -21,6 +21,8 @@ var was_setup: bool = false
 
 signal attack_finished
 
+var someone_died: bool
+
 # This function sets up the "Combat Object, adding health points, HP text, and unit name.
 func setup(attacker: Unit, target: Unit):
 	if was_setup: return
@@ -53,17 +55,10 @@ func fight():
 	if not was_setup: return
 	
 	await volley(_attacker, _target)
-	
-	if (_target.get_state() == "Dead"):
-		return
-		
+	if someone_died: return
 	await volley(_target, _attacker)
-		
-	if (_target.get_state() == "Dead"):
-		return
-		
-		
-	queue_free()
+	if someone_died: return
+
 	attack_finished.emit()
 
 
@@ -73,13 +68,12 @@ func volley(attacker: Unit, target: Unit):
 	await animate_volley(attacker, target)
 	var damage: int = calculate_damage(attacker, target)
 	chip_damage(target, damage)
-	await get_tree().create_timer(pause_time).timeout
+	await _timer(pause_time)
 
 # Deal actual damage to a unit.
 func chip_damage(unit: Unit, damage: int):
 	
 	var t = create_tween()
-	
 	var health_points: HBoxContainer = unit_boxes[unit].find_child("HealthPoints")
 	
 	var reversed := health_points.get_children()
@@ -94,10 +88,12 @@ func chip_damage(unit: Unit, damage: int):
 		await get_tree().create_timer(0.02).timeout
 		
 		if unit.stats.hp <= 0:
-			await get_tree().create_timer(pause_time / 2).timeout
+			someone_died = true
+			await _timer(pause_time / 2)
 			await unit.die()
-			queue_free()
 			attack_finished.emit()
+
+			
 	
 
 # Animates the actual battle going on.
@@ -119,3 +115,6 @@ func calculate_damage(attacker: Unit, target: Unit) -> int:
 func _process(delta):
 	_box1.find_child("HealthPointsText").text = str(_attacker.stats.hp)
 	_box2.find_child("HealthPointsText").text = str(_target.stats.hp)	
+
+func _timer(time: float):
+	await get_tree().create_timer(time).timeout
