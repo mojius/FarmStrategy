@@ -134,7 +134,7 @@ func player_select_unit(cell: Vector2) -> void:
 	var attackable: Callable = Callable()
 	
 	if (_active_targets.size() > 0):
-		attackable = add_attack_ui
+		attackable = _add_attack_ui
 	
 	_active_ui = _action_ui.instantiate()
 	_active_ui.setup(_exhaust_active_unit, _show_movement_info, attackable)
@@ -222,8 +222,6 @@ func _on_cursor_moved(new_cell: Vector2) -> void:
 		_unit_path_arrow.draw(_active_unit.cell, new_cell)
 		return
 
-
-
 # Selects or moves a unit based on where the cursor is.
 func _on_cursor_accept_pressed(cell: Vector2) -> void:
 	# The cursor's "accept_pressed" means that the player wants to interact with a cell. Depending
@@ -275,7 +273,6 @@ func _check_should_turn_end():
 
 	_active_faction = "Enemy" if _active_faction == "Player" else "Player"
 	
-
 func _refresh_group(faction: String) -> void:
 	# TODO: Validate the states later, or find a better way to do it.
 	
@@ -365,17 +362,17 @@ func _add_post_move_ui():
 	_active_ui = _action_ui.instantiate()
 	
 	if (_active_targets.size() > 0):
-		_active_ui.setup(_exhaust_active_unit, Callable(), player_try_attack)
+		_active_ui.setup(_exhaust_active_unit, Callable(), _player_try_attack)
 	else:
 		_active_ui.setup(_exhaust_active_unit)
 	
-func player_try_attack():
+func _player_try_attack():
 	if (_active_targets.size() <= 0):
 		return
 	
-	add_attack_ui()
+	_add_attack_ui()
 
-func add_attack_ui():
+func _add_attack_ui():
 	_active_ui = _attack_ui.instantiate()
 	_active_ui.setup(attack, _active_targets)
 
