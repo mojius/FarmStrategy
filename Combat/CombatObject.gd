@@ -53,12 +53,20 @@ func fight():
 	if not was_setup: return
 	
 	await volley(_attacker, _target)
+	
 	if (_target.get_state() == "Dead"):
 		return
+		
 	await volley(_target, _attacker)
-	
+		
+	if (_target.get_state() == "Dead"):
+		return
+		
+		
 	queue_free()
 	attack_finished.emit()
+
+
 
 # Currently this assumes an attack always hits. Fix this soon.
 func volley(attacker: Unit, target: Unit):
