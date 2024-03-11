@@ -1,10 +1,10 @@
-class_name AttackMenu extends PanelContainer
+class_name AttackUI extends PanelContainer
 
 var _targets := []
 var buttons: Array = []
 
 @onready var vbox: VBoxContainer = $"MarginContainer/VBoxContainer"
-@onready var cursor_prefab := preload("res://Menu/FakeCursor.tscn")
+@onready var cursor_prefab := preload("res://UI/FakeCursor.tscn")
 @export var grid: Resource = preload("res://GameBoard/Grid.tres")
 
 var fake_cursor: Node2D

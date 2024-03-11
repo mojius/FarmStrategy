@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://ckmkppn6nfw6l"]
 
-[ext_resource type="Theme" uid="uid://f3cwprpras7p" path="res://Menu/theme.tres" id="1_lx8et"]
+[ext_resource type="Theme" uid="uid://f3cwprpras7p" path="res://UI/theme.tres" id="1_lx8et"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_irgmw"]
 bg_color = Color(0, 0, 0, 0.207843)

@@ -1,29 +1,29 @@
 # Represents and manages the game board. Stores references to entities that are in each cell and
 # tells whether cells are occupied or not.
 # Units can only move around the grid one at a time.
-class_name GameBoard
-extends Node2D
+class_name GameBoard extends Node2D
 
 # Once again, we use our grid resource that we explicitly define in the class.
 @export var grid: Resource = preload("res://GameBoard/Grid.tres")
 
-@onready var _action_menu = preload("res://Menu/ActionMenu.tscn")
-@onready var _attack_menu = preload("res://Menu/AttackMenu.tscn")
+@onready var _action_ui = preload("res://UI/ActionUI.tscn")
+@onready var _attack_ui = preload("res://UI/AttackUI.tscn")
 @onready var _ui_container: CanvasLayer = $UIContainer
 @onready var _cursor: Cursor = $Cursor
+@onready var _highlight: HighlightInfoUI = $UIContainer/HighlightInfoUI
 
 
 const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
 
-var _active_menu: Control : 
+var _active_ui: Control : 
 	set(value):
-		if not (_active_menu == null):
-			var _old_menu = _active_menu
-			_ui_container.remove_child(_old_menu)
+		if not (_active_ui == null):
+			var _old_ui = _active_ui
+			_ui_container.remove_child(_old_ui)
 		
-		_active_menu = value
+		_active_ui = value
 		if not (value == null):
-			_ui_container.add_child(_active_menu)
+			_ui_container.add_child(_active_ui)
 
 			_cursor_enabled = false
 
@@ -87,6 +87,7 @@ var _cursor_enabled: bool :
 	set(value):
 		_cursor_enabled = value
 		cursor_enable.emit(value)
+		_highlight.hide()
 
 # At the start of the game, we initialize the game board. Look at the `_reinitialize()` function below.
 # It populates our `_units` dictionary.
@@ -133,10 +134,10 @@ func player_select_unit(cell: Vector2) -> void:
 	var attackable: Callable = Callable()
 	
 	if (_active_targets.size() > 0):
-		attackable = add_attack_menu
+		attackable = add_attack_ui
 	
-	_active_menu = _action_menu.instantiate()
-	_active_menu.setup(_exhaust_active_unit, _show_movement_info, attackable)
+	_active_ui = _action_ui.instantiate()
+	_active_ui.setup(_exhaust_active_unit, _show_movement_info, attackable)
 
 
 # Shows the movement arrows and the yellow highlight, yadda yadda.
@@ -196,15 +197,32 @@ func _move_active_unit(new_cell: Vector2, is_player: bool = true) -> void:
 	if not is_player: return
 	
 	_find_targets_in_range()
-	_add_post_move_menu()
+	_add_post_move_ui()
 
 # Updates the interactive path's drawing if there's an active and selected unit.
 func _on_cursor_moved(new_cell: Vector2) -> void:
+	
+	
+	if _units.has(new_cell):
+		_highlight.refresh(_units[new_cell])
+		_highlight.show()
+	else: _highlight.hide()
+		
+	var center = get_viewport_rect().size / 2
+	var pixel_pos = grid.calculate_map_position(new_cell)
+	
+	if pixel_pos.x < center.x and pixel_pos.y < center.y:
+		_highlight.set_bottom_left()
+	else:
+		_highlight.set_top_left()
+	
 	# When the cursor moves, and we already have an active unit selected, we want to update the
 	# interactive path drawing.
-
 	if _active_unit and _active_unit.is_selected and _cursor_enabled:
 		_unit_path_arrow.draw(_active_unit.cell, new_cell)
+		return
+
+
 
 # Selects or moves a unit based on where the cursor is.
 func _on_cursor_accept_pressed(cell: Vector2) -> void:
@@ -228,7 +246,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			if _active_unit.get_state() != "Attacking" and _active_unit.get_state() != "Dead":
 				_deselect_active_unit()
 				_cursor_enabled = true
-				_active_menu = null
+				_active_ui = null
 			
 			# Undoes the finalization of the movement
 
@@ -343,34 +361,34 @@ func _find_targets_in_range():
 			_active_targets.append(_units[coordinates])
 
 # Adds a menu after moving. Let's make this a builder later or something. This is a mess.
-func _add_post_move_menu():
-	_active_menu = _action_menu.instantiate()
+func _add_post_move_ui():
+	_active_ui = _action_ui.instantiate()
 	
 	if (_active_targets.size() > 0):
-		_active_menu.setup(_exhaust_active_unit, Callable(), player_try_attack)
+		_active_ui.setup(_exhaust_active_unit, Callable(), player_try_attack)
 	else:
-		_active_menu.setup(_exhaust_active_unit)
+		_active_ui.setup(_exhaust_active_unit)
 	
 func player_try_attack():
 	if (_active_targets.size() <= 0):
 		return
 	
-	add_attack_menu()
+	add_attack_ui()
 
-func add_attack_menu():
-	_active_menu = _attack_menu.instantiate()
-	_active_menu.setup(attack, _active_targets)
+func add_attack_ui():
+	_active_ui = _attack_ui.instantiate()
+	_active_ui.setup(attack, _active_targets)
 
 func attack(unit: Unit):
 	_active_unit.set_state("Attacking")
 	_cursor_enabled = false
 	var combat_object: CombatObject = load("res://Combat/CombatObject.tscn").instantiate()
-	_active_menu = combat_object
+	_active_ui = combat_object
 	_ui_container.add_child(combat_object)
 	combat_object.setup(_active_unit, unit)
 	
 	await combat_object.attack_finished
-	_active_menu = null
+	_active_ui = null
 	
 	_exhaust_active_unit()
 

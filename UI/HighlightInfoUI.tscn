@@ -1,0 +1,71 @@
+[gd_scene load_steps=4 format=3 uid="uid://cfemajau2fdnq"]
+
+[ext_resource type="Theme" uid="uid://f3cwprpras7p" path="res://UI/theme.tres" id="1_m0elq"]
+[ext_resource type="Script" path="res://UI/HighlightInfoUI.gd" id="1_v6spp"]
+[ext_resource type="Texture2D" uid="uid://bncyyswwdl0lc" path="res://Units/bugcat.png" id="2_pa7cd"]
+
+[node name="HighlightInfoUI" type="MarginContainer"]
+offset_right = 350.0
+offset_bottom = 199.0
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+script = ExtResource("1_v6spp")
+
+[node name="Box1" type="PanelContainer" parent="."]
+layout_mode = 2
+theme = ExtResource("1_m0elq")
+
+[node name="MarginContainer" type="MarginContainer" parent="Box1"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="NameStatsSeparator" type="VBoxContainer" parent="Box1/MarginContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Box1/MarginContainer/NameStatsSeparator"]
+layout_mode = 2
+alignment = 1
+
+[node name="UnitName" type="Label" parent="Box1/MarginContainer/NameStatsSeparator/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Test"
+horizontal_alignment = 1
+
+[node name="Padding" type="Control" parent="Box1/MarginContainer/NameStatsSeparator/HBoxContainer"]
+custom_minimum_size = Vector2(24, 0)
+layout_mode = 2
+
+[node name="HealthPointsText" type="Label" parent="Box1/MarginContainer/NameStatsSeparator/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "00 / 00"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AvatarTextHPSeparator" type="HBoxContainer" parent="Box1/MarginContainer/NameStatsSeparator"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Box1/MarginContainer/NameStatsSeparator/AvatarTextHPSeparator"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+texture = ExtResource("2_pa7cd")
+expand_mode = 3
+stretch_mode = 4
+
+[node name="HealthPointsStack" type="VBoxContainer" parent="Box1/MarginContainer/NameStatsSeparator/AvatarTextHPSeparator"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="HealthPoints" type="HBoxContainer" parent="Box1/MarginContainer/NameStatsSeparator/AvatarTextHPSeparator/HealthPointsStack"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 0

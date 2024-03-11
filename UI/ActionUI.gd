@@ -1,4 +1,4 @@
-class_name ActionMenu extends PanelContainer
+class_name ActionUI extends PanelContainer
 
 @onready var move: Button = $MarginContainer/VBoxContainer/Move
 @onready var attack: Button = $MarginContainer/VBoxContainer/Attack
@@ -17,6 +17,7 @@ func setup(wait_func: Callable, move_func: Callable = Callable(), attack_func: C
 	if (wait_func):
 		wait.pressed.connect(wait_func)
 		wait.show()
+		wait.grab_focus()
 	if (attack_func):
 		attack.pressed.connect(attack_func)
 		attack.show()

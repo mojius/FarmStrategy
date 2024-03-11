@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://p1k7ttutslso"]
 
-[ext_resource type="Theme" uid="uid://f3cwprpras7p" path="res://Menu/theme.tres" id="1_e4pik"]
-[ext_resource type="Script" path="res://Menu/ActionMenu.gd" id="1_imsb6"]
+[ext_resource type="Theme" uid="uid://f3cwprpras7p" path="res://UI/theme.tres" id="1_2ulgk"]
+[ext_resource type="Script" path="res://UI/ActionUI.gd" id="2_hiqjc"]
 
 [node name="ActionMenu" type="PanelContainer"]
 anchors_preset = 8
@@ -15,8 +15,8 @@ offset_right = 25.5
 offset_bottom = 33.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_e4pik")
-script = ExtResource("1_imsb6")
+theme = ExtResource("1_2ulgk")
+script = ExtResource("2_hiqjc")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
