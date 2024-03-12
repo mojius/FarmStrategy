@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://btv5dopv7iy1u"
+
+[deps]
+
+files=["res://CMPM 171 LOCALIZATION - Sheet1.en.translation", "res://CMPM 171 LOCALIZATION - Sheet1.hs.translation"]
+
+source_file="res://CMPM 171 LOCALIZATION - Sheet1.csv"
+dest_files=["res://CMPM 171 LOCALIZATION - Sheet1.en.translation", "res://CMPM 171 LOCALIZATION - Sheet1.hs.translation"]
+
+[params]
+
+compress=true
+delimiter=0

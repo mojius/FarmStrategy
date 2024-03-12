@@ -9,7 +9,10 @@ signal delete
 
 # Figure out how to pass null callable.
 func setup(wait_func: Callable, move_func: Callable = Callable(), attack_func: Callable = Callable()):
-
+	move.text = tr("MOVE")
+	attack.text = tr("ATTACK")
+	wait.text = tr("WAIT")
+	items.text = tr("MOVE")
 	if (move_func):
 		move.pressed.connect(move_func)
 		move.show()
@@ -21,6 +24,7 @@ func setup(wait_func: Callable, move_func: Callable = Callable(), attack_func: C
 	if (attack_func):
 		attack.pressed.connect(attack_func)
 		attack.show()
+
 
 # The way the menu appears and disappears needs tweaking.
 func _on_move_pressed():

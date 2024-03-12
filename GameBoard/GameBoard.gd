@@ -94,6 +94,7 @@ var _cursor_enabled: bool :
 # At the start of the game, we initialize the game board. Look at the `_reinitialize()` function below.
 # It populates our `_units` dictionary.
 func _ready() -> void:
+	TranslationServer.set_locale("en")
 	randomize()
 	_reinitialize()
 
@@ -240,6 +241,11 @@ func _on_cursor_accept_pressed(cell: Vector2) -> void:
 
 # Checks for unhandled input, mainly UI cancel actions. Messy.
 func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("flop_language"):
+		if(TranslationServer.get_locale()=="en"):
+			TranslationServer.set_locale("hs")
+		else:
+			TranslationServer.set_locale("en")
 	if event.is_action_pressed("ui_cancel"):
 		if _active_unit:
 			if _active_unit.get_state() == "Moved" and (_old_cell):
@@ -293,6 +299,7 @@ func _refresh_factions() -> void:
 	_refresh_faction("Ally")
 	_refresh_faction("Enemy")
 
+
 # Have the CPU take a turn. This AI is very rough and simple right now.
 func _cpu_turn(faction: String) -> void:
 	
@@ -312,12 +319,26 @@ func _cpu_turn(faction: String) -> void:
 		var path := PackedVector2Array()
 		path.resize(9999)
 		
+		# TODO
 		# Find the closest unit of the target faction units.
 		for enemy: Unit in target_faction_units:
 			var new_path := pathfinder.calculate_point_path(unit.cell, enemy.cell)
 			if (not new_path.is_empty() and new_path.size() < path.size()):
 				path = new_path
-
+		
+		var _patrol_start = _active_unit.find_child("Start")
+		var _patrol_end = _active_unit.find_child("End")
+		var _patroling = false
+		if(_patrol_start!=null and _patrol_end!=null and path.size() == 9999):
+			_patroling = true
+			var _nearest_cell
+			if(!_patrol_start.visited):
+				_nearest_cell = _get_closest_cell_from_array(_patrol_start.cell,_walkable_cells)
+			else:
+				_nearest_cell = _get_closest_cell_from_array(_patrol_end.cell,_walkable_cells)
+			path = pathfinder.calculate_point_path(unit.cell, _nearest_cell)
+			
+		
 		# If we can't immediately attack an enemy in range or we're right next to them,
 		if path.is_empty() or path.size() == 9999:
 				_deselect_active_unit()
@@ -325,7 +346,8 @@ func _cpu_turn(faction: String) -> void:
 		
 		# Shorten the path so you don't go right ONTO your target. 
 		# Later we scale this by the attack range of the enemy.
-		path.remove_at(path.size() - 1)
+		if(!_patroling):
+			path.remove_at(path.size() - 1)
 		
 		if (path.size() <= 1):		
 			_find_targets_in_range()
@@ -345,6 +367,7 @@ func _cpu_turn(faction: String) -> void:
 				continue
 						
 		_active_path = path
+		
 		# Move the enemy to the last element in the path.
 		_move_active_unit(target_cell, false)
 		await unit.walk_finished 
@@ -354,8 +377,18 @@ func _cpu_turn(faction: String) -> void:
 			await attack(_active_targets.pick_random())
 			continue
 			
+		if (_same_cell(_patrol_start, unit)):
+			_patrol_start.visited = true
+			_patrol_end.visited = false
+		
+		elif (_same_cell(_patrol_end, unit)):
+			_patrol_end.visited = true
+			_patrol_start.visited = false
+		
 	_active_faction = target_faction
 	
+
+
 # Finds all targets in range.
 func _find_targets_in_range():
 	_active_targets.clear()
@@ -415,7 +448,7 @@ func get_impassable_at_tile(cell: Vector2):
 
 # Returns an array of cells a given unit can walk using the flood fill algorithm.
 func get_walkable_cells(unit: Unit) -> Array:
-	return _flood_fill(unit.cell, unit.move_range)
+	return _get_tiles_in_movement_range(unit.cell, unit.move_range)
 
 # Returns an array with all the coordinates of walkable cells based on the `max_distance`.
 func _flood_fill(cell: Vector2, max_distance: int) -> Array:
@@ -467,3 +500,22 @@ func _flood_fill(cell: Vector2, max_distance: int) -> Array:
 			# This is where we extend the stack.
 			stack.append(coordinates)
 	return array
+
+# Returns an array with all the coordinates of walkable cells based on the `movement_range`.
+func _get_tiles_in_movement_range(cell: Vector2, movement_range: int):
+	var array = _flood_fill(cell, movement_range)
+	var pathfinder = PathFinder.new(grid, array)
+	return pathfinder.find_tiles_in_range(cell, movement_range)
+
+func _get_closest_cell_from_array(cell: Vector2, walkable_cells: Array):
+	var _best_cell = Vector2(-9999, -9999)
+	for _current_cell in walkable_cells:
+		if((_best_cell-cell).length_squared() > (_current_cell-cell).length_squared()):
+			_best_cell = _current_cell
+	return _best_cell
+	
+func _same_cell(unitA, unitB):
+	if(unitA == null or unitB == null):
+		return false
+	return (unitA.cell == unitB.cell)
+		
