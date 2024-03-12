@@ -73,6 +73,9 @@ func volley(attacker: Unit, target: Unit):
 # Deal actual damage to a unit.
 func chip_damage(unit: Unit, damage: int):
 	
+	
+	unit.shake()
+	
 	var t = create_tween()
 	var health_points: HBoxContainer = unit_boxes[unit].find_child("HealthPoints")
 	
@@ -105,7 +108,10 @@ func animate_volley(attacker: Unit, target: Unit):
 	
 	var tween = attacker.create_tween()
 	tween.tween_property(attacker, "position", dest_pos, attack_speed).from(source_pos).set_trans(Tween.TRANS_BACK)
-	tween.tween_property(attacker, "position", source_pos, attack_speed).from(dest_pos).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	await tween.finished
+	var tween2 = attacker.create_tween()
+	tween2.tween_property(attacker, "position", source_pos, attack_speed).from(dest_pos).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
 
 # Calculates the damage a unit should take. Will be more sophisticated later.
 func calculate_damage(attacker: Unit, target: Unit) -> int:

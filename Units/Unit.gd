@@ -43,6 +43,8 @@ func get_faction() -> String:
 # The unit's move speed in pixels, when it's moving along a path.
 @export var move_speed := 100
 
+@export var shake_intensity := 50
+
 # Coordinates of the grid's cell the unit is on.
 var cell := Vector2.ZERO : set = set_cell
 # Toggles the "selected" animation on the unit.
@@ -55,6 +57,7 @@ var _is_walking := false : set = _set_is_walking
 @onready var _sprite: Sprite2D = $PathFollow2D/Sprite
 @onready var _anim_player: AnimationPlayer = $AnimationPlayer
 @onready var _path_follow: PathFollow2D = $PathFollow2D
+@onready var _shake_timer: Timer = $ShakeTimer
 
 var _anim_state = "idle" :
 	set(value):
@@ -117,7 +120,6 @@ func set_skin_offset(value: Vector2) -> void:
 
 func _set_is_walking(value: bool) -> void:
 	_is_walking = value
-	set_process(_is_walking)
 	SoundManager.Walk_Sound_Play()
 
 # Emitted when the unit reached the end of a path along which it was walking.
@@ -126,6 +128,7 @@ func _set_is_walking(value: bool) -> void:
 signal walk_finished
 
 func _ready() -> void:
+	
 	if stats.hp_override:
 		stats.hp = stats.override
 	else:
@@ -134,7 +137,7 @@ func _ready() -> void:
 	
 	# We'll use the `_process()` callback to move the unit along a path. Unless it has a path to
 	# walk, we don't want it to update every frame. See `walk_along()` below.
-	set_process(false)
+	# set_process(false)
 
 	# The following lines initialize the `cell` property and snap the unit to the cell's center on the map.
 	self.cell = grid.calculate_grid_coordinates(position)
@@ -148,6 +151,12 @@ func _ready() -> void:
 # When active, moves the unit along its `curve` with the help of the PathFollow2D node.
 func _process(delta: float) -> void:
 	if Engine.is_editor_hint(): return
+	
+	var shake_value = Vector2(randf_range(-1,1), randf_range(-1,1)) * _shake_timer.time_left * shake_intensity
+	_sprite.offset = Vector2(0,0) + shake_value
+	
+	if not (_is_walking): return
+	
 	# Every frame, the `PathFollow2D.offset` property moves the sprites along the `curve`.
 	# The great thing about this is it moves an exact number of pixels taking turns into account.
 	_path_follow.progress += move_speed * delta
@@ -204,4 +213,5 @@ func die():
 	await _anim_player.animation_finished
 	queue_free()
 
-
+func shake():
+	_shake_timer.start()
