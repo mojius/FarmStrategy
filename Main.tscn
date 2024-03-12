@@ -70,7 +70,6 @@ position = Vector2(840, 280)
 stats = SubResource("Resource_rb6ub")
 skin = ExtResource("8_bib8g")
 move_speed = 500
-shake_intensity = null
 
 [node name="Bear" parent="GameBoard" instance=ExtResource("2_n3f5l")]
 modulate = Color(0, 1, 1, 1)
@@ -79,7 +78,6 @@ stats = SubResource("Resource_nek10")
 _faction = "Enemy"
 skin = ExtResource("8_r13vx")
 move_speed = 500
-shake_intensity = null
 
 [node name="Bear2" parent="GameBoard" instance=ExtResource("2_n3f5l")]
 modulate = Color(0, 1, 1, 1)
@@ -88,14 +86,12 @@ stats = SubResource("Resource_vhq00")
 _faction = "Enemy"
 skin = ExtResource("8_r13vx")
 move_speed = 500
-shake_intensity = null
 
 [node name="Kitty" parent="GameBoard" instance=ExtResource("2_n3f5l")]
 position = Vector2(200, 280)
 stats = SubResource("Resource_8us0h")
 skin = ExtResource("9_mrwsr")
 move_speed = 500
-shake_intensity = null
 
 [connection signal="cursor_enable" from="GameBoard" to="GameBoard/Cursor" method="_on_game_board_cursor_enable"]
 [connection signal="accept_pressed" from="GameBoard/Cursor" to="GameBoard" method="_on_cursor_accept_pressed"]
