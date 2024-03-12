@@ -12,9 +12,10 @@ class_name GameBoard extends Node2D
 @onready var _cursor: Cursor = $Cursor
 @onready var _highlight: HighlightInfoUI = $UIContainer/HighlightInfoUI
 
-
+# 4 directions. For flood fill and other map-related stuff.
 const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
 
+# The currently active UI element. Highlight UIs are not part of this.
 var _active_ui: Control : 
 	set(value):
 		if not (_active_ui == null):
@@ -48,7 +49,7 @@ var _active_faction : String = "Player" :
 		
 		await get_tree().create_timer(0.4).timeout
 		
-		_refresh_groups()
+		_refresh_factions()
 		var phase: Phase = _phase.instantiate()
 		_ui_container.add_child(phase)
 		await phase.done	
@@ -67,6 +68,7 @@ var _active_unit: Unit
 # This is kind of hacky, I know. I think we mostly need it for enemies.
 var _active_path : PackedVector2Array
 
+# An array of targets in range of the active unit.
 var _active_targets : Array = []
 
 # This is an array of all the cells the `_active_unit` can move to. We will populate the array when
@@ -236,6 +238,7 @@ func _on_cursor_accept_pressed(cell: Vector2) -> void:
 		_active_path = _unit_path_arrow.current_path
 		_move_active_unit(cell)
 
+# Checks for unhandled input, mainly UI cancel actions. Messy.
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		if _active_unit:
@@ -249,13 +252,14 @@ func _unhandled_input(event: InputEvent) -> void:
 			
 			# Undoes the finalization of the movement
 
-# Sets the active unit to exhausted and disables it. Probably something we can get rid of later.
+# Sets the active unit to exhausted and disables it.
 func _exhaust_active_unit() -> void:
 	if _active_unit:
 		_cursor_enabled = true
 		_active_unit.set_state("Exhausted")
 		_deselect_active_unit()
 
+# Callback to check what to do when a unit's state changes.
 func _on_unit_state_changed(unit: Unit) -> void:
 	var state = unit.get_state()
 	if (state == "Exhausted"):
@@ -266,6 +270,7 @@ func _on_unit_state_changed(unit: Unit) -> void:
 	elif (state == "Dead"):
 		_units.erase(unit.cell)
 	
+# See if everyone in the active faction has moved/acted, and the turn can end.
 func _check_should_turn_end():
 	var faction_units := get_tree().get_nodes_in_group(_active_faction)
 	for unit: Unit in faction_units:
@@ -274,17 +279,19 @@ func _check_should_turn_end():
 
 	_active_faction = "Enemy" if _active_faction == "Player" else "Player"
 	
-func _refresh_group(faction: String) -> void:
+# Refresh a particular faction.
+func _refresh_faction(faction: String) -> void:
 	# TODO: Validate the states later, or find a better way to do it.
 	
 	var faction_units := get_tree().get_nodes_in_group(faction)
 	for unit: Unit in faction_units:
 		unit.set_state("Idle")
 
-func _refresh_groups() -> void:
-	_refresh_group("Player")
-	_refresh_group("Ally")
-	_refresh_group("Enemy")
+# Refresh all factions, taking them from exhausted to normal.
+func _refresh_factions() -> void:
+	_refresh_faction("Player")
+	_refresh_faction("Ally")
+	_refresh_faction("Enemy")
 
 # Have the CPU take a turn. This AI is very rough and simple right now.
 func _cpu_turn(faction: String) -> void:
@@ -367,13 +374,15 @@ func _add_post_move_ui():
 		_active_ui.setup(_exhaust_active_unit, Callable(), _player_try_attack)
 	else:
 		_active_ui.setup(_exhaust_active_unit)
-	
+
+# Player: See if there are targets near you, so that you may attack.
 func _player_try_attack():
 	if (_active_targets.size() <= 0):
 		return
 	
 	_add_attack_ui()
 
+# Adds the attack UI for selecting a target to attack.
 func _add_attack_ui():
 	_active_ui = _attack_ui.instantiate()
 	_active_ui.setup(attack, _active_targets)

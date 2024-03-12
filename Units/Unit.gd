@@ -43,6 +43,7 @@ func get_faction() -> String:
 # The unit's move speed in pixels, when it's moving along a path.
 @export var move_speed := 100
 
+# Intensity of the shake from when the unit takes damage.
 @export var shake_intensity := 50
 
 # Coordinates of the grid's cell the unit is on.
@@ -150,8 +151,10 @@ func _ready() -> void:
 
 # When active, moves the unit along its `curve` with the help of the PathFollow2D node.
 func _process(delta: float) -> void:
+	# Leave the function if we're in-editor.
 	if Engine.is_editor_hint(): return
 	
+	# Add shake if need be.
 	var shake_value = Vector2(randf_range(-1,1), randf_range(-1,1)) * _shake_timer.time_left * shake_intensity
 	_sprite.offset = Vector2(0,0) + shake_value
 	
