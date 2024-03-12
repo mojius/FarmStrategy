@@ -4,7 +4,7 @@ on: push
 env:
   GODOT_VERSION: 4.2.1
   EXPORT_NAME: CMPM171-Group6
-  PROJECT_PATH: .
+  PROJECT_PATH: res://.
 
 jobs:
   export-windows:
