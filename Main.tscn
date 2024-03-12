@@ -1,6 +1,5 @@
-[gd_scene load_steps=20 format=3 uid="uid://yp3tn4o3ikwt"]
+[gd_scene load_steps=19 format=3 uid="uid://yp3tn4o3ikwt"]
 
-[ext_resource type="PackedScene" uid="uid://c5qpx685if32x" path="res://Sound/sound_manager.tscn" id="1_dqu4i"]
 [ext_resource type="PackedScene" uid="uid://de53ukdqyusan" path="res://Background/Map.tscn" id="1_khjdm"]
 [ext_resource type="Script" path="res://GameBoard/GameBoard.gd" id="2_hx4vu"]
 [ext_resource type="PackedScene" uid="uid://8rtjsul3c7ym" path="res://Units/Unit.tscn" id="2_n3f5l"]
@@ -65,8 +64,6 @@ defense = 4
 [node name="GameBoard" type="Node2D" parent="."]
 y_sort_enabled = true
 script = ExtResource("2_hx4vu")
-
-[node name="SoundNode" parent="GameBoard" instance=ExtResource("1_dqu4i")]
 
 [node name="UIContainer" type="CanvasLayer" parent="GameBoard"]
 
