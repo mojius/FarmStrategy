@@ -344,8 +344,9 @@ func _cpu_turn(faction: String) -> void:
 		
 		_find_targets_in_range()
 		if (_active_targets.size() > 0):
-			attack(_active_targets.pick_random())
-	
+			await attack(_active_targets.pick_random())
+			continue
+			
 	_active_faction = target_faction
 	
 # Finds all targets in range.

@@ -66,7 +66,7 @@ layer_0/tile_data = PackedInt32Array(65535, 0, 0, 131071, 0, 0, 196607, 0, 0, 26
 [node name="UnitPathArrow" parent="GameBoard" instance=ExtResource("6_xwtul")]
 
 [node name="Skwele" parent="GameBoard" instance=ExtResource("2_n3f5l")]
-position = Vector2(1000, 280)
+position = Vector2(840, 280)
 stats = SubResource("Resource_rb6ub")
 skin = ExtResource("8_bib8g")
 move_speed = 500
