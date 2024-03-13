@@ -244,6 +244,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("flop_language"):
 		if(TranslationServer.get_locale()=="en"):
 			TranslationServer.set_locale("hs")
+		elif(TranslationServer.get_locale()=="hs"):
+			TranslationServer.set_locale("ja")
 		else:
 			TranslationServer.set_locale("en")
 	if event.is_action_pressed("ui_cancel"):

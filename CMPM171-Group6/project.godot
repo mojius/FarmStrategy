@@ -78,4 +78,4 @@ flop_language={
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://CMPM 171 LOCALIZATION - Sheet1.en.translation", "res://CMPM 171 LOCALIZATION - Sheet1.hs.translation")
+locale/translations=PackedStringArray("res://CMPM 171 LOCALIZATION - Sheet1.en.translation", "res://CMPM 171 LOCALIZATION - Sheet1.hs.translation", "res://CMPM 171 LOCALIZATION - Sheet1.ja.translation")

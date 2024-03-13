@@ -2,14 +2,14 @@
 
 importer="csv_translation"
 type="Translation"
-uid="uid://btv5dopv7iy1u"
+uid="uid://ph8o4j120nng"
 
 [deps]
 
-files=["res://CMPM 171 LOCALIZATION - Sheet1.en.translation", "res://CMPM 171 LOCALIZATION - Sheet1.hs.translation"]
+files=["res://CMPM 171 LOCALIZATION - Sheet1.en.translation", "res://CMPM 171 LOCALIZATION - Sheet1.hs.translation", "res://CMPM 171 LOCALIZATION - Sheet1.ja.translation"]
 
 source_file="res://CMPM 171 LOCALIZATION - Sheet1.csv"
-dest_files=["res://CMPM 171 LOCALIZATION - Sheet1.en.translation", "res://CMPM 171 LOCALIZATION - Sheet1.hs.translation"]
+dest_files=["res://CMPM 171 LOCALIZATION - Sheet1.en.translation", "res://CMPM 171 LOCALIZATION - Sheet1.hs.translation", "res://CMPM 171 LOCALIZATION - Sheet1.ja.translation"]
 
 [params]
 
