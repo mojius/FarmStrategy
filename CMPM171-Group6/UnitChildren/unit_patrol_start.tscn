@@ -1,9 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://bnrnasnqnj55b"]
-
-[ext_resource type="Texture2D" uid="uid://1ginoal22uq3" path="res://UnitChildren/Patrol_Start.png" id="1_qdgxo"]
-[ext_resource type="Script" path="res://UnitChildren/PatrolPoint.gd" id="2_lhb8s"]
-
-[node name="Start" type="Sprite2D"]
-top_level = true
-texture = ExtResource("1_qdgxo")
-script = ExtResource("2_lhb8s")

@@ -9,6 +9,7 @@ extends Sprite2D
 @export var cell := Vector2.ZERO : set = set_cell
 
 func _ready():
+	hide()
 	# The following lines initialize the `cell` property and snap the unit to the cell's center on the map.
 	self.cell = grid.calculate_grid_coordinates(position)
 	position = grid.calculate_map_position(cell)

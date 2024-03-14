@@ -329,7 +329,7 @@ func _cpu_turn(faction: String) -> void:
 		var _patrol_start = _active_unit.find_child("Start")
 		var _patrol_end = _active_unit.find_child("End")
 		var _patroling = false
-		if(_patrol_start!=null and _patrol_end!=null and path.size() == 9999):
+		if(_patrol_start and _patrol_end):
 			_patroling = true
 			var _nearest_cell
 			if(!_patrol_start.visited):

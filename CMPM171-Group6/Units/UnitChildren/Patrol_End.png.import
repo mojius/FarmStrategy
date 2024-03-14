@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://r6e41u7pvjcx"
-path="res://.godot/imported/tileset_unit_overlay.svg-05ccfaa1f15c0fdefe648fff65099efb.ctex"
+uid="uid://b240dphd2ev2m"
+path="res://.godot/imported/Patrol_End.png-6e8dc52731796c1cbbfb9d461e2555af.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://UnitOverlay/tileset_unit_overlay.svg"
-dest_files=["res://.godot/imported/tileset_unit_overlay.svg-05ccfaa1f15c0fdefe648fff65099efb.ctex"]
+source_file="res://Units/UnitChildren/Patrol_End.png"
+dest_files=["res://.godot/imported/Patrol_End.png-6e8dc52731796c1cbbfb9d461e2555af.ctex"]
 
 [params]
 
@@ -32,6 +32,3 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false

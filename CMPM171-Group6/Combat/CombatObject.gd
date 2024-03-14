@@ -82,6 +82,8 @@ func chip_damage(unit: Unit, damage: int):
 	var reversed := health_points.get_children()
 	reversed.reverse()
 	
+	
+	# Chip off health while you chip off the active elements.
 	for element in reversed:
 		if element.texture.current_frame == 0: continue
 		if damage == -1: break

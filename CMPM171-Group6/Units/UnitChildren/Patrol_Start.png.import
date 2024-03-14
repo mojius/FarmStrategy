@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://1ginoal22uq3"
-path="res://.godot/imported/Patrol_Start.png-49d7b191dc9576084b4f607a5c1797cd.ctex"
+path="res://.godot/imported/Patrol_Start.png-b8127d8fa94926791dd39d8f388787b7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://UnitChildren/Patrol_Start.png"
-dest_files=["res://.godot/imported/Patrol_Start.png-49d7b191dc9576084b4f607a5c1797cd.ctex"]
+source_file="res://Units/UnitChildren/Patrol_Start.png"
+dest_files=["res://.godot/imported/Patrol_Start.png-b8127d8fa94926791dd39d8f388787b7.ctex"]
 
 [params]
 
