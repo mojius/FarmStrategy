@@ -12,6 +12,7 @@
 [ext_resource type="Script" path="res://Units/Stats.gd" id="10_6aeo4"]
 [ext_resource type="PackedScene" uid="uid://cfemajau2fdnq" path="res://UI/HighlightInfoUI.tscn" id="11_o3oh6"]
 
+
 [sub_resource type="Resource" id="Resource_dyqpy"]
 resource_local_to_scene = true
 script = ExtResource("10_6aeo4")
@@ -121,6 +122,8 @@ move_speed = 500
 modulate = Color(0, 1, 1, 1)
 position = Vector2(920, 200)
 stats = SubResource("Resource_d073m")
+
+
 _faction = "Enemy"
 skin = ExtResource("8_r13vx")
 move_speed = 500
@@ -138,6 +141,7 @@ move_speed = 500
 modulate = Color(0, 1, 1, 1)
 position = Vector2(1000, 360)
 stats = SubResource("Resource_jl5y0")
+
 _faction = "Enemy"
 skin = ExtResource("8_r13vx")
 move_speed = 500

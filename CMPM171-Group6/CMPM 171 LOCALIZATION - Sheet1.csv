@@ -1,9 +1,10 @@
-,en,hs
-ENGLISH,English,Hsilgne
-HSILGNE,Hsilgne,English
-MOVE,Move,Evom
-WAIT,Wait,Tiaw
-NEXT PHASE,Next Phase,Esahp Txen
-KITTY,Kitty,Yttik
-BEAR,Bear,Raeb
-ATTACK,Attack,Kcatta
+,en,hs,ja
+ENGLISH,English,Hsilgne,英語
+HSILGNE,Hsilgne,English,シルグネ
+JAPANESE,Japanese,Esenapaj,日本語
+MOVE,Move,Evom,行く
+WAIT,Wait,Tiaw,待つ
+NEXT PHASE,Next Phase,Esahp Txen,次の段階
+KITTY,Kitty,Yttik,ネコ
+BEAR,Bear,Raeb,べや
+ATTACK,Attack,Kcatta,攻撃
