@@ -1,26 +1,35 @@
 extends Node
 
+var mute = false;
 
 func Walk_Sound_Play():
-	$"WalkSound".play()
+	if(mute == false):
+		$"WalkSound".play()
 	
 func Walk_Sound_Stop():
-	$"WalkSound".stop()
+	if(mute == false):
+		$"WalkSound".stop()
 
 func Cursor_Move_Sound():
-	$"CursorMoveSound".play()
+	if(mute == false):
+		$"CursorMoveSound".play()
 
 func Hit_Sound():
-	$"HitSound4".play()
+	if(mute == false):
+		$"HitSound4".play()
 
 func Death_Remove_Sound():
-	$"DeathFwooshSound2".play()
+	if(mute == false):
+		$"DeathFwooshSound2".play()
 
 func Miss_Sound():
-	$"AttackMissSound".play()
+	if(mute == false):
+		$"AttackMissSound".play()
 
 func Menu_Select_Sound():
-	$"MenuSelectSound?".play()
+	if(mute == false):
+		$"MenuSelectSound?".play()
 	
 func Phase_Change_Sound():
-	$"PhaseChangeSound".play()
+	if(mute == false):
+		$"PhaseChangeSound".play()
