@@ -32,6 +32,15 @@ jobs:
         with:
           name: windows
           path: build/windows
+      - name: Install rsync 📚
+        run: |
+          apt-get update && apt-get install -y rsync
+      - name: Deploy to GitHub Pages 🚀
+        uses: JamesIves/github-pages-deploy-action@releases/v4
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: build/windows # The folder the action should deploy.
+          target-folder: builds/windows # The folder the action should deploy to.
 
   export-web:
     name: Web Export
