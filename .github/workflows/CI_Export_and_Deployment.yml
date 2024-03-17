@@ -1,5 +1,8 @@
 name: "godot-ci export"
-on: push
+on:
+  push:
+    branches:
+      - master
 
 env:
   GODOT_VERSION: 4.2.1
@@ -27,11 +30,24 @@ jobs:
           cd $PROJECT_PATH
           godot --headless --verbose --export-release "Windows Desktop" ../build/windows/$EXPORT_NAME.exe
           godot --headless --verbose --export-release "Windows Desktop" ../build/windows/$EXPORT_NAME.exe
+      - name: ZIPBOMB Sadge
+        uses: montudor/action-zip@v1
+        with:
+          args: zip -qq -r build/windows/windows.zip build/windows
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
           name: windows
           path: build/windows
+      - name: Install rsync 📚
+        run: |
+          apt-get update && apt-get install -y rsync
+      - name: Deploy to GitHub Pages 🚀
+        uses: JamesIves/github-pages-deploy-action@releases/v4
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: build/windows # The folder the action should deploy.
+          target-folder: builds/windows # The folder the action should deploy to.
 
   export-web:
     name: Web Export
@@ -74,3 +90,4 @@ jobs:
         with:
           branch: gh-pages # The branch the action should deploy to.
           folder: build/web # The folder the action should deploy.
+          target-folder: builds/web # The folder the action should deploy to.
