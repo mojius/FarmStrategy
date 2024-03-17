@@ -74,3 +74,4 @@ jobs:
         with:
           branch: gh-pages # The branch the action should deploy to.
           folder: build/web # The folder the action should deploy.
+          target-folder: builds/web # The folder the action should deploy to.
