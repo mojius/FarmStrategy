@@ -67,6 +67,7 @@ func fight():
 func volley(attacker: Unit, target: Unit):
 	await animate_volley(attacker, target)
 	var damage: int = calculate_damage(attacker, target)
+	SoundManager.Hit_Sound()
 	chip_damage(target, damage)
 	await _timer(pause_time)
 

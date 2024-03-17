@@ -12,7 +12,7 @@
 [ext_resource type="Script" path="res://Units/Stats.gd" id="10_6aeo4"]
 [ext_resource type="PackedScene" uid="uid://cfemajau2fdnq" path="res://UI/HighlightInfoUI.tscn" id="11_o3oh6"]
 
-[sub_resource type="Resource" id="Resource_206mq"]
+[sub_resource type="Resource" id="Resource_1inkg"]
 resource_local_to_scene = true
 script = ExtResource("10_6aeo4")
 max_hp = 19
@@ -21,7 +21,7 @@ override = 2
 attack = 5
 defense = 1
 
-[sub_resource type="Resource" id="Resource_gp6hn"]
+[sub_resource type="Resource" id="Resource_aq0db"]
 resource_local_to_scene = true
 script = ExtResource("10_6aeo4")
 max_hp = 15
@@ -30,7 +30,7 @@ override = 2
 attack = 7
 defense = 2
 
-[sub_resource type="Resource" id="Resource_tv7em"]
+[sub_resource type="Resource" id="Resource_euup7"]
 resource_local_to_scene = true
 script = ExtResource("10_6aeo4")
 max_hp = 18
@@ -39,7 +39,7 @@ override = 0
 attack = 4
 defense = 3
 
-[sub_resource type="Resource" id="Resource_4nead"]
+[sub_resource type="Resource" id="Resource_1wns2"]
 resource_local_to_scene = true
 script = ExtResource("10_6aeo4")
 max_hp = 20
@@ -48,7 +48,7 @@ override = 14
 attack = 3
 defense = 2
 
-[sub_resource type="Resource" id="Resource_tm4dw"]
+[sub_resource type="Resource" id="Resource_mmkll"]
 resource_local_to_scene = true
 script = ExtResource("10_6aeo4")
 max_hp = 14
@@ -57,7 +57,7 @@ override = 0
 attack = 7
 defense = 4
 
-[sub_resource type="Resource" id="Resource_4xho1"]
+[sub_resource type="Resource" id="Resource_shy4i"]
 resource_local_to_scene = true
 script = ExtResource("10_6aeo4")
 max_hp = 13
@@ -66,7 +66,7 @@ override = 1
 attack = 4
 defense = 2
 
-[sub_resource type="Resource" id="Resource_5k2go"]
+[sub_resource type="Resource" id="Resource_8pjjk"]
 resource_local_to_scene = true
 script = ExtResource("10_6aeo4")
 max_hp = 13
@@ -97,7 +97,7 @@ layer_0/tile_data = PackedInt32Array(65535, 0, 0, 131071, 0, 0, 196607, 0, 0, 26
 
 [node name="Skwele" parent="GameBoard" instance=ExtResource("2_n3f5l")]
 position = Vector2(440, 280)
-stats = SubResource("Resource_206mq")
+stats = SubResource("Resource_1inkg")
 move_range = 7
 skin = ExtResource("8_bib8g")
 move_speed = 500
@@ -105,14 +105,14 @@ move_speed = 500
 [node name="Skwele2" parent="GameBoard" instance=ExtResource("2_n3f5l")]
 modulate = Color(4.142, 1.183, 8.876, 1)
 position = Vector2(280, 360)
-stats = SubResource("Resource_gp6hn")
+stats = SubResource("Resource_aq0db")
 skin = ExtResource("8_bib8g")
 move_speed = 500
 
 [node name="Kitty" parent="GameBoard" instance=ExtResource("2_n3f5l")]
 modulate = Color(2.959, 0.331, 0.248, 1)
 position = Vector2(520, 440)
-stats = SubResource("Resource_tv7em")
+stats = SubResource("Resource_euup7")
 move_range = 5
 skin = ExtResource("9_mrwsr")
 move_speed = 500
@@ -120,7 +120,7 @@ move_speed = 500
 [node name="Bear" parent="GameBoard" instance=ExtResource("2_n3f5l")]
 modulate = Color(0, 1, 1, 1)
 position = Vector2(920, 200)
-stats = SubResource("Resource_4nead")
+stats = SubResource("Resource_1wns2")
 _faction = "Enemy"
 skin = ExtResource("8_r13vx")
 move_speed = 500
@@ -128,7 +128,7 @@ move_speed = 500
 [node name="Bear4" parent="GameBoard" instance=ExtResource("2_n3f5l")]
 modulate = Color(0, 3.55, 0.456, 1)
 position = Vector2(1160, 280)
-stats = SubResource("Resource_tm4dw")
+stats = SubResource("Resource_mmkll")
 move_range = 1
 _faction = "Enemy"
 skin = ExtResource("8_r13vx")
@@ -137,7 +137,7 @@ move_speed = 500
 [node name="Bear2" parent="GameBoard" instance=ExtResource("2_n3f5l")]
 modulate = Color(0, 1, 1, 1)
 position = Vector2(1000, 360)
-stats = SubResource("Resource_4xho1")
+stats = SubResource("Resource_shy4i")
 _faction = "Enemy"
 skin = ExtResource("8_r13vx")
 move_speed = 500
@@ -145,7 +145,7 @@ move_speed = 500
 [node name="Bear3" parent="GameBoard" instance=ExtResource("2_n3f5l")]
 modulate = Color(0, 1, 1, 1)
 position = Vector2(840, 600)
-stats = SubResource("Resource_5k2go")
+stats = SubResource("Resource_8pjjk")
 _faction = "Enemy"
 skin = ExtResource("8_r13vx")
 move_speed = 500

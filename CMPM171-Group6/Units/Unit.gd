@@ -91,7 +91,7 @@ func set_is_selected(value: bool) -> void:
 	is_selected = value
 	if is_selected:
 		if(_faction == "Player"):
-			#SoundManager.Menu_Select_Sound()
+			SoundManager.Menu_Select_Sound()
 			pass
 		_anim_state = "selected"
 	else:
@@ -121,7 +121,7 @@ func set_skin_offset(value: Vector2) -> void:
 
 func _set_is_walking(value: bool) -> void:
 	_is_walking = value
-	#SoundManager.Walk_Sound_Play()
+	SoundManager.Walk_Sound_Play()
 
 # Emitted when the unit reached the end of a path along which it was walking.
 # We'll use this to notify the game board that a unit reached its destination and we can let the
@@ -180,7 +180,7 @@ func _process(delta: float) -> void:
 		curve.clear_points()
 		# Finally, we emit a signal. We'll use this one with the game board.
 		emit_signal("walk_finished")
-		#SoundManager.Walk_Sound_Stop()
+		SoundManager.Walk_Sound_Stop()
 	
 # Starts walking along the `path`.
 # `path` is an array of grid coordinates that the function converts to map coordinates.
@@ -213,6 +213,7 @@ func get_enemy_faction() -> String:
 func die():
 	set_state("Dead")	
 	_anim_state = "death"
+	SoundManager.Death_Remove_Sound()
 	await _anim_player.animation_finished
 	queue_free()
 
