@@ -1,16 +1,523 @@
 <!DOCTYPE html>
 <html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {
+  box-sizing: border-box;
+}
+body {background-color: powderblue;}
+h1   {color: blue; text-align: center;}
+.cta h2   {text-align: center;}
+.nhw h2 	{font-weight: normal;}
+.nice h2 	{color: white;}
+.greyInfo h3 {color: darkgray;}
+h3   {text-align: center;}
+p    {color: black;font-size: 20px}
+li 	 {font-size: 20px}
+.Downloads h1 {color: black;}
+.lf img  {float: left;}
+
+/* Header/logo Title */
+.header {
+  padding: 80px;
+  text-align: center;
+  background: #1abc9c;
+  color: white;
+}
+
+/* Increase the font size of the heading */
+.header h1 {
+  font-size: 40px;
+}
+
+/* Style the top navigation bar */
+.navbar {
+  overflow: hidden;
+  background-color: #333;
+}
+
+/* Style the navigation bar links */
+.navbar a {
+  float: left;
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 20px;
+  text-decoration: none;
+}
+
+/* Right-aligned link */
+.navbar a.right {
+  float: right;
+}
+
+/* Change color on hover */
+.navbar a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+/* Responsive layout - when the screen is less than 400px wide, make the navigation links stack on top of each other instead of next to each other */
+@media screen and (max-width: 400px) {
+  .navbar a {
+    float: none;
+    width: 100%;
+  }
+}
+
+.lowerheader {
+  padding: 40px;
+  text-align: center;
+  background: #1abc9c;
+  color: white;
+}
+
+.lowerheader h1 {
+	font-size: 32px;
+}
+
+/* Column container */
+.row {  
+  display: -ms-flexbox; /* IE10 */
+  display: flex;
+  -ms-flex-wrap: wrap; /* IE10 */
+  flex-wrap: wrap;
+}
+
+/* Create two unequal columns that sits next to each other */
+/* Sidebar/left column */
+.side {
+  -ms-flex: 30%; /* IE10 */
+  flex: 30%;
+  background-color: #f1f1f1;
+  padding: 20px;
+}
+
+/* Main column */
+.main {   
+  -ms-flex: 70%; /* IE10 */
+  flex: 70%;
+  background-color: white;
+  padding: 20px;
+}
+
+/* Responsive layout - when the screen is less than 700px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 1000px) {
+  .row {   
+    flex-direction: column;
+  }
+}
+
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #1abc9c;
+  text-align:center;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+  background-color: inherit;
+  float: center;
+  border: 1px solid white;
+  outline: none;
+  cursor: pointer;
+  padding: 40px 10%;
+  transition: 0.3s;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+
+.accordion {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+  transition: 0.4s;
+}
+
+.active, .accordion:hover {
+  background-color: #ccc; 
+}
+
+.panel {
+  padding: 0 18px;
+  display: none;
+  background-color: white;
+  overflow: hidden;
+}
+
+/* Footer */
+.footer {
+  padding: 20px;
+  text-align: center;
+  background: #1abc9c;
+}
+</style>
+</head>
+
 <body>
+<div class="header">
+	<h1>Fire Emblem Farm Sim (Group 6) Archival Site</h1>
+	<h3>Welcome to our site!</h3>
+</div>
+<div class="navbar"><div class="nice"><h2>The Team</h2></div>
+  <a href="https://linkedin.com/in/benjaminfrancisdaly"><b>Ben Daly: </b><br>Producer</a>
+  <a href="https://www.linkedin.com/in/benjamin-pratt-84128323b/"><b>Benjamin Pratt: </b><br>Engine Lead</a>
+  <a href="https://fellstar.itch.io/"><b>Ethan Keyser: </b><br>Playtesting Lead</a>
+  <a href="#"><b>Andre Dion: </b><br>Art Director</a>
+  <a href="https://github.com/mojius/CMPM171-Group6/tree/master" class="right">Our Github</a>
+</div>
+<div class="row">
+  <div class="side">
+		<div class="square">
+			<div class="lf">
+				<img src=".\Images\Alma_Still_Happy.png"
+						width="50%"
+				    height="auto" 
+				    >
+			</div>
+			<div class="nhw">
+				<h2>
+					This is mainly a place to document the process of our capstone game, <b>Farm Strategy, Leaves of God, Fire Emblem Farm Sim</b>, or one of the many other names we had for it. This project was done for <b>UC Santa Cruz's CMPM 171: Game Design Studio</b> in the Winter Quarter of 2024 (January-March).
+				</h2>
+			</div>
+			<div>
+				<p>
+					We hope this site provides you not only with some info on the game, but a better look at our process and procedure in the game's development and where we ended up after a few months of production.
+					<br><br>
+					Excuse the past-present shifting tenses, I wrote this in a bit of a rush. Enjoy!
+				</p>
+			</div>
+			<br>
+		</div>
+	</div>
+  <div class="main">
+  	<h1>Class Format</h1>
+  	<div class="cta">
+  		<h2>The class was split into three distinct sprints.</h2>
+  	</div>
+  	<div>
+  		<h3>
+  			Sprint 1
+  		</h3>
+  		<p>
+		  	Sprint 1 was mainly focused on Low Fidelity Prototypes, micro-projects aimed at exploring the core of the game's feel and design in various ways, typically in a rough (and often physical) format.<br>
+			</p>
+				<img src="./Images/LOFIP1Snap.png"
+						width="50%"
+				    height="auto"  alt="W3Schools">
+				<img src="./Images/LOFIP2Snap.png"
+						width="auto"
+				    height="50%"  alt="W3Schools">
+				<h3>
+  				Sprint 2
+  			</h3>
+  			<p>
+				Sprint 2 had us doing High Fidelity Prototypes, (ideally) more high-effort prototypes trying to nail down the look and feel of the project beyond mere explorations of content.<br>
+				</p>
+				<video width="40%" height="auto" controls>
+				  <source src=".\Videos\FE HIFI Game.mp4" type="video/mp4">
+				Your browser does not support the video tag.
+				</video>
+				<video width="50%" height="auto" controls>
+				  <source src=".\Videos\FE HIFI Narration.mp4" type="video/mp4">
+				Your browser does not support the video tag.
+				</video>
+				<h3>
+  				Sprint 3
+  			</h3>
+				<p>
+				Sprint 3 was where we tied it all together into a proper vertical slice! (Or were supposed to.)<br>
 
-<h1>IT JUST WORKS</h1>
-<p>POGGIES</p>
-<img src="./Images/Poggies.jpg">
+				<video width="100%" height="auto" controls>
+				  <source src=".\Videos\Patrols_Localization_and_movement_range.mp4" type="video/mp4">
+				Your browser does not support the video tag.
+				</video>
+			</p>
+		</div>
+  </div>
+</div>
+<div class="lowerheader">
+	<h1>
+		Other requirements
+	</h1>
+</div>
+<div>
+<button class="accordion"><h3>Localization</h3></button>
+	<div class="panel">
+	  <p>Our game was required to support at least two different written languages. At least one language using either a logographic script (e.g. Kanji Links to an external site.) or a right-to-left script (e.g. Arabic.) We chose English, Spanish and Japanese.<br><br>
 
-<h3><a href="./builds/web/index.html"> le fun game net</h3>
+		<b>Solution:</b> Godot's localization system is super robust, and it involves making a spreadsheet and making tokens for each localization string per language before simply importing it back into the engine. Piece of cake!
+		</p>
+	</div>
 
-<a href="./builds/windows/windows.zip" download>
-  <img src="./Images/Poggies.jpg" alt="W3Schools">
+	<button class="accordion"><h3>Accessibility</h3></button>
+	<div class="panel">
+		<div class="greyInfo">
+		  <h3>Limited Vision (Seeing): game must be completable even when simulating vision limitations: contrast and color sensitivity.</h3><br><br>
+
+			<p><b>Solution:</b> We could probably do better on this one, but at least all enemies are of the same type and all the player units are unique and not that enemy.</p><br><br>
+
+			<h3>Limited Dexterity (Touching): game must be completable by a player using just one hand on the controls at a time.</h3><br><br>
+
+			<p><b>Solution:</b> A player's left hand can use space, escape and WASD to control the game entirely. A player's right hand can use a mouse to control the whole game with left and right click.</p><br><br>
+
+			<h3>Limited Audition (Hearing): game must be completable by a player who cannot hear any sounds from the game.</h3><br><br>
+
+			<p><b>Solution:</b> None of the sounds in the game are required, since it's a top-down perspective.</p><br><br>
+			
+			<h3>Limited Energy and Attention (Resting): During a completion run of the game, gameplay should always reach a natural resting point within two minutes of active play without the player needing to take an extra action to pause the game.</h3><br><br>
+
+			<p><b>Solution:</b> The strategy genre is great for this because you don't even have to pause. The game only moves when you move, save for the enemy phases which are rarely if ever more than 40-50 seconds long.</p>
+		</div>
+	</div>
+
+	<button class="accordion"><h3>Game Format</h3></button>
+	<div class="panel">
+	  <p>We chose to do an <b>Offline Digital Game</b>, which requires the total data transfer involved in downloading the game must be less than 100 MiB, and that The game must be entirely completable while the player's device is disconnected from the internet. At present, the game unzipped is ~70 MiB, so we're good on all that.<br><br>
+
+There were other options, like an online digital game or physically based game, but it felt a little arbitrary given how easily portable Godot is to other platforms, we learned.
+</p>
+	</div>
+</div><br>
+<!-- Tab links -->
+<div class="tab"><h1>Our Journey</h1>
+  <button class="tablinks" onclick="openTab(event, 'P1')">Part 1: Optimism</button>
+  <button class="tablinks" onclick="openTab(event, 'P2')">Part 2: Things Go Bad</button>
+  <button class="tablinks" onclick="openTab(event, 'P3')">Part 3: Redemption</button>
+</div>
+
+<!-- Tab content -->
+<div id="P1" class="tabcontent">
+  <h1>Part I: Optimism</h1>
+  <img src=".\Images\171 Pitchfest Pic.png"
+		width="50%"
+    height="auto">
+  <p> 
+I, Benjamin Francis Daly, Esq. Blvd. Jr. (just kidding on those last three), was having a hard time deciding between something new and continuing a project from summer, Ego's Labyrinth. I was pretty invested in the project as its chief architect and was interested in doing a full rewrite, but in the end I shied away from pitching it, knowing I would be too protective of the work to be happy with the work of others.
+<br><br>
+So, instead, I looked to a different project for inspiration.
+In fall quarter I had gotten really into the Fire Emblem series of games, clearing a few of the titles in my spare time. We had had a unit on the birth of war games, and I was fascinated by the minutiae of the strategy games genre -- the infinite possibility space of each miniaturized map, like a chessboard on super-steroids.
+<br>
+</p>
+<img src=".\Images\Egos labyrinth.gif"
+		width="50%"
+    height="auto">
+<p>
+We had done a small project for a game programming patterns class last quarter involving planting different types of plants, which I gladly adapted to a strategy-grid format with the intention of adding combat. Sadly, we got too focused on architecture to delve into core gameplay. But I do consider that the first iteration of the idea we were working towards on this project.<br><br>
+
+I got the attention of <b>Ben Pratt, Ethan Keyser, and Andre Dion</b>, the last of whom was a graduate student and is considered an "external", not fitting nicely into our class-based system of "Leads". The "Leads" were supposed to be for design, production, playtesting, deployment, and engine, but we never got enough person-power to sufficiently satisfy each of these.<br><br>
+
+Teams started forming, we got a Google Drive set up, and got a Discord where we started managing tasks (see more: very bad idea.)
+</p>
+
+<img src=".\Images\TheDrive.png"
+		width="75%"
+    height="auto">
+
+<p>
+The vague idea was as follows:
+<ul>
+  <li>We would do Fire Emblem, but add a mid-battle farming mechanic.</li>
+  <li>Plants could be farmed to give buffs to player units and debuffs to enemies, to spawn new player-allied units or weapons, or to modify terrain to change the flow of battle.</li>
+  <li>The story would feature a 20th-century historical-fantasy setting and a young girl named Alma, daughter of an immigrant farmer, battling colonialist zombies while protecting her farm.</li>
+</ul>
+</p>
+<img src=".\Images\Design-Style 1.png"
+		width="50%"
+    height="auto">
+
+<img src=".\Images\Enviro-Guide.png"
+		width="50%"
+    height="auto"><br>
+<p>
+Maybe, not so vague. But that’s where we were trying to head. Quite a lofty amount of stuff for a vertical slice!<br><br>
+
+At this point, things seemed cool, until I started committing the cardinal sin of game dev: <b>Doing way too much.</b><br><br>
+
+ started thinking about the story, helping the artist draft character designs, prototyping, and working on the soundtrack, on top of being the game's project lead and producer. What a mess!</p><br>
+
+<img src=".\Images\hairtests.png"
+		width="50%"
+    height="auto">
+
+<video width="100%" height="auto" controls>
+  <source src=".\Videos\MusicScore.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video><br><br>
+
+<p>By the end of sprint 1, I was dog-tired. The TA warned us about overscoping, but I didn’t listen. And perhaps for that reason, it got worse
+</p>
+
+<img src=".\Images\Sprint1.gif"
+		width="100%"
+    height="auto">
+</div>
+
+<div id="P2" class="tabcontent">
+	<h1>Part 2: Things Go Bad</h1>
+<p>So, we finished our first sprints, and we're more than a few weeks into the quarter here. A pixel artist, <b>Kayla Barker</b>, has joined us, and things seem okay -- instead of just doing prototypes, I've tasked Ben P. with doing a small prototype we can use to start doing core gameplay.</p><br>
+
+<video width="100%" height="auto" controls>
+  <source src=".\Videos\AlmaWalk.mov" type="video/mp4">
+Your browser does not support the video tag.
+</video><br>
+
+<img src=".\Images\GameSample.gif"
+		width="100%"
+    height="auto">
+
+<p>The advice for this section is learn to use your game engine first. I think our biggest fault here was not taking advantage of Godot's fundamental strengths as a game engine -- mainly because we just weren't familiar with it. This isn't to say Ben P. didn't do a good job with a great turnaround considering, but the code was definitely not open to extension.<br><br>
+
+And then it gets worse -- The Refactor</p>
+
+<img src=".\Images\Refactor.png"
+		width="100%"
+    height="auto">
+
+<p>I genuinely thought that because of my programming pattern knowledge, I could fix this code to make it more extensible. And I think I did a decent job, but here's how the code ended up:</p>
+<ul>
+  <li>With everything harder to find.</li>
+  <li>Broken -- which is to say, less functional than it was before.</li>
+  <li>With the variable names renamed -- which for clarity was good, but isn't this a little micromanaging?</li>
+</ul>
+
+<p>The worst part is that I did this over multiple hours across multiple days, an entire weekend wasted on something that in the end added not a lot of value to the project, if any at all. And it didn't even improve upon the lack of encapsulation that was one of the biggest issues with the prototype in the first place!<br><br>
+
+But most misguided of all was we were trying to build something really flashy off this, instead of just going for the minimum viable product and re-evaluating from there. My delusions of grandeur as the de facto creative director cost us a lot of effort and energy from megalomaniacal scoping. We never even got menus connected to the game!</p>
+
+<h2>Then our pixel artist quit</h2>
+<p>After doing a few frames of animation for us. Maybe because I was micromanaging with that, too, but she also was juggling classes and her own personal project, so the workload was just too much for her.<br><br>
+
+At this point, I was ready to throw the whole project in the garbage. But that's probably just because my expectations were just so insane in the first place. Sprint 2 was coming up, so half-heartedly we put together some quick and dirty pieces to satisfy the requirements (I want to highlight Ben P's content delivery work and Ethan's narrative test, see below.)</p>
+
+<img src=".\Images\CI-CD.png"
+		width="100%"
+    height="auto">
+
+<video width="100%" height="auto" controls>
+  <source src=".\Videos\FE HIFI Game.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video>
+<video width="100%" height="auto" controls>
+  <source src=".\Videos\FE HIFI Narration.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video><br>
+
+<p>I was pretty proud of our Sprint 2 presentation, in which I recapped a lot of reasons I felt like the project wasn't going according to plan. All of this still basically applies, but expectations and overscoping is a big one not listed there.</p>
+
+</div>
+
+<div id="P3" class="tabcontent">
+  <h1>Part 3: Redemption</h1>
+  <p>Thus begins the final act. Burnt out and with barely anything to show, we move onto the final stretch before Sprint 3.
+
+Andre, our artist (who has a degree in Computer Engineering) suggests trying to work more closely with the engine and to follow more tutorials, something we had been doing but were willing to give another shot with a different explanation.</p>
+
+<img src=".\Images\VidTutors.png"
+		width="100%"
+    height="auto">
+
+<p>The two of us, Andre and I (Ben D) working together, began to put together a brand new prototype to build our vertical slice on. Andre got busy soon, so I began slaving away at a tutorial, in particular <b>GDQuest's Tactical RPG Movement Series.</b></p>
+
+<img src=".\Images\Trpg.png"
+		width="100%"
+    height="auto">
+
+<p>Hours passed, then days, and after the tutorial I just didn't stop. This tutorial alone is probably the sole reason we have anything to show now, because even though it only showed the most basic method of moving actors around with player input, it established a wide set of good practices to use in the game -- limiting control to one unit at a time, excellent use of Godot-specific features like scenes as tools, resources, signals, and animation -- as well as providing extremely clean, well-documented code for us to springboard off of.</p>
+
+<video width="100%" height="auto" controls>
+  <source src=".\Videos\BasicTutorEnd.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video>
+
+<p>I started on a Friday. By the following Thursday, I had a barely playable game, and it was awesome. It is awesome. After the tutorial I added menus for redoing-undoing moves, attacking, combat, enemies and enemy phases, impassable tiles, and a bevy of animations. Ben has since added patrols and made numerous fixes, and Ethan has since added a sound system with some great sounds he's sourced. Andre is even at the time of this writing working on some art (see below) that may not make it in time, but we're choosing to go with a slightly different direction for at least the aesthetic feel of the vertical slice.</p>
+
+<img src=".\Images\Battle_Kiwi_Teir_1.png"
+		width="20%"
+    height="auto">
+<img src=".\Images\CoolEnemies.png"
+		width="20%"
+    height="auto%">
+<img src=".\Images\Battle_Lizard_Tier_3.png"
+		width="20%"
+    height="auto%">
+
+<p>It made me very happy to see how far we came after being at such a low point, and now that I've learned to cool out with my delusions of grandeur, I've been enjoying the project more. Still, I realize being a lead is not something I am up to right now, and that I had far more specific ideas for this project than I realized, which I think made it hard for the rest of the team.</p>
+
+<img src=".\Images\Passion Slide.png"
+		width="100%"
+    height="auto">
+
+<p>The next class will be different. The rest of the team is moving on to different projects, including me (it's looking like I'll be a programmer on a friends' work, Project Juggler [[get a link here.]]) I'll be returning to this project at a later date, probably as a solo project with one other artist. But I think it's been a great experience overall. You learn more from failure than success, they say.
+</p>
+</div>
+<div class="Downloads">
+<h1><a href="./builds/web/index.html"> Play in your browser!</a></h1>
+
+<h1> OR </h1>
+
+
+<a href="./builds/windows/windows.zip" download><h1>Download For Windows</h1>
 </a>
+</div>
+<div class="footer">
+	<h1>Thanks for reading!</h1>
+</div>
+<script>
+function openTab(evt, tabName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(tabName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+</script>
+<script>
+var acc = document.getElementsByClassName("accordion");
+var i;
 
+for (i = 0; i < acc.length; i++) {
+  acc[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var panel = this.nextElementSibling;
+    if (panel.style.display === "block") {
+      panel.style.display = "none";
+    } else {
+      panel.style.display = "block";
+    }
+  });
+}
+</script>
 </body>
 </html>
