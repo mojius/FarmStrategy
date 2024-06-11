@@ -3,7 +3,7 @@ This is a re-done version of our previous efforts to do a small tactical RPG ver
 
 ## Staff
 
-### All assisted in programming.
+### Gameplay programming was largely done by Ben Daly with patrol code done by Ben Pratt. CI/CD and website was done by Ben Pratt.
 
 Ben D.: Project Lead
 Ben P.: Engine Lead
