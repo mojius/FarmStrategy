@@ -9,3 +9,8 @@ var hp: int = 0
 @export var override: int = 0
 @export var attack: int = 1
 @export var defense: int = 1
+
+
+func set_hp(_hp: int) -> void:
+	hp = _hp
+	return

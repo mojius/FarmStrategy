@@ -9,7 +9,6 @@ class_name GameBoard extends Node2D
 @onready var _action_ui = preload("res://UI/ActionUI.tscn")
 @onready var _attack_ui = preload("res://UI/AttackUI.tscn")
 @onready var _ui_container: CanvasLayer = $UIContainer
-@onready var _cursor: Cursor = $Cursor
 @onready var _highlight: HighlightInfoUI = $UIContainer/HighlightInfoUI
 
 # 4 directions. For flood fill and other map-related stuff.

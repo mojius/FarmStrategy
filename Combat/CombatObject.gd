@@ -76,7 +76,6 @@ func chip_damage(unit: Unit, damage: int):
 	
 	unit.shake()
 	
-	var t = create_tween()
 	var health_points: HBoxContainer = unit_boxes[unit].find_child("HealthPoints")
 	
 	var reversed := health_points.get_children()
@@ -92,9 +91,11 @@ func chip_damage(unit: Unit, damage: int):
 		unit.stats.hp -= 1
 		await get_tree().create_timer(0.02).timeout
 		
+		var half: float = 0.5
+		
 		if unit.stats.hp <= 0:
 			someone_died = true
-			await _timer(pause_time / 2)
+			await _timer(pause_time * half)
 			await unit.die()
 			attack_finished.emit()
 
@@ -120,7 +121,7 @@ func calculate_damage(attacker: Unit, target: Unit) -> int:
 	return attacker.stats.attack - target.stats.defense
 
 # Hack to make the text update on the menus.
-func _process(delta):
+func _process(_delta):
 	_box1.find_child("HealthPointsText").text = str(_attacker.stats.hp)
 	_box2.find_child("HealthPointsText").text = str(_target.stats.hp)	
 

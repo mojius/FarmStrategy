@@ -45,11 +45,11 @@ func calculate_point_path(start: Vector2, end: Vector2) -> PackedVector2Array:
 		return PackedVector2Array()
 
 #finds all tiles reachable with a given movement range
-func find_tiles_in_range(start: Vector2, range: int) -> PackedVector2Array:
+func find_tiles_in_range(_start: Vector2, _range: int) -> PackedVector2Array:
 	
-	var tiles_in_range : PackedVector2Array
+	var tiles_in_range : PackedVector2Array = PackedVector2Array()
 	
-	var active_range = range
+	var active_range = _range
 	
 	while(active_range > 0):
 		
@@ -71,11 +71,11 @@ func find_tiles_in_range(start: Vector2, range: int) -> PackedVector2Array:
 			if(x_coordinate == 0 and y_coordinate == active_range):
 				y_step = -1
 			
-			var active_point = _grid.clamp(start + Vector2(x_coordinate, y_coordinate))
+			var active_point = _grid.clamp(_start + Vector2(x_coordinate, y_coordinate))
 			
 			if(!tiles_in_range.has(active_point) and _astar.has_point(_grid.as_index(active_point))):
-				var point_path = calculate_point_path(start, active_point)
-				if(point_path.size() <= range+1):
+				var point_path = calculate_point_path(_start, active_point)
+				if(point_path.size() <= _range+1):
 					tiles_in_range.append_array(point_path)
 			
 			x_coordinate += x_step
