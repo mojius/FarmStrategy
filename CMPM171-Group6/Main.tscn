@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://yp3tn4o3ikwt"]
+[gd_scene load_steps=16 format=3 uid="uid://yp3tn4o3ikwt"]
 
 [ext_resource type="PackedScene" uid="uid://de53ukdqyusan" path="res://Background/Map.tscn" id="1_khjdm"]
 [ext_resource type="Script" path="res://GameBoard/GameBoard.gd" id="2_hx4vu"]
@@ -6,13 +6,10 @@
 [ext_resource type="PackedScene" uid="uid://cefp73bur6v0t" path="res://Units/UnitOverlay/UnitOverlay.tscn" id="4_sf86o"]
 [ext_resource type="PackedScene" uid="uid://bmuue0dlmkw5u" path="res://GameBoard/Cursor/Cursor.tscn" id="4_xbrol"]
 [ext_resource type="PackedScene" uid="uid://bxbdtgea1xr7" path="res://GameBoard/UnitPath.tscn" id="6_xwtul"]
-[ext_resource type="Texture2D" uid="uid://ck05qwlp8ti8h" path="res://Units/squirrel.png" id="8_bib8g"]
-[ext_resource type="Texture2D" uid="uid://b8ihnph4238fy" path="res://Units/bear.png" id="8_r13vx"]
-[ext_resource type="Texture2D" uid="uid://bncyyswwdl0lc" path="res://Units/bugcat.png" id="9_mrwsr"]
 [ext_resource type="Script" path="res://Units/Stats.gd" id="10_6aeo4"]
 [ext_resource type="PackedScene" uid="uid://cfemajau2fdnq" path="res://UI/HighlightInfoUI.tscn" id="11_o3oh6"]
 
-[sub_resource type="Resource" id="Resource_206mq"]
+[sub_resource type="Resource" id="Resource_bqwjk"]
 resource_local_to_scene = true
 script = ExtResource("10_6aeo4")
 max_hp = 19
@@ -21,7 +18,7 @@ override = 2
 attack = 5
 defense = 1
 
-[sub_resource type="Resource" id="Resource_gp6hn"]
+[sub_resource type="Resource" id="Resource_kmrod"]
 resource_local_to_scene = true
 script = ExtResource("10_6aeo4")
 max_hp = 15
@@ -30,7 +27,7 @@ override = 2
 attack = 7
 defense = 2
 
-[sub_resource type="Resource" id="Resource_tv7em"]
+[sub_resource type="Resource" id="Resource_bsun3"]
 resource_local_to_scene = true
 script = ExtResource("10_6aeo4")
 max_hp = 18
@@ -39,7 +36,7 @@ override = 0
 attack = 4
 defense = 3
 
-[sub_resource type="Resource" id="Resource_4nead"]
+[sub_resource type="Resource" id="Resource_vhekk"]
 resource_local_to_scene = true
 script = ExtResource("10_6aeo4")
 max_hp = 20
@@ -48,7 +45,7 @@ override = 14
 attack = 3
 defense = 2
 
-[sub_resource type="Resource" id="Resource_tm4dw"]
+[sub_resource type="Resource" id="Resource_svxhe"]
 resource_local_to_scene = true
 script = ExtResource("10_6aeo4")
 max_hp = 14
@@ -57,7 +54,7 @@ override = 0
 attack = 7
 defense = 4
 
-[sub_resource type="Resource" id="Resource_4xho1"]
+[sub_resource type="Resource" id="Resource_oycck"]
 resource_local_to_scene = true
 script = ExtResource("10_6aeo4")
 max_hp = 13
@@ -66,7 +63,7 @@ override = 1
 attack = 4
 defense = 2
 
-[sub_resource type="Resource" id="Resource_5k2go"]
+[sub_resource type="Resource" id="Resource_r0fys"]
 resource_local_to_scene = true
 script = ExtResource("10_6aeo4")
 max_hp = 13
@@ -87,7 +84,9 @@ script = ExtResource("2_hx4vu")
 offset_bottom = 228.0
 
 [node name="Map" parent="GameBoard" instance=ExtResource("1_khjdm")]
-layer_0/tile_data = PackedInt32Array(65535, 0, 0, 131071, 0, 0, 196607, 0, 0, 262143, 0, 0, 327679, 0, 0, 393215, 0, 0, 458751, 0, 0, 524287, 0, 393216, 589823, 327680, 0, 0, 0, 0, 1, 0, 0, 2, 0, 65536, 3, 0, 0, 4, 0, 0, 5, 0, 0, 6, 327680, 0, 7, 327680, 0, 15, 327680, 0, 14, 327680, 0, 13, 327680, 0, 12, 327680, 0, 11, 0, 0, 10, 0, 0, 9, 0, 0, 8, 327680, 0, 65541, 196608, 0, 65540, 196608, 0, 65539, 196608, 0, 65538, 65536, 0, 65537, 65536, 0, 65536, 0, 458752, 65542, 327680, 0, 65543, 327680, 0, 65544, 327680, 0, 65545, 0, 131072, 65546, 262144, 0, 65547, 262144, 0, 65548, 327680, 0, 65549, 327680, 0, 65550, 327680, 0, 65551, 327680, 0, 131087, 0, 393216, 131086, 131072, 0, 131085, 131072, 0, 131084, 131072, 0, 131083, 0, 131072, 131082, 0, 131072, 131081, 0, 393216, 131080, 196608, 1, 131079, 0, 262144, 131078, 0, 131072, 131077, 0, 458752, 131076, 0, 458752, 131075, 196608, 0, 131074, 196608, 0, 131073, 0, 0, 131072, 0, 131072, 196608, 0, 327680, 196609, 0, 0, 196610, 196608, 0, 196611, 65536, 0, 262147, 0, 262144, 262148, 65536, 0, 196612, 65536, 0, 196613, 0, 0, 196614, 327680, 0, 196615, 327680, 0, 196616, 196608, 2, 196617, 327680, 0, 196618, 327680, 0, 196619, 0, 262144, 196620, 131072, 0, 196621, 0, 0, 196622, 131072, 0, 196623, 0, 393216, 262159, 0, 196608, 262158, 131072, 0, 262157, 131072, 0, 262156, 131072, 0, 262155, 65536, 0, 262154, 327680, 0, 262153, 327680, 0, 262152, 196608, 2, 262151, 327680, 0, 262150, 0, 262144, 262149, 0, 196608, 262146, 196608, 0, 262145, 196608, 0, 262144, 0, 393216, 327680, 0, 0, 327681, 0, 393216, 327682, 327680, 0, 327683, 65536, 0, 327684, 65536, 0, 327685, 0, 262144, 327686, 0, 0, 327687, 327680, 0, 327688, 196608, 2, 327689, 0, 458752, 327690, 0, 65536, 327691, 65536, 0, 327695, 0, 196608, 327694, 0, 0, 327693, 0, 0, 327692, 0, 0, 393229, 327680, 0, 393230, 327680, 0, 393231, 327680, 0, 393228, 327680, 0, 393227, 0, 0, 393226, 65536, 0, 393225, 65536, 0, 393224, 196608, 2, 393223, 65536, 0, 393222, 0, 131072, 393221, 0, 196608, 393220, 0, 0, 393219, 196608, 1, 393218, 327680, 0, 393217, 262144, 0, 393216, 0, 0, 458752, 262144, 0, 458753, 262144, 0, 458754, 327680, 0, 458755, 262144, 3, 458756, 327680, 1, 458757, 327680, 1, 458758, 327680, 1, 458759, 327680, 1, 458760, 327680, 3, 458761, 0, 262144, 458762, 0, 458752, 458763, 0, 393216, 458764, 327680, 0, 458765, 327680, 0, 458766, 327680, 0, 458767, 327680, 0, 524303, 327680, 0, 524302, 327680, 0, 524301, 327680, 0, 524300, 327680, 0, 524299, 0, 393216, 524298, 0, 327680, 524297, 0, 131072, 524296, 0, 65536, 524295, 0, 458752, 524294, 0, 327680, 524293, 0, 393216, 524292, 0, 131072, 524291, 327680, 0, 524290, 327680, 0, 524289, 327680, 0, 524288, 327680, 0)
+texture_filter = 1
+scale = Vector2(5, 5)
+layer_0/tile_data = PackedInt32Array(65535, 65536, 2, 131071, 131072, 2, 196607, 131072, 2, 262143, 131072, 2, 327679, 131072, 3, 393215, 131072, 3, 458751, 131072, 3, 524287, 131072, 3, 589823, 131072, 3, 0, 131072, 3, 1, 131072, 3, 2, 131072, 2, 3, 65536, 2, 4, 131072, 2, 5, 65536, 3, 6, 65536, 3, 7, 65536, 2, 15, 131072, 3, 14, 131072, 2, 13, 65536, 3, 12, 131072, 3, 11, 131072, 3, 10, 65536, 3, 9, 131072, 2, 8, 65536, 3, 65541, 65536, 3, 65540, 65536, 2, 65539, 65536, 2, 65538, 65536, 3, 65537, 393216, 21, 65536, 65536, 2, 65542, 65536, 2, 65543, 65536, 2, 65544, 131072, 3, 65545, 131072, 1, 65546, 131072, 3, 65547, 131072, 3, 65548, 393216, 21, 65550, 65536, 3, 65551, 65536, 3, 131087, 65536, 2, 131086, 786432, 4, 131085, 720896, 4, 131084, 589824, 2, 131083, 65536, 3, 131082, 65536, 3, 131081, 131072, 3, 131080, 131072, 2, 131079, 65536, 3, 131078, 65536, 3, 131077, 131072, 3, 131076, 983040, 22, 131075, 131072, 3, 131074, 131072, 3, 131073, 65536, 2, 131072, 131072, 3, 196608, 65536, 3, 196609, 65536, 2, 196610, 131072, 2, 196611, 131072, 3, 262147, 131072, 2, 262148, 393216, 21, 196612, 65536, 3, 196613, 65536, 2, 196614, 65536, 2, 196615, 983040, 24, 196616, 1114112, 26, 196617, 1048576, 24, 196618, 131072, 2, 196619, 65536, 2, 196620, 589824, 3, 196621, 917504, 3, 196622, 655360, 3, 196623, 65536, 3, 262159, 983040, 22, 262158, 131072, 2, 262157, 983040, 22, 262156, 983040, 22, 262155, 131072, 2, 262154, 65536, 2, 262153, 65536, 2, 262152, 917504, 11, 262151, 655360, 12, 262150, 65536, 3, 262149, 65536, 3, 262146, 65536, 3, 262145, 65536, 3, 262144, 131072, 3, 327680, 65536, 3, 327681, 983040, 22, 327682, 65536, 2, 327683, 131072, 3, 327684, 65536, 3, 327685, 65536, 3, 327686, 720896, 10, 327687, 786432, 10, 327688, 65536, 3, 327689, 720896, 21, 327690, 786432, 20, 327691, 851968, 20, 327695, 983040, 22, 327694, 131072, 3, 327693, 131072, 3, 327692, 131072, 2, 393229, 65536, 3, 393230, 65536, 3, 393231, 131072, 2, 393228, 131072, 1, 393227, 65536, 2, 393226, 131072, 3, 393225, 131072, 2, 393224, 131072, 2, 393223, 655360, 10, 393222, 65536, 3, 393221, 131072, 3, 393220, 65536, 2, 393219, 65536, 2, 393218, 65536, 2, 393217, 65536, 3, 393216, 65536, 3, 458752, 65536, 2, 458753, 131072, 2, 458754, 393216, 21, 458755, 65536, 2, 458756, 131072, 3, 458757, 131072, 2, 458758, 65536, 3, 458759, 393216, 21, 458760, 65536, 3, 458761, 131072, 3, 458762, 983040, 22, 458763, 65536, 2, 458764, 65536, 2, 458765, 983040, 22, 458766, 131072, 3, 458767, 65536, 2, 524303, 131072, 2, 524302, 131072, 2, 524301, 131072, 2, 524300, 131072, 3, 524299, 983040, 22, 524298, 65536, 3, 524297, 65536, 3, 524296, 65536, 2, 524295, 131072, 2, 524294, 65536, 2, 524293, 131072, 2, 524292, 983040, 22, 524291, 131072, 3, 524290, 131072, 3, 524289, 131072, 3, 524288, 131072, 2, 65549, 131072, 2)
 
 [node name="Cursor" parent="GameBoard" instance=ExtResource("4_xbrol")]
 
@@ -96,58 +95,51 @@ layer_0/tile_data = PackedInt32Array(65535, 0, 0, 131071, 0, 0, 196607, 0, 0, 26
 [node name="UnitPathArrow" parent="GameBoard" instance=ExtResource("6_xwtul")]
 
 [node name="Skwele" parent="GameBoard" instance=ExtResource("2_n3f5l")]
-position = Vector2(440, 280)
-stats = SubResource("Resource_206mq")
+position = Vector2(600, 200)
+stats = SubResource("Resource_bqwjk")
 move_range = 7
-skin = ExtResource("8_bib8g")
 move_speed = 500
 
 [node name="Skwele2" parent="GameBoard" instance=ExtResource("2_n3f5l")]
 modulate = Color(4.142, 1.183, 8.876, 1)
 position = Vector2(280, 360)
-stats = SubResource("Resource_gp6hn")
-skin = ExtResource("8_bib8g")
+stats = SubResource("Resource_kmrod")
 move_speed = 500
 
 [node name="Kitty" parent="GameBoard" instance=ExtResource("2_n3f5l")]
 modulate = Color(2.959, 0.331, 0.248, 1)
 position = Vector2(520, 440)
-stats = SubResource("Resource_tv7em")
+stats = SubResource("Resource_bsun3")
 move_range = 5
-skin = ExtResource("9_mrwsr")
 move_speed = 500
 
 [node name="Bear" parent="GameBoard" instance=ExtResource("2_n3f5l")]
 modulate = Color(0, 1, 1, 1)
 position = Vector2(920, 200)
-stats = SubResource("Resource_4nead")
+stats = SubResource("Resource_vhekk")
 _faction = "Enemy"
-skin = ExtResource("8_r13vx")
 move_speed = 500
 
 [node name="Bear4" parent="GameBoard" instance=ExtResource("2_n3f5l")]
 modulate = Color(0, 3.55, 0.456, 1)
 position = Vector2(1160, 280)
-stats = SubResource("Resource_tm4dw")
+stats = SubResource("Resource_svxhe")
 move_range = 1
 _faction = "Enemy"
-skin = ExtResource("8_r13vx")
 move_speed = 500
 
 [node name="Bear2" parent="GameBoard" instance=ExtResource("2_n3f5l")]
 modulate = Color(0, 1, 1, 1)
 position = Vector2(1000, 360)
-stats = SubResource("Resource_4xho1")
+stats = SubResource("Resource_oycck")
 _faction = "Enemy"
-skin = ExtResource("8_r13vx")
 move_speed = 500
 
 [node name="Bear3" parent="GameBoard" instance=ExtResource("2_n3f5l")]
 modulate = Color(0, 1, 1, 1)
 position = Vector2(840, 600)
-stats = SubResource("Resource_5k2go")
+stats = SubResource("Resource_r0fys")
 _faction = "Enemy"
-skin = ExtResource("8_r13vx")
 move_speed = 500
 
 [connection signal="cursor_enable" from="GameBoard" to="GameBoard/Cursor" method="_on_game_board_cursor_enable"]

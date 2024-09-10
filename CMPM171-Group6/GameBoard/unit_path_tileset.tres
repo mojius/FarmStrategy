@@ -1,13 +1,21 @@
 [gd_resource type="TileSet" load_steps=3 format=3 uid="uid://dqg14aj86so4a"]
 
-[ext_resource type="Texture2D" uid="uid://clr2lnu1sspkk" path="res://arrows.svg" id="1"]
+[ext_resource type="Texture2D" uid="uid://clr2lnu1sspkk" path="res://arrows.svg" id="1_h4pfh"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_06elt"]
-texture = ExtResource("1")
+texture = ExtResource("1_h4pfh")
 texture_region_size = Vector2i(80, 80)
 0:0/0 = 0
 0:0/0/terrain_set = 0
 0:0/0/terrain = 0
+0:0/0/terrains_peering_bit/right_side = 0
+0:0/0/terrains_peering_bit/bottom_right_corner = 0
+0:0/0/terrains_peering_bit/bottom_side = 0
+0:0/0/terrains_peering_bit/bottom_left_corner = 0
+0:0/0/terrains_peering_bit/left_side = 0
+0:0/0/terrains_peering_bit/top_left_corner = 0
+0:0/0/terrains_peering_bit/top_side = 0
+0:0/0/terrains_peering_bit/top_right_corner = 0
 1:0/0 = 0
 1:0/0/terrain_set = 0
 1:0/0/terrain = 0
@@ -18,8 +26,6 @@ texture_region_size = Vector2i(80, 80)
 2:0/0/terrain = 0
 2:0/0/terrains_peering_bit/bottom_side = 0
 2:0/0/terrains_peering_bit/top_side = 0
-3:0/0 = 0
-3:0/0/terrain_set = 0
 0:1/0 = 0
 0:1/0/terrain_set = 0
 0:1/0/terrain = 0
