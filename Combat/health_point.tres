@@ -1,0 +1,12 @@
+[gd_resource type="AnimatedTexture" load_steps=3 format=3 uid="uid://bybgu7b76iqcl"]
+
+[ext_resource type="Texture2D" uid="uid://li5cbnk4ukp6" path="res://Combat/health_point.png" id="1_keexm"]
+[ext_resource type="Texture2D" uid="uid://j1e56ob665j6" path="res://Combat/health_point_empty.png" id="2_kjj5p"]
+
+[resource]
+resource_local_to_scene = true
+frames = 2
+pause = true
+frame_0/texture = ExtResource("2_kjj5p")
+frame_1/texture = ExtResource("1_keexm")
+frame_1/duration = 1.0

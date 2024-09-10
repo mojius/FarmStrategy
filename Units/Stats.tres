@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Stats" load_steps=2 format=3 uid="uid://cas2x538s2p06"]
+
+[ext_resource type="Script" path="res://Units/Stats.gd" id="1_5obap"]
+
+[resource]
+script = ExtResource("1_5obap")
+max_hp = 1
+hp_override = false
+override = 0
+attack = 1
+defense = 1

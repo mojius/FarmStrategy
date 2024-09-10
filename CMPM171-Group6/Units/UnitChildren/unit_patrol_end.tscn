@@ -1,9 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://c45u5heig8e6k"]
-
-[ext_resource type="Texture2D" uid="uid://b240dphd2ev2m" path="res://Units/UnitChildren/Patrol_End.png" id="2_7cah6"]
-[ext_resource type="Script" path="res://Units/UnitChildren/PatrolPoint.gd" id="2_p2pfc"]
-
-[node name="End" type="Sprite2D"]
-top_level = true
-texture = ExtResource("2_7cah6")
-script = ExtResource("2_p2pfc")
