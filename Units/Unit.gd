@@ -3,8 +3,7 @@
 # The unit itself is only a visual representation that moves smoothly in the game world.
 # We use the tool mode so the `skin` and `skin_offset` below update in the editor.
 @tool
-class_name Unit
-extends Path2D
+class_name Unit extends Path2D
 
 # Singleton with information about the size of the grid.
 @export var grid: Resource = preload("res://GameBoard/Grid.tres")
@@ -43,6 +42,8 @@ func get_faction() -> String:
 # The unit's move speed in pixels, when it's moving along a path.
 @export var move_speed := 100
 
+var old_pos:Vector2 = Vector2(0,0)
+
 # Intensity of the shake from when the unit takes damage.
 @export var shake_intensity := 50
 
@@ -55,7 +56,7 @@ var is_selected := false : set = set_is_selected
 # See `_set_is_walking()` at the bottom of this code snippet.
 var _is_walking := false : set = _set_is_walking
 
-@onready var _sprite: Sprite2D = $PathFollow2D/Sprite
+@onready var _sprite: AnimatedSprite2D = $PathFollow2D/Sprite
 @onready var _anim_player: AnimationPlayer = $AnimationPlayer
 @onready var _path_follow: PathFollow2D = $PathFollow2D
 @onready var _shake_timer: Timer = $ShakeTimer
@@ -75,6 +76,9 @@ func set_state(state: String) -> void:
 	state_changed.emit(self)
 	if (state == "Exhausted"):
 		_anim_state = "exhausted"
+		_sprite.animation = "idle"
+
+		
 	else:
 		_anim_state = "idle"
 
@@ -91,13 +95,14 @@ func set_is_selected(value: bool) -> void:
 	is_selected = value
 	if is_selected:
 		if(_faction == "Player"):
-			#SoundManager.Menu_Select_Sound()
 			pass
 		_anim_state = "selected"
+		_sprite.animation = "select"
 	else:
 		# BD.: Doing this hacky little thing for exhaust.
 		if (_anim_state != "exhausted"):
 			_anim_state = "idle"
+			_sprite.animation = "idle"
 		
 # Both setters below manipulate the unit's Sprite node.
 # Here, we update the sprite's texture.
@@ -121,7 +126,7 @@ func set_skin_offset(value: Vector2) -> void:
 
 func _set_is_walking(value: bool) -> void:
 	_is_walking = value
-	#SoundManager.Walk_Sound_Play()
+
 
 # Emitted when the unit reached the end of a path along which it was walking.
 # We'll use this to notify the game board that a unit reached its destination and we can let the
@@ -154,11 +159,14 @@ func _process(delta: float) -> void:
 	# Leave the function if we're in-editor.
 	if Engine.is_editor_hint(): return
 	
+
+	
 	# Add shake if need be.
-	var shake_value = Vector2(randf_range(-1,1), randf_range(-1,1)) * _shake_timer.time_left * shake_intensity
-	_sprite.offset = Vector2(0,0) + shake_value
+	process_shake()
 	
 	if not (_is_walking): return
+	
+	process_direction()
 	
 	# Every frame, the `PathFollow2D.offset` property moves the sprites along the `curve`.
 	# The great thing about this is it moves an exact number of pixels taking turns into account.
@@ -179,8 +187,32 @@ func _process(delta: float) -> void:
 		position = grid.calculate_map_position(cell)
 		curve.clear_points()
 		# Finally, we emit a signal. We'll use this one with the game board.
+		
+
+		
 		emit_signal("walk_finished")
-		#SoundManager.Walk_Sound_Stop()
+
+	
+func process_direction():
+	var direction = _path_follow.position - old_pos
+	old_pos = _path_follow.position
+	
+	if direction.y < 0: _sprite.animation = "up"
+	elif direction.y > 0: _sprite.animation = "down"
+	elif direction.x < 0: _sprite.animation = "forward"
+	elif direction.x > 0: 
+		_sprite.animation = "forward"
+		_sprite.flip_h = true
+	else: _sprite.flip_h = false
+
+	
+
+	if (direction.x > 0): print (direction)	
+
+# Process "shake" when unit takes damage. Could be improved in the future.
+func process_shake():
+	var shake_value = Vector2(randf_range(-1,1), randf_range(-1,1)) * _shake_timer.time_left * shake_intensity
+	_sprite.offset = Vector2(0,0) + shake_value
 	
 # Starts walking along the `path`.
 # `path` is an array of grid coordinates that the function converts to map coordinates.

@@ -231,7 +231,7 @@ func _on_cursor_accept_pressed(cell: Vector2) -> void:
 	# on the board's current state, this interaction means either that we want to select a unit or
 	# that we want to give it a move order.
 	if not _active_unit:
-		#SoundManager.Menu_Select_Sound()
+
 
 		player_select_unit(cell)
 	elif _active_unit.is_selected and not _units.has(cell):
