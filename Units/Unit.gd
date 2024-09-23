@@ -205,9 +205,7 @@ func process_direction():
 		_sprite.flip_h = true
 	else: _sprite.flip_h = false
 
-	
 
-	if (direction.x > 0): print (direction)	
 
 # Process "shake" when unit takes damage. Could be improved in the future.
 func process_shake():

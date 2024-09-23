@@ -101,7 +101,6 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action("ui_down"):
 		self.cell += Vector2.DOWN
 
-	print(camera.offset.x)
 # If the cell you're currently on (in screen coordinates) is greater than the screen width plus 
 # the camera's offset x, the new camera x offset goes to the coordinate (in screen coordinates) 
 # plus the grid's cell size.
