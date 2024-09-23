@@ -77,8 +77,8 @@ var _walkable_cells := []
 # The cell we were at before deciding to try and move.
 var _old_cell: Vector2 
 
-@onready var _unit_overlay: UnitOverlay = $UnitOverlay
-@onready var _unit_path_arrow: UnitPathArrow = $UnitPathArrow
+@onready var _unit_overlay: UnitOverlay = $Map/UnitOverlay
+@onready var _unit_path_arrow: UnitPathArrow = $Map/UnitPathArrow
 @onready var _map: TileMap = $Map
 
 # BD: This is a signal I'm gonna use for now to control the cursor from the gameboard.
