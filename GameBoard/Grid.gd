@@ -13,7 +13,7 @@ class_name Grid extends Resource
 # That's how we can place units in the center of a cell.
 var _half_cell_size = cell_size / 2
 
-# Returns the position of a cell's center in pixels.
+# Returns the position of a cell's center in pixels (SCREEN coordinates).
 # We'll place units and have them move through cells using this function.
 func calculate_map_position(grid_position: Vector2) -> Vector2:
 	return grid_position * cell_size + _half_cell_size
@@ -52,5 +52,5 @@ func clamp(grid_position: Vector2) -> Vector2:
 # graph it uses to find a path.
 # 2. You can use it for performance. More on that below.
 func as_index(cell: Vector2) -> int:
-	return int(cell.x + size.x * cell.y) #The size is interesting, why is it there?
+	return int(cell.x + size.x * cell.y)
 	

@@ -19,6 +19,8 @@ signal moved(new_cell)
 # Grid resource, giving the node access to the grid size, and more.
 @export var grid: Resource = preload("res://GameBoard/Grid.gd")
 
+@onready var camera: Camera2D = get_parent().get_node("Camera")
+
 # Time before the cursor can move again in seconds.
 # You can see how we use it in the unhandled input function below.
 @export var ui_cooldown := 0.2
@@ -65,7 +67,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not _enabled: return
 	# If the user moves the mouse, we capture that input and update the node's cell in priority.
 	if event is InputEventMouseMotion:
-		self.cell = grid.calculate_grid_coordinates(event.position)
+		self.cell = grid.calculate_grid_coordinates(event.position + camera.offset)
 	# If we are already hovering the cell and click on it, or we press the enter key, the player
 	# wants to interact with that cell.
 	elif event.is_action_pressed("click") or event.is_action_pressed("ui_accept"):
@@ -99,6 +101,20 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action("ui_down"):
 		self.cell += Vector2.DOWN
 
+	print(camera.offset.x)
+# If the cell you're currently on (in screen coordinates) is greater than the screen width plus 
+# the camera's offset x, the new camera x offset goes to the coordinate (in screen coordinates) 
+# plus the grid's cell size.
+	if (grid.calculate_map_position(self.cell).x > (get_viewport_rect().size.x + camera.offset.x)):
+		camera.offset.x += grid.cell_size.x
+
+	if (grid.calculate_map_position(self.cell).x < (camera.offset.x)):
+		camera.offset.x -= grid.cell_size.x
+	if (grid.calculate_map_position(self.cell).y > (get_viewport_rect().size.y + camera.offset.y)):
+		camera.offset.y += grid.cell_size.y
+	if (grid.calculate_map_position(self.cell).y < (camera.offset.y)):
+		camera.offset.y -= grid.cell_size.y		
+		
 # We use the draw callback to a rectangular outline the size of a grid cell, with a width of two
 # pixels.
 func _draw() -> void:
