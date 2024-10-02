@@ -12,7 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://cfemajau2fdnq" path="res://UI/HighlightInfoUI.tscn" id="11_o3oh6"]
 [ext_resource type="Script" path="res://Units/Units.gd" id="11_pqdie"]
 
-[sub_resource type="Resource" id="Resource_4hyju"]
+[sub_resource type="Resource" id="Resource_yu1ei"]
 resource_local_to_scene = true
 script = ExtResource("10_6aeo4")
 max_hp = 19
@@ -56,7 +56,7 @@ script = ExtResource("11_pqdie")
 
 [node name="Alma" parent="GameBoard/Units" instance=ExtResource("2_n3f5l")]
 position = Vector2(840, 680)
-stats = SubResource("Resource_4hyju")
+stats = SubResource("Resource_yu1ei")
 move_range = 7
 move_speed = 500
 
