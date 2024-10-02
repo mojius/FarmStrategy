@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://yp3tn4o3ikwt"]
+[gd_scene load_steps=14 format=3 uid="uid://yp3tn4o3ikwt"]
 
 [ext_resource type="PackedScene" uid="uid://de53ukdqyusan" path="res://Background/Map.tscn" id="1_khjdm"]
 [ext_resource type="Script" path="res://GameBoard/GameBoard.gd" id="2_hx4vu"]
@@ -6,12 +6,13 @@
 [ext_resource type="Script" path="res://Background/Map.gd" id="4_jj0xn"]
 [ext_resource type="PackedScene" uid="uid://cefp73bur6v0t" path="res://Units/UnitOverlay/UnitOverlay.tscn" id="4_sf86o"]
 [ext_resource type="PackedScene" uid="uid://bmuue0dlmkw5u" path="res://GameBoard/Cursor/Cursor.tscn" id="4_xbrol"]
+[ext_resource type="Resource" uid="uid://btvgw2xegan2a" path="res://GameBoard/Grid.tres" id="5_kwp46"]
 [ext_resource type="Script" path="res://Units.gd" id="5_pc50w"]
 [ext_resource type="PackedScene" uid="uid://bxbdtgea1xr7" path="res://GameBoard/UnitPath.tscn" id="6_xwtul"]
 [ext_resource type="Script" path="res://Units/Stats.gd" id="10_6aeo4"]
 [ext_resource type="PackedScene" uid="uid://cfemajau2fdnq" path="res://UI/HighlightInfoUI.tscn" id="11_o3oh6"]
 
-[sub_resource type="Resource" id="Resource_7um47"]
+[sub_resource type="Resource" id="Resource_ol2kw"]
 resource_local_to_scene = true
 script = ExtResource("10_6aeo4")
 max_hp = 18
@@ -20,7 +21,7 @@ override = 0
 attack = 4
 defense = 3
 
-[sub_resource type="Resource" id="Resource_kadbc"]
+[sub_resource type="Resource" id="Resource_aj065"]
 resource_local_to_scene = true
 script = ExtResource("10_6aeo4")
 max_hp = 13
@@ -43,26 +44,24 @@ offset_bottom = 228.0
 
 [node name="Map" parent="GameBoard" instance=ExtResource("1_khjdm")]
 texture_filter = 1
-scale = Vector2(5, 5)
 layer_0/tile_data = PackedInt32Array(65535, 65536, 2, 131071, 131072, 2, 196607, 131072, 2, 262143, 131072, 2, 327679, 131072, 3, 393215, 131072, 3, 458751, 131072, 3, 524287, 131072, 3, 589823, 131072, 3, 0, 131072, 3, 1, 131072, 3, 2, 131072, 2, 3, 65536, 2, 4, 131072, 2, 5, 65536, 3, 6, 65536, 3, 7, 65536, 2, 15, 131072, 3, 14, 131072, 2, 13, 65536, 3, 12, 131072, 3, 11, 131072, 3, 10, 65536, 3, 9, 131072, 2, 8, 65536, 3, 65541, 65536, 3, 65540, 65536, 2, 65539, 65536, 2, 65538, 65536, 3, 65537, 393216, 21, 65536, 65536, 2, 65542, 65536, 2, 65543, 65536, 2, 65544, 131072, 3, 65545, 131072, 1, 65546, 131072, 3, 65547, 131072, 3, 65548, 393216, 21, 65549, 131072, 2, 65550, 65536, 3, 65551, 65536, 3, 131087, 65536, 2, 131086, 786432, 4, 131085, 720896, 4, 131084, 589824, 2, 131083, 65536, 3, 131082, 65536, 3, 131081, 131072, 3, 131080, 131072, 2, 131079, 65536, 3, 131078, 65536, 3, 131077, 131072, 3, 131076, 983040, 22, 131075, 131072, 3, 131074, 131072, 3, 131073, 65536, 2, 131072, 131072, 3, 196608, 65536, 3, 196609, 65536, 2, 196610, 131072, 2, 196611, 131072, 3, 262147, 131072, 2, 262148, 393216, 21, 196612, 65536, 3, 196613, 65536, 2, 196614, 65536, 2, 196615, 983040, 24, 196616, 1114112, 26, 196617, 1048576, 24, 196618, 131072, 2, 196619, 65536, 2, 196620, 589824, 3, 196621, 917504, 3, 196622, 655360, 3, 196623, 65536, 3, 262159, 983040, 22, 262158, 131072, 2, 262157, 983040, 22, 262156, 983040, 22, 262155, 131072, 2, 262154, 65536, 2, 262153, 65536, 2, 262152, 917504, 11, 262151, 655360, 12, 262150, 65536, 3, 262149, 65536, 3, 262146, 65536, 3, 262145, 65536, 3, 262144, 131072, 3, 327680, 65536, 3, 327681, 983040, 22, 327682, 65536, 2, 327683, 131072, 3, 327684, 65536, 3, 327685, 65536, 3, 327686, 720896, 10, 327687, 786432, 10, 327688, 65536, 3, 327689, 720896, 21, 327690, 786432, 20, 327691, 851968, 20, 327695, 983040, 22, 327694, 131072, 3, 327693, 131072, 3, 327692, 131072, 2, 393229, 65536, 3, 393230, 65536, 3, 393231, 131072, 2, 393228, 131072, 1, 393227, 65536, 2, 393226, 131072, 3, 393225, 131072, 2, 393224, 131072, 2, 393223, 655360, 10, 393222, 65536, 3, 393221, 131072, 3, 393220, 65536, 2, 393219, 65536, 2, 393218, 65536, 2, 393217, 65536, 3, 393216, 65536, 3, 458752, 65536, 2, 458753, 131072, 2, 458754, 393216, 21, 458755, 65536, 2, 458756, 131072, 3, 458757, 131072, 2, 458758, 65536, 3, 458759, 393216, 21, 458760, 65536, 3, 458761, 131072, 3, 458762, 983040, 22, 458763, 65536, 2, 458764, 65536, 2, 458765, 983040, 22, 458766, 131072, 3, 458767, 65536, 2, 524303, 131072, 2, 524302, 131072, 2, 524301, 131072, 2, 524300, 131072, 3, 524299, 983040, 22, 524298, 65536, 3, 524297, 65536, 3, 524296, 65536, 2, 524295, 131072, 2, 524294, 65536, 2, 524293, 131072, 2, 524292, 983040, 22, 524291, 131072, 3, 524290, 131072, 3, 524289, 131072, 3, 524288, 131072, 2)
 script = ExtResource("4_jj0xn")
+grid = ExtResource("5_kwp46")
 
 [node name="Units" type="Node2D" parent="GameBoard/Map"]
 script = ExtResource("5_pc50w")
 
 [node name="Kitty" parent="GameBoard/Map/Units" instance=ExtResource("2_n3f5l")]
 modulate = Color(2.959, 0.331, 0.248, 1)
-position = Vector2(40, 88)
-scale = Vector2(0.2, 0.2)
-stats = SubResource("Resource_7um47")
+position = Vector2(40, 104)
+stats = SubResource("Resource_ol2kw")
 move_range = 5
 move_speed = 500
 
 [node name="Zombie" parent="GameBoard/Map/Units" instance=ExtResource("2_n3f5l")]
 modulate = Color(0, 1, 1, 1)
-position = Vector2(168, 72)
-scale = Vector2(0.2, 0.2)
-stats = SubResource("Resource_kadbc")
+position = Vector2(184, 56)
+stats = SubResource("Resource_aj065")
 _faction = "Enemy"
 move_speed = 500
 

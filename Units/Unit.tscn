@@ -291,7 +291,6 @@ texture = ExtResource("2_bravp")
 
 [node name="Sprite" type="AnimatedSprite2D" parent="PathFollow2D"]
 texture_filter = 1
-scale = Vector2(5, 5)
 sprite_frames = SubResource("SpriteFrames_byh6x")
 animation = &"forward"
 autoplay = "idle"

@@ -31,6 +31,8 @@ func reinitialize() -> void:
 		# Using a dictionary of grid coordinates here.
 		set_unit_at(unit, unit.cell)
 		unit.state_changed.connect(_on_unit_state_changed)
+		print(unit)
+		print(unit.cell)
 
 func has_unit_at(cell: Vector2) -> bool:
 	return _units.has(cell)

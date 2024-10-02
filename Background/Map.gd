@@ -79,7 +79,7 @@ func _flood_fill(cell: Vector2, max_distance: int) -> Array:
 # Returns an array with all the coordinates of walkable cells based on the `movement_range`.
 func _get_tiles_in_movement_range(cell: Vector2, movement_range: int):
 	var array = _flood_fill(cell, movement_range)
-	var pathfinder = PathFinder.new(grid, array)
+	var pathfinder: PathFinder = PathFinder.new(array)
 	return pathfinder.find_tiles_in_range(cell, movement_range)
 
 func _get_closest_cell_from_array(cell: Vector2, walkable_cells: Array):

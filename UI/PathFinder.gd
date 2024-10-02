@@ -6,17 +6,16 @@ extends RefCounted
 # to move in the game: up, left, right, down.
 const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
 
-var _grid: Resource
+var _grid: Resource = preload("res://GameBoard/Grid.tres")
 # This variable holds an AStar2D instance that will do the actual pathfinding. Our script is mostly
 # here to initialize that object.
 var _astar := AStar2D.new()
 
 
 # Initializes the Astar2D object upon creation.
-func _init(grid: Grid, walkable_cells: Array) -> void:
+func _init(walkable_cells: Array) -> void:
 	# Because we will instantiate the `PathFinder` from our UnitPathArrow's script, we pass it the data it
 	# needs to initialize itself via its constructor function, _init().
-	_grid = grid
 	# To create our AStar graph, we will need the index value corresponding to each grid cell. Here,
 	# we cache a mapping between cell coordinates and their unique index. Doing so here slightly
 	# simplifies the code and improves performance a bit.

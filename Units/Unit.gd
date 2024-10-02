@@ -207,8 +207,6 @@ func process_direction():
 
 	
 
-	if (direction.x > 0): print (direction)	
-
 # Process "shake" when unit takes damage. Could be improved in the future.
 func process_shake():
 	var shake_value = Vector2(randf_range(-1,1), randf_range(-1,1)) * _shake_timer.time_left * shake_intensity

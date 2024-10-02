@@ -92,7 +92,6 @@ var _cursor_enabled: bool :
 func _ready() -> void:
 	randomize()
 	_active_faction = starting_faction
-	_units.reinitialize()
 	_units.connect("check_should_turn_end", _check_should_turn_end)
 
 	
@@ -114,7 +113,7 @@ func player_select_unit(cell: Vector2) -> void:
 	
 	_cursor_enabled = false
 	
-	_map._find_targets_in_range()
+	_find_targets_in_range(_active_unit)
 	var attackable: Callable = Callable()
 	
 	if (_active_targets.size() > 0):
@@ -180,7 +179,7 @@ func _move_active_unit(new_cell: Vector2, is_player: bool = true) -> void:
 	
 	if not is_player: return
 	
-	_map._find_targets_in_range()
+	_find_targets_in_range(_active_unit)
 	_add_post_move_ui()
 
 # Updates the interactive path's drawing if there's an active and selected unit.
@@ -282,7 +281,7 @@ func _cpu_turn(faction: String) -> void:
 
 		# First get the walkable points, then init a path.
 		_walkable_cells = _map.get_walkable_cells(unit)
-		var pathfinder = PathFinder.new(grid, _walkable_cells)
+		var pathfinder = PathFinder.new(_walkable_cells)
 		var path := PackedVector2Array()
 		path.resize(9999)
 		
@@ -305,7 +304,7 @@ func _cpu_turn(faction: String) -> void:
 		path.remove_at(path.size() - 1)
 		
 		if (path.size() <= 1):		
-			_map._find_targets_in_range()
+			_find_targets_in_range(_active_unit)
 			if (_active_targets.size() > 0):
 				await attack(_active_targets.pick_random())
 				continue
@@ -327,7 +326,7 @@ func _cpu_turn(faction: String) -> void:
 		_move_active_unit(target_cell, false)
 		await unit.walk_finished 
 		
-		_map._find_targets_in_range()
+		_find_targets_in_range(_active_unit)
 		if (_active_targets.size() > 0):
 			await attack(_active_targets.pick_random())
 			continue
