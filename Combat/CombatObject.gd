@@ -118,7 +118,12 @@ func animate_volley(attacker: Unit, target: Unit):
 
 # Calculates the damage a unit should take. Will be more sophisticated later.
 func calculate_damage(attacker: Unit, target: Unit) -> int:
-	return attacker.stats.attack - target.stats.defense
+	var chance_to_hit: int = randi_range(1,12)
+	if (chance_to_hit >= attacker.stats.hit_chance):
+		return attacker.stats.attack
+	else:
+		print("MISS!")
+		return 0
 
 # Hack to make the text update on the menus.
 func _process(_delta):

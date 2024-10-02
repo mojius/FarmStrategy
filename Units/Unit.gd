@@ -136,9 +136,9 @@ signal walk_finished
 func _ready() -> void:
 	
 	if stats.hp_override:
-		stats.set_hp(stats.override)
+		stats.hp = stats.override
 	else:
-		stats.set_hp(stats.max_hp)
+		stats.hp = stats.max_hp
 	set_faction(_faction)
 	
 	# We'll use the `_process()` callback to move the unit along a path. Unless it has a path to
