@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://yp3tn4o3ikwt"]
+[gd_scene load_steps=15 format=3 uid="uid://yp3tn4o3ikwt"]
 
 [ext_resource type="PackedScene" uid="uid://de53ukdqyusan" path="res://Background/Map.tscn" id="1_khjdm"]
 [ext_resource type="Script" path="res://GameBoard/GameBoard.gd" id="2_hx4vu"]
@@ -11,8 +11,9 @@
 [ext_resource type="PackedScene" uid="uid://ciw0517tn22q8" path="res://Units/Units.tscn" id="10_wja60"]
 [ext_resource type="PackedScene" uid="uid://cfemajau2fdnq" path="res://UI/HighlightInfoUI.tscn" id="11_o3oh6"]
 [ext_resource type="Script" path="res://Units/Units.gd" id="11_pqdie"]
+[ext_resource type="PackedScene" uid="uid://dxyppds12s4ke" path="res://Units/Zombie.tscn" id="12_u7jyg"]
 
-[sub_resource type="Resource" id="Resource_b6ghg"]
+[sub_resource type="Resource" id="Resource_gm3ie"]
 resource_local_to_scene = true
 script = ExtResource("10_6aeo4")
 max_hp = 10
@@ -21,11 +22,20 @@ override = 0
 attack = 4
 hit_chance = 4
 
+[sub_resource type="Resource" id="Resource_oa1sm"]
+script = ExtResource("10_6aeo4")
+max_hp = 10
+hp_override = false
+override = 0
+attack = 6
+hit_chance = 6
+
 [node name="Main" type="Node2D"]
 
 [node name="GameBoard" type="Node2D" parent="."]
 y_sort_enabled = true
 script = ExtResource("2_hx4vu")
+starting_faction = "Enemy"
 
 [node name="UIContainer" type="CanvasLayer" parent="GameBoard"]
 
@@ -56,9 +66,14 @@ script = ExtResource("11_pqdie")
 
 [node name="Player" parent="GameBoard/Units" instance=ExtResource("2_n3f5l")]
 position = Vector2(840, 680)
-stats = SubResource("Resource_b6ghg")
+stats = SubResource("Resource_gm3ie")
 move_range = 7
 move_speed = 500
+
+[node name="Unit" parent="GameBoard/Units" instance=ExtResource("12_u7jyg")]
+position = Vector2(1240, 440)
+stats = SubResource("Resource_oa1sm")
+move_range = 1
 
 [connection signal="cursor_enable" from="GameBoard" to="GameBoard/Cursor" method="_on_game_board_cursor_enable"]
 [connection signal="accept_pressed" from="GameBoard/Cursor" to="GameBoard" method="_on_cursor_accept_pressed"]

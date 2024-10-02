@@ -1,7 +1,6 @@
 [gd_scene load_steps=31 format=3 uid="uid://8rtjsul3c7ym"]
 
 [ext_resource type="Script" path="res://Units/Unit.gd" id="1_6k3gw"]
-[ext_resource type="Texture2D" uid="uid://dyndfqcsuqvlp" path="res://Units/unit_shadow.svg" id="2_bravp"]
 [ext_resource type="Script" path="res://Units/Stats.gd" id="2_l2lxx"]
 [ext_resource type="Texture2D" uid="uid://bm016eftmyd2p" path="res://Placeholder/pl-char-2.png" id="4_uumx4"]
 
@@ -12,6 +11,9 @@ hp_override = false
 override = 0
 attack = 8
 hit_chance = 4
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_718bx"]
+load_path = "res://.godot/imported/unit_shadow.svg-3b1ef9774820a8cb875ace739806bcde.ctex"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_50rvn"]
 atlas = ExtResource("4_uumx4")
@@ -287,7 +289,7 @@ loop = false
 visible = false
 modulate = Color(0.227451, 0.227451, 0.227451, 0.384314)
 position = Vector2(0, 40)
-texture = ExtResource("2_bravp")
+texture = SubResource("CompressedTexture2D_718bx")
 
 [node name="Sprite" type="AnimatedSprite2D" parent="PathFollow2D"]
 texture_filter = 1

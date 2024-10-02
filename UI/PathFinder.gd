@@ -9,11 +9,12 @@ const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
 var _grid: Resource
 # This variable holds an AStar2D instance that will do the actual pathfinding. Our script is mostly
 # here to initialize that object.
-var _astar := AStar2D.new()
+var _astar : AStar2D
 
 
 # Initializes the Astar2D object upon creation.
 func _init(grid: Grid, walkable_cells: Array) -> void:
+	_astar = AStar2D.new()
 	# Because we will instantiate the `PathFinder` from our UnitPathArrow's script, we pass it the data it
 	# needs to initialize itself via its constructor function, _init().
 	_grid = grid
@@ -40,7 +41,10 @@ func calculate_point_path(start: Vector2, end: Vector2) -> PackedVector2Array:
 	# PoolVector2Array() to avoid errors.
 	if _astar.has_point(start_index) and _astar.has_point(end_index):
 		# The AStar2D object then finds the best path between the two indices.
-		return _astar.get_point_path(start_index, end_index)
+		var path := _astar.get_point_path(start_index, end_index)
+		print("Point Path is")
+		print(path)
+		return path
 	else:
 		return PackedVector2Array()
 
