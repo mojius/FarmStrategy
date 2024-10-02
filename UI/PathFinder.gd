@@ -40,7 +40,7 @@ func calculate_point_path(start: Vector2, end: Vector2) -> PackedVector2Array:
 	# PoolVector2Array() to avoid errors.
 	if _astar.has_point(start_index) and _astar.has_point(end_index):
 		# The AStar2D object then finds the best path between the two indices.
-		return _astar.get_point_path(start_index, end_index)
+		return _astar.get_point_path(start_index, end_index, true)
 	else:
 		return PackedVector2Array()
 

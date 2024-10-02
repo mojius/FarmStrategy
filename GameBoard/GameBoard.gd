@@ -93,14 +93,9 @@ var _cursor_enabled: bool :
 # At the start of the game, we initialize the game board. Look at the `_reinitialize()` function below.
 # It populates our `_units` dictionary.
 func _ready() -> void:
-	TranslationServer.set_locale("en")
 	randomize()
 	_reinitialize()
 
-# Returns `true` if the cell is occupied by a unit.
-func is_occupied(cell: Vector2) -> bool:
-	
-	return true if _units.has(cell) and _units[cell].get_faction() != "Player" and _units[cell].get_faction() == "Enemy" else false
 	
 # Clears, and refills the `_units` dictionary with game objects that are on the board.
 func _reinitialize() -> void:
@@ -133,7 +128,7 @@ func player_select_unit(cell: Vector2) -> void:
 	
 	_cursor_enabled = false
 	
-	_find_targets_in_range()
+	_map._find_targets_in_range()
 	var attackable: Callable = Callable()
 	
 	if (_active_targets.size() > 0):
@@ -146,7 +141,7 @@ func player_select_unit(cell: Vector2) -> void:
 # Shows the movement arrows and the yellow highlight, yadda yadda.
 func _show_movement_info() -> void:
 	_cursor_enabled = true
-	_walkable_cells = get_walkable_cells(_active_unit)
+	_walkable_cells = _map.get_walkable_cells(_active_unit)
 	_unit_overlay.draw(_walkable_cells)
 	_unit_path_arrow.initialize(_walkable_cells)
 
@@ -168,7 +163,7 @@ func _clear_movement_info() -> void:
 	
 # Teleports a unit instantly to a position. Used for undoing movement for now.
 func _teleport_active_unit(new_cell: Vector2) -> void:
-	if is_occupied(new_cell):
+	if _map.is_occupied(new_cell):
 		return
 	
 	_units.erase(_active_unit.cell)
@@ -181,7 +176,7 @@ func _teleport_active_unit(new_cell: Vector2) -> void:
 # Updates the _units dictionary with the target position for the unit and asks the _active_unit to
 # walk to it.
 func _move_active_unit(new_cell: Vector2, is_player: bool = true) -> void:
-	if is_occupied(new_cell) or not new_cell in _walkable_cells:
+	if _map.is_occupied(new_cell) or not new_cell in _walkable_cells:
 		return
 
 	_old_cell = _active_unit.cell
@@ -199,7 +194,7 @@ func _move_active_unit(new_cell: Vector2, is_player: bool = true) -> void:
 	
 	if not is_player: return
 	
-	_find_targets_in_range()
+	_map._find_targets_in_range()
 	_add_post_move_ui()
 
 # Updates the interactive path's drawing if there's an active and selected unit.
@@ -240,13 +235,7 @@ func _on_cursor_accept_pressed(cell: Vector2) -> void:
 
 # Checks for unhandled input, mainly UI cancel actions. Messy.
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("flop_language"):
-		if(TranslationServer.get_locale()=="en"):
-			TranslationServer.set_locale("hs")
-		elif(TranslationServer.get_locale()=="hs"):
-			TranslationServer.set_locale("ja")
-		else:
-			TranslationServer.set_locale("en")
+
 	if event.is_action_pressed("ui_cancel"):
 		if _active_unit:
 			if _active_unit.get_state() == "Moved" and (_old_cell):
@@ -315,7 +304,7 @@ func _cpu_turn(faction: String) -> void:
 		_active_unit.is_selected = true
 
 		# First get the walkable points, then init a path.
-		_walkable_cells = get_walkable_cells(unit)
+		_walkable_cells = _map.get_walkable_cells(unit)
 		var pathfinder = PathFinder.new(grid, _walkable_cells)
 		var path := PackedVector2Array()
 		path.resize(9999)
@@ -339,7 +328,7 @@ func _cpu_turn(faction: String) -> void:
 		path.remove_at(path.size() - 1)
 		
 		if (path.size() <= 1):		
-			_find_targets_in_range()
+			_map._find_targets_in_range()
 			if (_active_targets.size() > 0):
 				await attack(_active_targets.pick_random())
 				continue
@@ -351,7 +340,7 @@ func _cpu_turn(faction: String) -> void:
 				_deselect_active_unit()
 				continue
 				
-		if is_occupied(target_cell) or not target_cell in _walkable_cells:
+		if _map.is_occupied(target_cell) or not target_cell in _walkable_cells:
 				_deselect_active_unit()
 				continue
 						
@@ -361,7 +350,7 @@ func _cpu_turn(faction: String) -> void:
 		_move_active_unit(target_cell, false)
 		await unit.walk_finished 
 		
-		_find_targets_in_range()
+		_map._find_targets_in_range()
 		if (_active_targets.size() > 0):
 			await attack(_active_targets.pick_random())
 			continue
@@ -370,15 +359,7 @@ func _cpu_turn(faction: String) -> void:
 	
 
 
-# Finds all targets in range.
-func _find_targets_in_range():
-	_active_targets.clear()
 
-	for direction in DIRECTIONS:
-		var coordinates: Vector2 = _active_unit.cell + direction
-		
-		if _units.has(coordinates) and _units.get(coordinates).get_faction() == _active_unit.get_enemy_faction() and _units.get(coordinates) not in _active_targets:
-			_active_targets.append(_units[coordinates])
 
 # Adds a menu after moving. Let's make this a builder later or something. This is a mess.
 func _add_post_move_ui():
@@ -415,88 +396,5 @@ func attack(unit: Unit):
 	_exhaust_active_unit()
 
 
-# Gets the movement cost of a tile on the map.
-func get_movement_cost_at_tile(cell: Vector2):
-	var data: TileData = _map.get_cell_tile_data(0, cell)
-	if data:
-		return data.get_custom_data("Move Cost") as int
 
-# Gets the impassability of a tile on the map. false = passable.
-func get_impassable_at_tile(cell: Vector2):
-	var data: TileData = _map.get_cell_tile_data(0, cell)
-	if data:
-		return data.get_custom_data("Impassable") as bool
-
-# Returns an array of cells a given unit can walk using the flood fill algorithm.
-func get_walkable_cells(unit: Unit) -> Array:
-	return _get_tiles_in_movement_range(unit.cell, unit.move_range)
-
-# Returns an array with all the coordinates of walkable cells based on the `max_distance`.
-func _flood_fill(cell: Vector2, max_distance: int) -> Array:
-	# This is the array of walkable cells the algorithm outputs.
-	var array := []
-	# The way we implemented the flood fill here is by using a stack. In that stack, we store every
-	# cell we want to apply the flood fill algorithm to.
-	var stack := [cell]
-	# We loop over cells in the stack, popping one cell on every loop iteration.
-	while not stack.is_empty():
-		var current = stack.pop_back()
-
-		# For each cell, we ensure that we can fill further.
-		#
-		# The conditions are:
-		# 1. We didn't go past the grid's limits.
-		# 2. We haven't already visited and filled this cell
-		# 3. We are within the `max_distance`, a number of cells.
-		# 4. The cell is passable. (BD. was here!) 
-		if not grid.is_within_bounds(current):
-			continue
-		if current in array:
-			continue
-
-		# Check passability here.
-		if get_impassable_at_tile(current):
-			continue
-
-		var difference: Vector2 = (current - cell).abs()
-		var distance := int(difference.x + difference.y)
-		if distance > max_distance:
-			continue
-	
-		# If we meet all the conditions, we "fill" the `current` cell. To be more accurate, we store
-		# it in our output `array` to later use them with the UnitPath and UnitOverlay classes.
-		array.append(current)
-		# We then look at the `current` cell's neighbors and, if they're not occupied and we haven't
-		# visited them already, we add them to the stack for the next iteration.
-		# This mechanism keeps the loop running until we found all cells the unit can walk.
-		for direction in DIRECTIONS:
-			var coordinates: Vector2 = current + direction
-			# This is an "optimization". It does the same thing as our `if current in array:` above
-			# but repeating it here with the neighbors skips some instructions.
-			if is_occupied(coordinates):
-				continue
-			if coordinates in array:
-				continue
-
-			# This is where we extend the stack.
-			stack.append(coordinates)
-	return array
-
-# Returns an array with all the coordinates of walkable cells based on the `movement_range`.
-func _get_tiles_in_movement_range(cell: Vector2, movement_range: int):
-	var array = _flood_fill(cell, movement_range)
-	var pathfinder = PathFinder.new(grid, array)
-	return pathfinder.find_tiles_in_range(cell, movement_range)
-
-func _get_closest_cell_from_array(cell: Vector2, walkable_cells: Array):
-	var _best_cell = Vector2(-9999, -9999)
-	for _current_cell in walkable_cells:
-		if((_best_cell-cell).length_squared() > (_current_cell-cell).length_squared()):
-			_best_cell = _current_cell
-	return _best_cell
-	
-func _same_cell(unitA, unitB):
-	if(unitA == null or unitB == null):
-		return false
-	return (unitA.cell == unitB.cell)
 		
