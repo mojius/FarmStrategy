@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 [gd_scene load_steps=15 format=3 uid="uid://yp3tn4o3ikwt"]
 
 [ext_resource type="PackedScene" uid="uid://de53ukdqyusan" path="res://Background/Map.tscn" id="1_khjdm"]
@@ -79,3 +80,8 @@ move_range = 1
 [connection signal="cursor_enable" from="GameBoard" to="GameBoard/Cursor" method="_on_game_board_cursor_enable"]
 [connection signal="accept_pressed" from="GameBoard/Cursor" to="GameBoard" method="_on_cursor_accept_pressed"]
 [connection signal="moved" from="GameBoard/Cursor" to="GameBoard" method="_on_cursor_moved"]
+=======
+[gd_scene format=3 uid="uid://yp3tn4o3ikwt"]
+
+[node name="Main" type="Node2D"]
+>>>>>>> Stashed changes
