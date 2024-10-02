@@ -4,12 +4,13 @@
 class_name GameBoard extends Node2D
 
 # Once again, we use our grid resource that we explicitly define in the class.
-@export var grid: Resource = preload("res://GameBoard/Grid.tres")
+@export var grid: Grid = preload("res://GameBoard/Grid.tres")
 
 @onready var _action_ui = preload("res://UI/ActionUI.tscn")
 @onready var _attack_ui = preload("res://UI/AttackUI.tscn")
 @onready var _ui_container: CanvasLayer = $UIContainer
 @onready var _highlight: HighlightInfoUI = $UIContainer/HighlightInfoUI
+@onready var _units: Units = $Map/Units
 
 # 4 directions. For flood fill and other map-related stuff.
 const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
@@ -28,11 +29,7 @@ var _active_ui: Control :
 			_cursor_enabled = false
 
 
-# We use a dictionary to keep track of the units that are on the board. Each key-value pair in the
-# dictionary represents a unit. The key is the position in grid coordinates, while the value is a
-# reference to the unit.
-# Mapping of coordinates of a cell to a reference to the unit it contains.
-var _units := {}
+
 
 # Phase animation.
 @onready var _phase = preload("res://Juice/Phase.tscn")
@@ -94,36 +91,25 @@ var _cursor_enabled: bool :
 # It populates our `_units` dictionary.
 func _ready() -> void:
 	randomize()
-	_reinitialize()
+	_active_faction = starting_faction
+	_units.reinitialize()
+	_units.connect("check_should_turn_end", _check_should_turn_end)
 
 	
-# Clears, and refills the `_units` dictionary with game objects that are on the board.
-func _reinitialize() -> void:
-	_active_faction = starting_faction
-	_units.clear()
 
-	# Loop over the nodes in the unit group.
-	for member in get_tree().get_nodes_in_group("Unit"):
-		var unit := member as Unit
-		if not unit:
-			continue
-		
-		# Using a dictionary of grid coordinates here.
-		_units[unit.cell] = unit
-		unit.state_changed.connect(_on_unit_state_changed)
 
 # Selects the unit in the `cell` if there's one there.
 func player_select_unit(cell: Vector2) -> void:
 	# Here's some optional defensive code: we return early from the function if the unit's not
 	# registered in the `cell`.
-	if (not _units.has(cell)):
+	if (not _units.has_unit_at(cell)):
 		return
 		
-	if _units[cell].get_state() == "Exhausted" or not _units[cell].is_in_group("Player"):
+	if _units.get_unit_at(cell).get_state() == "Exhausted" or not _units.get_unit_at(cell).is_in_group("Player"):
 		return
 
 	# See the notes in previous commits for more info.
-	_active_unit = _units[cell]
+	_active_unit = _units.get_unit_at(cell)
 	_active_unit.is_selected = true
 	
 	_cursor_enabled = false
@@ -166,8 +152,8 @@ func _teleport_active_unit(new_cell: Vector2) -> void:
 	if _map.is_occupied(new_cell):
 		return
 	
-	_units.erase(_active_unit.cell)
-	_units[new_cell] = _active_unit
+	_units.erase_unit_at(_active_unit.cell)
+	_units.set_unit_at(_active_unit, new_cell)
 	
 	_active_unit.position = grid.calculate_map_position(new_cell)
 	_active_unit.cell = new_cell
@@ -181,16 +167,16 @@ func _move_active_unit(new_cell: Vector2, is_player: bool = true) -> void:
 
 	_old_cell = _active_unit.cell
 	
-	_units.erase(_active_unit.cell)
-	_units[new_cell] = _active_unit
+	_units.erase_unit_at(_active_unit.cell)
+	_units.set_unit_at(_active_unit, new_cell)
 	# Finally, we clear the active unit, we won't need it after this.
 	_clear_movement_info()
 
 	_cursor_enabled = false
-	_units[new_cell].walk_along(_active_path)
-	await _units[new_cell].walk_finished
+	_units.get_unit_at(new_cell).walk_along(_active_path)
+	await _units.get_unit_at(new_cell).walk_finished
 	
-	_units[new_cell].set_state("Moved")
+	_units.get_unit_at(new_cell).set_state("Moved")
 	
 	if not is_player: return
 	
@@ -201,8 +187,8 @@ func _move_active_unit(new_cell: Vector2, is_player: bool = true) -> void:
 func _on_cursor_moved(new_cell: Vector2) -> void:
 	
 	
-	if _units.has(new_cell):
-		_highlight.refresh(_units[new_cell])
+	if _units.has_unit_at(new_cell):
+		_highlight.refresh(_units.get_unit_at(new_cell))
 		_highlight.show()
 	else: _highlight.hide()
 		
@@ -229,7 +215,7 @@ func _on_cursor_accept_pressed(cell: Vector2) -> void:
 
 
 		player_select_unit(cell)
-	elif _active_unit.is_selected and not _units.has(cell):
+	elif _active_unit.is_selected and not _units.has_unit_at(cell):
 		_active_path = _unit_path_arrow.current_path
 		_move_active_unit(cell)
 
@@ -255,16 +241,7 @@ func _exhaust_active_unit() -> void:
 		_active_unit.set_state("Exhausted")
 		_deselect_active_unit()
 
-# Callback to check what to do when a unit's state changes.
-func _on_unit_state_changed(unit: Unit) -> void:
-	var state = unit.get_state()
-	if (state == "Exhausted"):
-		_check_should_turn_end()
-		pass
-	elif (state == "Moved"):
-		pass
-	elif (state == "Dead"):
-		_units.erase(unit.cell)
+
 	
 # See if everyone in the active faction has moved/acted, and the turn can end.
 func _check_should_turn_end():
@@ -396,5 +373,13 @@ func attack(unit: Unit):
 	_exhaust_active_unit()
 
 
+# Finds all targets in range.
+func _find_targets_in_range(_unit: Unit):
+	_active_targets.clear()
 
+	for direction in DIRECTIONS:
+		var coordinates: Vector2 = _unit.cell + direction
+		
+		if _units.has_unit_at(coordinates) and _units.get_unit_at(coordinates).get_faction() == _active_unit.get_enemy_faction() and _units.get_unit_at(coordinates) not in _active_targets:
+			_active_targets.append(_units.get_unit_at(coordinates))
 		

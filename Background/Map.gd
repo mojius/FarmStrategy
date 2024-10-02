@@ -5,6 +5,8 @@ class_name Map extends TileMap
 # Grid resource, giving the node access to the grid size, and more.
 @export var grid: Resource = preload("res://GameBoard/Grid.gd")
 
+@onready var _units: Units = $"Units"
+
 # This constant represents the directions in which a unit can move on the board.
 const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
 # Gets the movement cost of a tile on the map.
@@ -92,18 +94,9 @@ func _same_cell(unitA, unitB):
 		return false
 	return (unitA.cell == unitB.cell)
 
-# Finds all targets in range.
-func _find_targets_in_range(_unit: Unit):
-	_active_targets.clear()
 
-	for direction in DIRECTIONS:
-		var coordinates: Vector2 = _unit.cell + direction
-		
-		if _units.has(coordinates) and _units.get(coordinates).get_faction() == _active_unit.get_enemy_faction() and _units.get(coordinates) not in _active_targets:
-			_active_targets.append(_units[coordinates])
 
 
 # Returns `true` if the cell is occupied by a unit.
 func is_occupied(_cell: Vector2) -> bool:
-	
-	return true if _units.has(_cell) and _units[_cell].get_faction() != "Player" and _units[_cell].get_faction() == "Enemy" else false
+	return true if _units.has_unit_at(_cell) and _units.get_unit_at(_cell).get_faction() != "Player" and _units.get_unit_at(_cell).get_faction() == "Enemy" else false
