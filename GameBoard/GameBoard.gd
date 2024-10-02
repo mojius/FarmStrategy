@@ -319,18 +319,7 @@ func _cpu_turn(faction: String) -> void:
 			var new_path := pathfinder.calculate_point_path(unit.cell, enemy.cell)
 			if (not new_path.is_empty() and new_path.size() < path.size()):
 				path = new_path
-		
-		var _patrol_start = _active_unit.find_child("Start")
-		var _patrol_end = _active_unit.find_child("End")
-		var _patroling = false
-		if(_patrol_start and _patrol_end):
-			_patroling = true
-			var _nearest_cell
-			if(!_patrol_start.visited):
-				_nearest_cell = _get_closest_cell_from_array(_patrol_start.cell,_walkable_cells)
-			else:
-				_nearest_cell = _get_closest_cell_from_array(_patrol_end.cell,_walkable_cells)
-			path = pathfinder.calculate_point_path(unit.cell, _nearest_cell)
+	
 			
 		
 		# If we can't immediately attack an enemy in range or we're right next to them,

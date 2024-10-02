@@ -35,6 +35,7 @@ hit_chance = 6
 [node name="GameBoard" type="Node2D" parent="."]
 y_sort_enabled = true
 script = ExtResource("2_hx4vu")
+grid = null
 starting_faction = "Enemy"
 
 [node name="UIContainer" type="CanvasLayer" parent="GameBoard"]
