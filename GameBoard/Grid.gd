@@ -6,7 +6,7 @@ class_name Grid extends Resource
 # The grid's size in rows and columns.
 @export var size := Vector2(20, 20)
 # The size of a cell in pixels.
-@export var cell_size := Vector2(80, 80)
+@export var cell_size := Vector2(16,16)
 
 # Half of ``cell_size``.
 # We will use this to calculate the center of a grid cell in pixels, on the screen.
@@ -16,7 +16,9 @@ var _half_cell_size = cell_size / 2
 # Returns the position of a cell's center in pixels.
 # We'll place units and have them move through cells using this function.
 func calculate_map_position(grid_position: Vector2) -> Vector2:
-	return grid_position * cell_size + _half_cell_size
+	var calculation: Vector2 = grid_position * cell_size + _half_cell_size
+	print("Calculated map position: ", calculation)
+	return calculation
 
 # Returns the coordinates of the cell on the grid given a position on the map.
 # This is the complementary of `calculate_map_position()` above.
@@ -24,7 +26,9 @@ func calculate_map_position(grid_position: Vector2) -> Vector2:
 # the grid coordinates they're placed on, and call `calculate_map_position()` to snap them to the
 # cell's center.
 func calculate_grid_coordinates(map_position: Vector2) -> Vector2:
-	return (map_position / cell_size).floor()
+	var calculation: Vector2 = (map_position / cell_size).floor()
+	print("Calculated grid coordinates: ", calculation)
+	return calculation
 	
 # Returns true if the `cell_coordinates` are within the grid.
 # This method and the following one allow us to ensure the cursor or units can never go past the

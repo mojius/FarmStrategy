@@ -17,7 +17,7 @@ signal accept_pressed(cell)
 signal moved(new_cell)
 
 # Grid resource, giving the node access to the grid size, and more.
-@export var grid: Resource = preload("res://GameBoard/Grid.gd")
+@export var grid: Resource = preload("res://GameBoard/Grid.tres")
 
 # Time before the cursor can move again in seconds.
 # You can see how we use it in the unhandled input function below.
@@ -65,7 +65,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not _enabled: return
 	# If the user moves the mouse, we capture that input and update the node's cell in priority.
 	if event is InputEventMouseMotion:
-		self.cell = grid.calculate_grid_coordinates(event.position)
+		self.cell = grid.calculate_grid_coordinates(event.position + %Camera.offset)
+		print("Cell: ", self.cell, "Mouse position: ", event.position, "+ Camera offset: ", event.position + %Camera.offset)
 	# If we are already hovering the cell and click on it, or we press the enter key, the player
 	# wants to interact with that cell.
 	elif event.is_action_pressed("click") or event.is_action_pressed("ui_accept"):
@@ -120,6 +121,7 @@ func set_cell(value: Vector2) -> void:
 	# cooldown timer that will limit the rate at which the cursor moves when we keep the direction
 	# key down.
 	position = grid.calculate_map_position(cell)
+	print("New position is ", position)
 	emit_signal("moved", cell)
 	_timer.start()
 
