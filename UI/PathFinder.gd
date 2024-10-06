@@ -43,7 +43,7 @@ func calculate_point_path(start: Vector2, end: Vector2) -> PackedVector2Array:
 	else:
 		return PackedVector2Array()
 
-#finds all tiles reachable with a given movement range
+# Finds all tiles reachable with a given movement range
 func find_tiles_in_range(_start: Vector2, _range: int) -> PackedVector2Array:
 	
 	var tiles_in_range : PackedVector2Array = PackedVector2Array()

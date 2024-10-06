@@ -12,7 +12,7 @@
 [ext_resource type="Script" path="res://Units/Stats.gd" id="10_6aeo4"]
 [ext_resource type="PackedScene" uid="uid://cfemajau2fdnq" path="res://UI/HighlightInfoUI.tscn" id="11_o3oh6"]
 
-[sub_resource type="Resource" id="Resource_1bob4"]
+[sub_resource type="Resource" id="Resource_pvd0i"]
 resource_local_to_scene = true
 script = ExtResource("10_6aeo4")
 max_hp = 18
@@ -21,7 +21,7 @@ override = 0
 attack = 4
 defense = 3
 
-[sub_resource type="Resource" id="Resource_asawp"]
+[sub_resource type="Resource" id="Resource_lgiuu"]
 resource_local_to_scene = true
 script = ExtResource("10_6aeo4")
 max_hp = 13
@@ -35,6 +35,7 @@ defense = 2
 [node name="GameBoard" type="Node2D" parent="."]
 y_sort_enabled = true
 script = ExtResource("2_hx4vu")
+starting_faction = "Enemy"
 
 [node name="UIContainer" type="CanvasLayer" parent="GameBoard"]
 
@@ -54,14 +55,14 @@ script = ExtResource("5_pc50w")
 [node name="Kitty" parent="GameBoard/Map/Units" instance=ExtResource("2_n3f5l")]
 modulate = Color(2.959, 0.331, 0.248, 1)
 position = Vector2(40, 104)
-stats = SubResource("Resource_1bob4")
+stats = SubResource("Resource_pvd0i")
 move_range = 5
 move_speed = 100
 
 [node name="Zombie" parent="GameBoard/Map/Units" instance=ExtResource("2_n3f5l")]
 modulate = Color(0, 1, 1, 1)
 position = Vector2(184, 56)
-stats = SubResource("Resource_asawp")
+stats = SubResource("Resource_lgiuu")
 _faction = "Enemy"
 move_speed = 100
 

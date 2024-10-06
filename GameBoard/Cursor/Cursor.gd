@@ -120,7 +120,6 @@ func set_cell(value: Vector2) -> void:
 	# cooldown timer that will limit the rate at which the cursor moves when we keep the direction
 	# key down.
 	position = grid.calculate_map_position(cell)
-	print("New position is ", position)
 	emit_signal("moved", cell)
 	_timer.start()
 
