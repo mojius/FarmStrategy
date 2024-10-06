@@ -279,7 +279,6 @@ move_speed = 300
 shake_intensity = 5
 
 [node name="PathFollow2D" type="PathFollow2D" parent="."]
-h_offset = 2.455
 rotates = false
 loop = false
 
