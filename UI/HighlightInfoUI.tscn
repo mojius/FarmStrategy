@@ -1,8 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://cfemajau2fdnq"]
+[gd_scene load_steps=3 format=3 uid="uid://cfemajau2fdnq"]
 
 [ext_resource type="Theme" uid="uid://f3cwprpras7p" path="res://UI/theme.tres" id="1_m0elq"]
 [ext_resource type="Script" path="res://UI/HighlightInfoUI.gd" id="1_v6spp"]
-[ext_resource type="Texture2D" uid="uid://bncyyswwdl0lc" path="res://Units/bugcat.png" id="2_pa7cd"]
 
 [node name="HighlightInfoUI" type="MarginContainer"]
 offset_right = 350.0
@@ -58,7 +57,6 @@ layout_mode = 2
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 83.35)
 layout_mode = 2
-texture = ExtResource("2_pa7cd")
 expand_mode = 3
 stretch_mode = 4
 

@@ -65,8 +65,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not _enabled: return
 	# If the user moves the mouse, we capture that input and update the node's cell in priority.
 	if event is InputEventMouseMotion:
-		self.cell = grid.calculate_grid_coordinates(event.position + %Camera.offset)
-		print("Cell: ", self.cell, "Mouse position: ", event.position, "+ Camera offset: ", event.position + %Camera.offset)
+		self.cell = grid.calculate_grid_coordinates((event.position / %Camera.zoom) + %Camera.offset)
 	# If we are already hovering the cell and click on it, or we press the enter key, the player
 	# wants to interact with that cell.
 	elif event.is_action_pressed("click") or event.is_action_pressed("ui_accept"):

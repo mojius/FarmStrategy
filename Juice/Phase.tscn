@@ -5,6 +5,7 @@
 
 [node name="Phase" type="Node2D"]
 script = ExtResource("1_ww368")
+TIME_TAKEN = 0.2
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_yggmp")

@@ -4,7 +4,7 @@ class_name Phase extends Node2D
 
 signal done
 
-const TIME_TAKEN = 1
+@export var TIME_TAKEN: float = 1
 
 func _ready():
 	position.x = get_viewport().size.x + sprite.texture.get_width()
