@@ -253,9 +253,7 @@ func _check_should_turn_end():
 	_active_faction = "Enemy" if _active_faction == "Player" else "Player"
 	
 # Refresh a particular faction.
-func _refresh_faction(faction: String) -> void:
-	# TODO: Validate the states later, or find a better way to do it.
-	
+func _refresh_faction(faction: String) -> void:	
 	var faction_units := get_tree().get_nodes_in_group(faction)
 	for unit: Unit in faction_units:
 		unit.set_state("Idle")

@@ -53,15 +53,15 @@ script = ExtResource("5_pc50w")
 
 [node name="Kitty" parent="GameBoard/Map/Units" instance=ExtResource("2_n3f5l")]
 modulate = Color(2.959, 0.331, 0.248, 1)
-position = Vector2(40, 104)
+position = Vector2(152, 72)
 stats = SubResource("Resource_kueaf")
-move_range = 7
 move_speed = 100
 
 [node name="Zombie" parent="GameBoard/Map/Units" instance=ExtResource("2_n3f5l")]
 modulate = Color(0, 1, 1, 1)
 position = Vector2(40, 88)
 stats = SubResource("Resource_tn3ne")
+move_range = 5
 _faction = "Enemy"
 move_speed = 100
 

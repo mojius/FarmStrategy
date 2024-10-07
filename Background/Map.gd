@@ -51,6 +51,7 @@ func breadth_first_search(start: Vector2, max_distance: int) -> Array:
 			continue
 			
 		if is_occupied(current) and current != start:
+			print(current, " is occupied!")
 			continue
 		
 
@@ -105,7 +106,7 @@ func calculate_path(start: Vector2, goal: Vector2, is_player: bool, max_distance
 				var priority = new_cost + _heuristic(goal, next)
 				frontier.insert(next, priority)
 				came_from[next] = current
-				
+
 	
 	var path := []
 	while (current != start):
@@ -115,13 +116,27 @@ func calculate_path(start: Vector2, goal: Vector2, is_player: bool, max_distance
 	path.append(start)
 	path.reverse()
 	
-	if (path.size() > max_distance):
-		path.resize(max_distance + 1)
-
 	if (path.any(func(vector): return vector == goal) and not is_player):
 		path.resize(path.size() - 1)
 	
-	return path
+	if max_distance == 9999: 
+		return path
+	
+	# Path shortening algorithm
+	var limited_path := []
+	limited_path.append(path.pop_front())
+	var temp_distance: int = max_distance
+	while (temp_distance > 0 and not path.is_empty()):
+		var temp_cell = path.pop_front()
+		
+		if temp_distance - get_movement_cost_at_tile(temp_cell) < 0 or cost_so_far[temp_cell] > max_distance: continue
+		
+		limited_path.append(temp_cell)
+		temp_distance -= get_movement_cost_at_tile(temp_cell)
+
+
+	
+	return limited_path
 
 
 # Returns an array with all the coordinates of walkable cells based on the `movement_range`.
