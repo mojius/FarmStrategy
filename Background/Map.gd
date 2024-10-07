@@ -7,6 +7,9 @@ class_name Map extends TileMap
 
 @onready var _units: Units = $"Units"
 
+var priorityQueue = preload("res://GameBoard/PriorityQueue.gd").new()
+
+
 # This constant represents the directions in which a unit can move on the board.
 const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
 # Gets the movement cost of a tile on the map.
@@ -26,61 +29,105 @@ func get_walkable_cells(unit: Unit) -> Array:
 	return _get_tiles_in_movement_range(unit.cell, unit.move_range)
 
 # Returns an array with all the coordinates of walkable cells based on the `max_distance`.
-func _flood_fill(cell: Vector2, max_distance: int) -> Array:
-	# This is the array of walkable cells the algorithm outputs.
-	var array := []
-	# The way we implemented the flood fill here is by using a stack. In that stack, we store every
-	# cell we want to apply the flood fill algorithm to.
-	var stack := [cell]
-	# We loop over cells in the stack, popping one cell on every loop iteration.
-	while not stack.is_empty():
-		var current = stack.pop_back()
-
-		# For each cell, we ensure that we can fill further.
-		#
-		# The conditions are:
-		# 1. We didn't go past the grid's limits.
-		# 2. We haven't already visited and filled this cell
-		# 3. We are within the `max_distance`, a number of cells.
-		# 4. The cell is passable. (BD. was here!) 
+func breadth_first_search(start: Vector2, max_distance: int) -> Array:
+	var cells: Array = []
+	var frontier := PriorityQueue.new()
+	frontier.insert(start, 0)
+	var came_from := {}
+	var cost_so_far := {}
+	came_from[start] = null
+	cost_so_far[start] = 0
+	
+	var current: Vector2
+	
+	while not frontier.is_empty():
+		current = frontier.extract()
+			
 		if not grid.is_within_bounds(current):
-			continue
-		if current in array:
 			continue
 
 		# Check passability here.
-		if get_impassable_at_tile(current):
+		if get_impassable_at_tile(current) == true:
 			continue
+			
+		if is_occupied(current) and current != start:
+			continue
+		
 
-		var difference: Vector2 = (current - cell).abs()
-		var distance := int(difference.x + difference.y)
-		if distance > max_distance:
-			continue
-	
-		# If we meet all the conditions, we "fill" the `current` cell. To be more accurate, we store
-		# it in our output `array` to later use them with the UnitPath and UnitOverlay classes.
-		array.append(current)
-		# We then look at the `current` cell's neighbors and, if they're not occupied and we haven't
-		# visited them already, we add them to the stack for the next iteration.
-		# This mechanism keeps the loop running until we found all cells the unit can walk.
+		
 		for direction in DIRECTIONS:
-			var coordinates: Vector2 = current + direction
-			# This is an "optimization". It does the same thing as our `if current in array:` above
-			# but repeating it here with the neighbors skips some instructions.
-			if is_occupied(coordinates):
-				continue
-			if coordinates in array:
-				continue
+			var next: Vector2 = current + direction
+			if not grid.is_within_bounds(next): continue
+			var new_cost = cost_so_far[current] + get_movement_cost_at_tile(next)
+			if new_cost > max_distance: continue
+			if next not in cost_so_far or new_cost < cost_so_far[next]:
+				cost_so_far[next] = new_cost
+				var priority = new_cost
+				frontier.insert(next, priority)
+				came_from[next] = current
+				if not cells.has(next):
+					cells.append(next)
+		
+	return cells
 
-			# This is where we extend the stack.
-			stack.append(coordinates)
-	return array
+func calculate_path(start: Vector2, goal: Vector2, is_player: bool, max_distance: int = 9999) -> Array:
+	var frontier := PriorityQueue.new()
+	frontier.insert(start, 0)
+	var came_from := {}
+	var cost_so_far := {}
+	came_from[start] = null
+	cost_so_far[start] = 0
+	
+	var current: Vector2
+	
+	while not frontier.is_empty():
+		current = frontier.extract()
+		if (current == goal):
+			break
+			
+		if not grid.is_within_bounds(current):
+			continue
+
+		# Check passability here.
+		if get_impassable_at_tile(current) == true:
+			continue
+			
+		if is_occupied(current) and current != start:
+			continue
+			
+		for direction in DIRECTIONS:
+			var next: Vector2 = current + direction
+			if not grid.is_within_bounds(next): continue
+			var cost = get_movement_cost_at_tile(next)
+			var new_cost = cost_so_far[current] + cost
+			if next not in cost_so_far or new_cost < cost_so_far[next]:
+				cost_so_far[next] = new_cost
+				var priority = new_cost + _heuristic(goal, next)
+				frontier.insert(next, priority)
+				came_from[next] = current
+				
+	
+	var path := []
+	while (current != start):
+		path.append(current)
+		current = came_from[current]
+	
+	path.append(start)
+	path.reverse()
+	
+	if (path.size() > max_distance):
+		path.resize(max_distance + 1)
+
+	if (path.any(func(vector): return vector == goal) and not is_player):
+		path.resize(path.size() - 1)
+	
+	return path
+
 
 # Returns an array with all the coordinates of walkable cells based on the `movement_range`.
 func _get_tiles_in_movement_range(cell: Vector2, movement_range: int) -> PackedVector2Array:
-	var array = _flood_fill(cell, movement_range)
-	var pathfinder: PathFinder = PathFinder.new(array)
-	return pathfinder.find_tiles_in_range(cell, movement_range)
+	var array = breadth_first_search(cell, movement_range)
+	return array
 
 func _get_closest_cell_from_array(cell: Vector2, walkable_cells: Array):
 	var _best_cell = Vector2(-9999, -9999)
@@ -95,8 +142,10 @@ func _same_cell(unitA, unitB):
 	return (unitA.cell == unitB.cell)
 
 
-
-
 # Returns `true` if the cell is occupied by a unit.
-func is_occupied(_cell: Vector2) -> bool:
+func is_occupied(_cell: Vector2i) -> bool:
 	return true if _units.has_unit_at(_cell) and _units.get_unit_at(_cell).get_faction() != "Player" and _units.get_unit_at(_cell).get_faction() == "Enemy" else false
+
+func _heuristic(a: Vector2i, b: Vector2i):
+	# Manhattan distance on a square grid
+	return abs(a.x - b.x) + abs(a.y - b.y)

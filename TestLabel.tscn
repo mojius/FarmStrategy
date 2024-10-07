@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://bi0cp3fabgumc"]
+
+[ext_resource type="SystemFont" uid="uid://dj1bgtyee74sy" path="res://UI/theme_font.tres" id="1_5h786"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_kls2e"]
+font = ExtResource("1_5h786")
+font_size = 9
+
+[node name="TestLabel" type="Label"]
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+label_settings = SubResource("LabelSettings_kls2e")

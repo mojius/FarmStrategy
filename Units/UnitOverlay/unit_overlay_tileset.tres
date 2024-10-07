@@ -1,9 +1,9 @@
 [gd_resource type="TileSet" load_steps=3 format=3 uid="uid://di831spkp4ue6"]
 
-[ext_resource type="Texture2D" uid="uid://r6e41u7pvjcx" path="res://Units/UnitOverlay/tileset_unit_overlay.svg" id="1_6sib8"]
+[ext_resource type="Texture2D" uid="uid://dpfbxbgj2dvid" path="res://Units/UnitOverlay/tileset_unit_overlay.png" id="1_jir78"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qee3y"]
-texture = ExtResource("1_6sib8")
+texture = ExtResource("1_jir78")
 0:0/0 = 0
 
 [resource]

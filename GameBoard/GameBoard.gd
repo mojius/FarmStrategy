@@ -11,6 +11,9 @@ class_name GameBoard extends Node2D
 @onready var _ui_container: CanvasLayer = $UIContainer
 @onready var _highlight: HighlightInfoUI = $UIContainer/HighlightInfoUI
 @onready var _units: Units = $Map/Units
+@onready var _unit_overlay: UnitOverlay = $UnitOverlay
+@onready var _unit_path_arrow: UnitPathArrow = $UnitPathArrow
+@onready var _map: Map = $Map
 
 # 4 directions. For flood fill and other map-related stuff.
 const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
@@ -74,9 +77,7 @@ var _walkable_cells := []
 # The cell we were at before deciding to try and move.
 var _old_cell: Vector2 
 
-@onready var _unit_overlay: UnitOverlay = $UnitOverlay
-@onready var _unit_path_arrow: UnitPathArrow = $UnitPathArrow
-@onready var _map: TileMap = $Map
+
 
 # BD: This is a signal I'm gonna use for now to control the cursor from the gameboard.
 signal cursor_enable(enabled: bool)
@@ -93,6 +94,7 @@ func _ready() -> void:
 	randomize()
 	_active_faction = starting_faction
 	_units.connect("check_should_turn_end", _check_should_turn_end)
+	
 
 	
 
@@ -128,7 +130,7 @@ func _show_movement_info() -> void:
 	_cursor_enabled = true
 	_walkable_cells = _map.get_walkable_cells(_active_unit)
 	_unit_overlay.draw(_walkable_cells)
-	_unit_path_arrow.initialize(_walkable_cells)
+	_unit_path_arrow.initialize(_map)
 
 # Deselects the active unit and gets rid of its... Shtuff. 
 func _deselect_active_unit() -> void:
@@ -161,7 +163,7 @@ func _teleport_active_unit(new_cell: Vector2) -> void:
 # Updates the _units dictionary with the target position for the unit and asks the _active_unit to
 # walk to it.
 func _move_active_unit(new_cell: Vector2, is_player: bool = true) -> void:
-	if _map.is_occupied(new_cell) or not new_cell in _walkable_cells:
+	if _map.is_occupied(new_cell):
 		return
 
 	_old_cell = _active_unit.cell
@@ -184,7 +186,7 @@ func _move_active_unit(new_cell: Vector2, is_player: bool = true) -> void:
 
 # Updates the interactive path's drawing if there's an active and selected unit.
 func _on_cursor_moved(new_cell: Vector2) -> void:
-	
+
 	
 	if _units.has_unit_at(new_cell):
 		_highlight.refresh(_units.get_unit_at(new_cell))
@@ -202,7 +204,7 @@ func _on_cursor_moved(new_cell: Vector2) -> void:
 	# When the cursor moves, and we already have an active unit selected, we want to update the
 	# interactive path drawing.
 	if _active_unit and _active_unit.is_selected and _cursor_enabled:
-		_unit_path_arrow.draw(_active_unit.cell, new_cell)
+		_unit_path_arrow.draw(_active_unit, new_cell)
 		return
 
 # Selects or moves a unit based on where the cursor is.
@@ -211,12 +213,11 @@ func _on_cursor_accept_pressed(cell: Vector2) -> void:
 	# on the board's current state, this interaction means either that we want to select a unit or
 	# that we want to give it a move order.
 	if not _active_unit:
-
-
 		player_select_unit(cell)
-	elif _active_unit.is_selected and not _units.has_unit_at(cell):
-		_active_path = _unit_path_arrow.current_path
-		_move_active_unit(cell)
+	elif _active_unit.is_selected and not _units.has_unit_at(cell) and not _map.get_impassable_at_tile(cell):
+		if cell in _map.breadth_first_search(_active_unit.cell, _active_unit.move_range):
+			_active_path = _unit_path_arrow.current_path
+			_move_active_unit(cell)
 
 # Checks for unhandled input, mainly UI cancel actions. Messy.
 func _unhandled_input(event: InputEvent) -> void:
@@ -279,51 +280,28 @@ func _cpu_turn(faction: String) -> void:
 		_active_unit = unit
 		_active_unit.is_selected = true
 
-		# First get the walkable points, then init a path.
-		_walkable_cells = _map.get_walkable_cells(unit)
-		var pathfinder = PathFinder.new(_walkable_cells)
-		var path := PackedVector2Array()
+		_find_targets_in_range(_active_unit)
+		if (_active_targets.size() > 0):
+			await attack(_active_targets.pick_random())
+			continue
+
+		var path := []
 		path.resize(9999)
 		
-		# TODO
-		# Find the closest unit of the target faction units.
 		for enemy: Unit in target_faction_units:
-			var new_path := pathfinder.calculate_point_path(unit.cell, enemy.cell)
+			var new_path : Array = _map.calculate_path(_active_unit.cell, enemy.cell, false, _active_unit.move_range)
 			if (not new_path.is_empty() and new_path.size() < path.size()):
 				path = new_path
 
-			
-		
 		# If we can't immediately attack an enemy in range or we're right next to them,
 		if path.is_empty() or path.size() == 9999:
 				_deselect_active_unit()
 				continue
-		
-		# Shorten the path so you don't go right ONTO your target. 
-		# Later we scale this by the attack range of the enemy.
-		path.remove_at(path.size() - 1)
-		
-		if (path.size() <= 1):		
-			_find_targets_in_range(_active_unit)
-			if (_active_targets.size() > 0):
-				await attack(_active_targets.pick_random())
-				continue
-		
-		var target_cell: Vector2 = path[path.size() - 1]
-		
-		# If we can't immediately attack an enemy in range or we're right next to them,
-		if path.is_empty() or path.size() == 9999 or path.size() <= 1:
-				_deselect_active_unit()
-				continue
 				
-		if _map.is_occupied(target_cell) or not target_cell in _walkable_cells:
-				_deselect_active_unit()
-				continue
-						
 		_active_path = path
 		
 		# Move the enemy to the last element in the path.
-		_move_active_unit(target_cell, false)
+		_move_active_unit(path[path.size() - 1], false)
 		await unit.walk_finished 
 		
 		_find_targets_in_range(_active_unit)
@@ -331,6 +309,8 @@ func _cpu_turn(faction: String) -> void:
 			await attack(_active_targets.pick_random())
 			continue
 		
+		_deselect_active_unit()
+	
 	_active_faction = target_faction
 	
 
