@@ -78,7 +78,6 @@ func breadth_first_search(start: Vector2, max_distance: int) -> Array:
 
 func calculate_path(pi: PathInfo) -> Array:
 
-	
 	var frontier := PriorityQueue.new()
 	frontier.insert(pi.start_cell, 0)
 	var came_from := {}

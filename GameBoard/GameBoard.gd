@@ -272,7 +272,7 @@ func _cpu_turn(faction: String) -> void:
 	
 	var faction_units := get_tree().get_nodes_in_group(faction)
 	for unit: Unit in faction_units:
-		_cpu_think(unit)
+		await _cpu_think(unit)
 	
 	_active_faction = target_faction
 	
@@ -285,8 +285,8 @@ func _cpu_think(unit: Unit):
 	var target_faction = _get_opposing_faction(_active_unit._faction)
 	var target_faction_units := get_tree().get_nodes_in_group(target_faction)
 	
-	await _try_attack_in_range()
-
+	if (await _try_attack_in_range()):
+			return
 	var path := []
 	path.resize(INVALID_PATH)
 	
@@ -309,10 +309,11 @@ func _cpu_think(unit: Unit):
 	_move_active_unit(path[path.size() - 1], false)
 	await unit.walk_finished 
 	
-	if not (await _try_attack_in_range()):
+	if (await _try_attack_in_range()):
 		return
 	
-	_deselect_active_unit()
+	if (not _active_unit == null):
+		_deselect_active_unit()
 
 func _try_attack_in_range() -> bool:
 	_find_targets_in_range(_active_unit)
