@@ -1,7 +1,6 @@
-[gd_scene load_steps=11 format=3 uid="uid://bafdnuodg35bm"]
+[gd_scene load_steps=10 format=3 uid="uid://bafdnuodg35bm"]
 
-[ext_resource type="Script" path="res://Units/GenericUnit.gd" id="1_mbbt8"]
-[ext_resource type="Resource" uid="uid://3fmjilxx2461" path="res://Units/Plants/DefaultPlantStats.tres" id="2_aqxw8"]
+[ext_resource type="Script" path="res://Units/Plants/Plant.gd" id="1_g2h4m"]
 [ext_resource type="SpriteFrames" uid="uid://cug3d2ydphxkt" path="res://Units/Plants/DefaultPlantSprites.tres" id="2_k8hs7"]
 
 [sub_resource type="Curve2D" id="Curve2D_086rf"]
@@ -95,9 +94,7 @@ _data = {
 
 [node name="GenericPlant" type="Path2D"]
 curve = SubResource("Curve2D_086rf")
-script = ExtResource("1_mbbt8")
-unit_name = "DO NOT USE"
-stats = ExtResource("2_aqxw8")
+script = ExtResource("1_g2h4m")
 
 [node name="PathFollow2D" type="PathFollow2D" parent="."]
 rotates = false

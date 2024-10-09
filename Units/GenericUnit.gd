@@ -6,8 +6,6 @@ class_name GenericUnit extends Path2D
 # Unit stats.
 @export var stats: Resource
 
-
-
 # Intensity of the shake from when the unit takes damage.
 @export var shake_intensity := 50
 

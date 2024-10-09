@@ -1,7 +1,5 @@
-[gd_scene load_steps=11 format=3 uid="uid://doqlhcwkevql6"]
+[gd_scene load_steps=9 format=3 uid="uid://doqlhcwkevql6"]
 
-[ext_resource type="Script" path="res://Units/GenericUnit.gd" id="1_ycmdc"]
-[ext_resource type="Resource" uid="uid://3fmjilxx2461" path="res://Units/Plants/DefaultPlantStats.tres" id="2_joals"]
 [ext_resource type="SpriteFrames" uid="uid://cug3d2ydphxkt" path="res://Units/Plants/DefaultPlantSprites.tres" id="3_qeab5"]
 
 [sub_resource type="Curve2D" id="Curve2D_086rf"]
@@ -95,9 +93,6 @@ _data = {
 
 [node name="HealthPlant" type="Path2D"]
 curve = SubResource("Curve2D_086rf")
-script = ExtResource("1_ycmdc")
-unit_name = "Health Plant"
-stats = ExtResource("2_joals")
 
 [node name="PathFollow2D" type="PathFollow2D" parent="."]
 rotates = false
