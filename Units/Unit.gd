@@ -3,7 +3,7 @@
 # The unit itself is only a visual representation that moves smoothly in the game world.
 # We use the tool mode so the `skin` and `skin_offset` below update in the editor.
 @tool
-class_name Unit extends GenericUnit
+class_name Unit extends GridActor
 
 @export var attack: int = 1
 @export var hit_chance: int = 100

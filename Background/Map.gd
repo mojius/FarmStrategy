@@ -58,7 +58,6 @@ func breadth_first_search(start: Vector2, max_distance: int) -> Array:
 			continue
 			
 		if is_occupied(current) and current != start:
-			print(current, " is occupied!")
 			continue	
 		
 		for direction in DIRECTIONS:
@@ -66,6 +65,7 @@ func breadth_first_search(start: Vector2, max_distance: int) -> Array:
 			if not grid.is_within_bounds(next): continue
 			var new_cost = cost_so_far[current] + get_movement_cost_at_tile(next)
 			if new_cost > max_distance: continue
+			if is_occupied(next): continue
 			if next not in cost_so_far or new_cost < cost_so_far[next]:
 				cost_so_far[next] = new_cost
 				var priority = new_cost
@@ -73,7 +73,7 @@ func breadth_first_search(start: Vector2, max_distance: int) -> Array:
 				came_from[next] = current
 				if not cells.has(next):
 					cells.append(next)
-		
+	
 	return cells
 
 func calculate_path(pi: PathInfo) -> Array:
@@ -155,10 +155,15 @@ func _same_cell(unitA, unitB):
 		return false
 	return (unitA.cell == unitB.cell)
 
-
 # Returns `true` if the cell is occupied by a unit.
-func is_occupied(_cell: Vector2i) -> bool:
-	return true if _units.has_unit_at(_cell) and _units.get_unit_at(_cell).get_faction() != "Player" and _units.get_unit_at(_cell).get_faction() == "Enemy" else false
+func is_occupied(_cell: Vector2i, target_faction: String = "Enemy") -> bool:
+	if _units.has_unit_at(_cell):
+		if _units.get_unit_at(_cell).get_faction() == target_faction:
+			return true
+	if _units.has_plant_at(_cell):
+		return true
+			
+	return false
 
 func _heuristic(a: Vector2i, b: Vector2i):
 	# Manhattan distance on a square grid

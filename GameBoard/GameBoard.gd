@@ -54,6 +54,7 @@ var _active_faction : String = "Player" :
 		await phase.done	
 		
 		if (value == "Player"):
+			
 			_cursor_enabled = true
 		
 		if not value == "Player":

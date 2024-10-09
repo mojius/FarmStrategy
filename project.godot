@@ -23,6 +23,11 @@ config/icon="res://Build/icon.png"
 window/size/viewport_width=1280
 window/size/viewport_height=720
 
+[global_group]
+
+Plant="A plant that a player can grow and/or harvest."
+Unit="An actor that can move and act freely across the map."
+
 [input]
 
 ui_accept={

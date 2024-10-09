@@ -1,10 +1,9 @@
-class_name GenericUnit extends Path2D
-
+class_name GridActor extends Path2D
 
 @export var unit_name: String = "Unit"
 
 # Unit stats.
-@export var stats: Resource
+@export var stats: Stats
 
 # Intensity of the shake from when the unit takes damage.
 @export var shake_intensity := 50

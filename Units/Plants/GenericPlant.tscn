@@ -92,7 +92,7 @@ _data = {
 "selected": SubResource("Animation_1swme")
 }
 
-[node name="GenericPlant" type="Path2D"]
+[node name="GenericPlant" type="Path2D" groups=["Plant"]]
 curve = SubResource("Curve2D_086rf")
 script = ExtResource("1_g2h4m")
 
