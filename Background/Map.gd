@@ -3,7 +3,7 @@
 class_name Map extends TileMap
 
 # Grid resource, giving the node access to the grid size, and more.
-@export var grid: Resource = preload("res://GameBoard/Grid.gd")
+@export var grid: Resource = preload("res://GameBoard/Grid.tres")
 
 @onready var _units: Units = $"Units"
 
@@ -12,6 +12,13 @@ var priorityQueue = preload("res://GameBoard/PriorityQueue.gd").new()
 
 # This constant represents the directions in which a unit can move on the board.
 const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
+
+
+func _ready() -> void:
+	grid.size = get_used_rect().size
+	ResourceSaver.save(grid)
+
+
 # Gets the movement cost of a tile on the map.
 func get_movement_cost_at_tile(cell: Vector2):
 	var data: TileData = get_cell_tile_data(0, cell)
@@ -143,13 +150,6 @@ func calculate_path(start: Vector2, goal: Vector2, is_player: bool, max_distance
 func _get_tiles_in_movement_range(cell: Vector2, movement_range: int) -> PackedVector2Array:
 	var array = breadth_first_search(cell, movement_range)
 	return array
-
-func _get_closest_cell_from_array(cell: Vector2, walkable_cells: Array):
-	var _best_cell = Vector2(-9999, -9999)
-	for _current_cell in walkable_cells:
-		if((_best_cell-cell).length_squared() > (_current_cell-cell).length_squared()):
-			_best_cell = _current_cell
-	return _best_cell
 	
 func _same_cell(unitA, unitB):
 	if(unitA == null or unitB == null):

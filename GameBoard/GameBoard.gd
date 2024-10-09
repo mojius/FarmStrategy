@@ -19,7 +19,7 @@ class_name GameBoard extends Node2D
 const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
 
 # The currently active UI element. Highlight UIs are not part of this.
-var _active_ui: Control : 
+var _active_ui: Control: 
 	set(value):
 		if not (_active_ui == null):
 			var _old_ui = _active_ui
@@ -76,7 +76,6 @@ var _walkable_cells := []
 
 # The cell we were at before deciding to try and move.
 var _old_cell: Vector2 
-
 
 
 # BD: This is a signal I'm gonna use for now to control the cursor from the gameboard.
