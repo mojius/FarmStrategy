@@ -268,51 +268,68 @@ func _refresh_factions() -> void:
 func _cpu_turn(faction: String) -> void:
 	
 	# Change this later.
-	var target_faction := "Player"
-	var target_faction_units := get_tree().get_nodes_in_group(target_faction)
+	var target_faction = _get_opposing_faction(faction)
+
 	
 	var faction_units := get_tree().get_nodes_in_group(faction)
 	for unit: Unit in faction_units:
-		
-		_active_unit = unit
-		_active_unit.is_selected = true
-
-		_find_targets_in_range(_active_unit)
-		if (_active_targets.size() > 0):
-			await attack(_active_targets.pick_random())
-			continue
-
-		var path := []
-		path.resize(9999)
-		
-		for enemy: Unit in target_faction_units:
-			var new_path : Array = _map.calculate_path(_active_unit.cell, enemy.cell, false, _active_unit.move_range)
-			if (not new_path.is_empty() and new_path.size() < path.size()):
-				path = new_path
-
-		# If we can't immediately attack an enemy in range or we're right next to them,
-		if path.is_empty() or path.size() == 9999:
-				_deselect_active_unit()
-				continue
-				
-		_active_path = path
-		
-		# Move the enemy to the last element in the path.
-		_move_active_unit(path[path.size() - 1], false)
-		await unit.walk_finished 
-		
-		_find_targets_in_range(_active_unit)
-		if (_active_targets.size() > 0):
-			await attack(_active_targets.pick_random())
-			continue
-		
-		_deselect_active_unit()
+		_cpu_think(unit)
 	
 	_active_faction = target_faction
 	
 
+func _cpu_think(unit: Unit):
+	_active_unit = unit
+	_active_unit.is_selected = true
+	
+	var target_faction = _get_opposing_faction(_active_unit._faction)
+	var target_faction_units := get_tree().get_nodes_in_group(target_faction)
+	
+	_find_targets_in_range(_active_unit)
+	if (_active_targets.size() > 0):
+		await attack(_active_targets.pick_random())
+		return
+
+	var path := []
+	path.resize(9999)
+	
+	
+	for enemy: Unit in target_faction_units:
+		var new_path : Array = _map.calculate_path(_active_unit.cell, enemy.cell, false, _active_unit.move_range)
+		if (not new_path.is_empty() and new_path.size() < path.size()):
+			path = new_path
+
+	# If we can't immediately attack an enemy in range or we're right next to them,
+	if path.is_empty() or path.size() == 9999:
+			_deselect_active_unit()
+			return
+			
+	_active_path = path
+	
+	# Move the enemy to the last element in the path.
+	_move_active_unit(path[path.size() - 1], false)
+	await unit.walk_finished 
+	
+	_find_targets_in_range(_active_unit)
+	if (_active_targets.size() > 0):
+		await attack(_active_targets.pick_random())
+		return
+	
+	_deselect_active_unit()
 
 
+func _zombie_think(unit: Unit):
+	pass
+
+func _creeper_think(unit: Unit):
+pass
+
+
+func _get_opposing_faction(faction: String):
+	if (faction == "Player" || faction == "Ally"):
+		return "Enemy"
+	elif (faction == "Enemy"):
+		return "Player"
 
 # Adds a menu after moving. Let's make this a builder later or something. This is a mess.
 func _add_post_move_ui():

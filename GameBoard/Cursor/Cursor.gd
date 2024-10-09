@@ -6,6 +6,7 @@ class_name Cursor
 extends Node2D
 
 @onready var arrow = $CursorArrow
+@onready var _camera = %Camera
 
 # We'll use signals to keep the cursor decoupled from other nodes.
 # When the player moves the cursor or wants to interact with a cell, we emit a signal and let
@@ -65,7 +66,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not _enabled: return
 	# If the user moves the mouse, we capture that input and update the node's cell in priority.
 	if event is InputEventMouseMotion:
-		self.cell = grid.calculate_grid_coordinates((event.position / %Camera.zoom) + %Camera.offset)
+		self.cell = grid.calculate_grid_coordinates((event.position / _camera.zoom) + _camera.offset)
 	# If we are already hovering the cell and click on it, or we press the enter key, the player
 	# wants to interact with that cell.
 	elif event.is_action_pressed("click") or event.is_action_pressed("ui_accept"):
@@ -98,6 +99,16 @@ func _unhandled_input(event: InputEvent) -> void:
 		self.cell += Vector2.LEFT
 	elif event.is_action("ui_down"):
 		self.cell += Vector2.DOWN
+	
+	# Currently this doesn't do anything because our maps are just too big.
+	if (grid.calculate_map_position(self.cell).x > (get_viewport_rect().size.x + _camera.offset.x)):
+		_camera.offset.x += grid.cell_size.x
+	if (grid.calculate_map_position(self.cell).x < (_camera.offset.x)):
+		_camera.offset.x -= grid.cell_size.x
+	if (grid.calculate_map_position(self.cell).y > (get_viewport_rect().size.y + _camera.offset.y)):
+		_camera.offset.y += grid.cell_size.y
+	if (grid.calculate_map_position(self.cell).y < (_camera.offset.y)):
+		_camera.offset.y -= grid.cell_size.y		
 
 # We use the draw callback to a rectangular outline the size of a grid cell, with a width of two
 # pixels.

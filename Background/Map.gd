@@ -59,9 +59,7 @@ func breadth_first_search(start: Vector2, max_distance: int) -> Array:
 			
 		if is_occupied(current) and current != start:
 			print(current, " is occupied!")
-			continue
-		
-
+			continue	
 		
 		for direction in DIRECTIONS:
 			var next: Vector2 = current + direction
