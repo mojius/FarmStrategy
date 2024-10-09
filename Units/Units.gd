@@ -6,6 +6,8 @@ class_name Units extends Node2D
 # Mapping of coordinates of a cell to a reference to the unit it contains.
 var _units := {}
 
+var _active_unit: Unit
+
 signal check_should_turn_end
 
 # Called when the node enters the scene tree for the first time.
@@ -31,6 +33,9 @@ func reinitialize() -> void:
 		# Using a dictionary of grid coordinates here.
 		set_unit_at(unit, unit.cell)
 		unit.state_changed.connect(_on_unit_state_changed)
+
+func get_active_unit() -> Unit:
+	return _active_unit
 
 func has_unit_at(cell: Vector2) -> bool:
 	return _units.has(cell)

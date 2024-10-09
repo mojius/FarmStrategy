@@ -43,8 +43,8 @@ func setup(attacker: Unit, target: Unit):
 			health_points.add_child(health_point)
 			if (n < unit.stats.hp):
 				health_point.texture.current_frame = 1
-			
-		box.find_child("UnitName").text = unit.name
+		
+		box.find_child("UnitName").text = unit.unit_name
 		box.find_child("HealthPointsText").text = str(unit.stats.hp)
 		unit_boxes[unit] = box
 		
@@ -118,7 +118,7 @@ func animate_volley(attacker: Unit, target: Unit):
 
 # Calculates the damage a unit should take. Will be more sophisticated later.
 func calculate_damage(attacker: Unit, target: Unit) -> int:
-	return attacker.stats.attack - target.stats.defense
+	return attacker.attack
 
 # Hack to make the text update on the menus.
 func _process(_delta):

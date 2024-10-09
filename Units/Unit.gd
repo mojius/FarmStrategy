@@ -3,19 +3,19 @@
 # The unit itself is only a visual representation that moves smoothly in the game world.
 # We use the tool mode so the `skin` and `skin_offset` below update in the editor.
 @tool
-class_name Unit extends Path2D
+class_name Unit extends GenericUnit
 
-# Singleton with information about the size of the grid.
-@export var grid: Resource = preload("res://GameBoard/Grid.tres")
-
-# Unit stats.
-@export var stats: Resource = preload("res://Units/Stats.tres")
+@export var attack: int = 1
+@export var hit_chance: int = 100
 
 # Distance to which the unit can walk in cells.
 # We'll use this to limit the cells the unit can move to.
 @export var move_range := 6
 
 signal state_changed(unit: Unit)
+
+# Toggles the "selected" animation on the unit.
+var is_selected := false : set = set_is_selected
 
 # BD: These are currently a little convoluted since they're basically conflated with groups. 
 # We can fix it a little later if you want.
@@ -44,13 +44,7 @@ func get_faction() -> String:
 
 var old_pos:Vector2 = Vector2(0,0)
 
-# Intensity of the shake from when the unit takes damage.
-@export var shake_intensity := 50
 
-# Coordinates of the grid's cell the unit is on.
-var cell := Vector2.ZERO : set = set_cell
-# Toggles the "selected" animation on the unit.
-var is_selected := false : set = set_is_selected
 
 # Through its setter function, the `_is_walking` property toggles processing for this unit.
 # See `_set_is_walking()` at the bottom of this code snippet.
@@ -85,10 +79,7 @@ func set_state(state: String) -> void:
 func get_state() -> String:
 	return _state
 
-# When changing the `cell`'s value, we don't want to allow coordinates outside the grid, so we clamp
-# them.
-func set_cell(value: Vector2) -> void:
-	cell = grid.clamp(value)
+
 
 # The `is_selected` property toggles playback of the "selected" animation.
 func set_is_selected(value: bool) -> void:
@@ -134,25 +125,14 @@ func _set_is_walking(value: bool) -> void:
 signal walk_finished
 
 func _ready() -> void:
-	
-	if stats.hp_override:
-		stats.set_hp(stats.override)
-	else:
-		stats.set_hp(stats.max_hp)
+	super._ready()
 	set_faction(_faction)
 	
 	# We'll use the `_process()` callback to move the unit along a path. Unless it has a path to
 	# walk, we don't want it to update every frame. See `walk_along()` below.
 	# set_process(false)
 
-	# The following lines initialize the `cell` property and snap the unit to the cell's center on the map.
-	self.cell = grid.calculate_grid_coordinates(position)
-	position = grid.calculate_map_position(cell)
 
-	if not Engine.is_editor_hint():
-		# We create the curve resource here because creating it in the editor prevents us from
-		# moving the unit.
-		curve = Curve2D.new()
 
 # When active, moves the unit along its `curve` with the help of the PathFollow2D node.
 func _process(delta: float) -> void:

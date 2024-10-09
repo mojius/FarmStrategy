@@ -23,6 +23,6 @@ func refresh(unit: Unit):
 			health_point.texture.current_frame = 1
 	
 	_texture.texture = unit.skin
-	_label_name.text = unit.name
+	_label_name.text = unit.unit_name
 	_hp_text.text = str(unit.stats.hp) + " / " + str(unit.stats.max_hp)
 	

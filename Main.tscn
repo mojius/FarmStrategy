@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://yp3tn4o3ikwt"]
+[gd_scene load_steps=13 format=3 uid="uid://yp3tn4o3ikwt"]
 
 [ext_resource type="PackedScene" uid="uid://de53ukdqyusan" path="res://Background/Map.tscn" id="1_khjdm"]
 [ext_resource type="Script" path="res://GameBoard/GameBoard.gd" id="2_hx4vu"]
@@ -6,19 +6,18 @@
 [ext_resource type="Script" path="res://Background/Map.gd" id="4_jj0xn"]
 [ext_resource type="PackedScene" uid="uid://cefp73bur6v0t" path="res://Units/UnitOverlay/UnitOverlay.tscn" id="4_sf86o"]
 [ext_resource type="PackedScene" uid="uid://bmuue0dlmkw5u" path="res://GameBoard/Cursor/Cursor.tscn" id="4_xbrol"]
-[ext_resource type="Script" path="res://Units.gd" id="5_pc50w"]
+[ext_resource type="Script" path="res://Units/Units.gd" id="5_pc50w"]
 [ext_resource type="PackedScene" uid="uid://bxbdtgea1xr7" path="res://GameBoard/UnitPath.tscn" id="6_xwtul"]
+[ext_resource type="PackedScene" uid="uid://tar6m7pprnsj" path="res://Units/EnemyTypes/Zombie/Zombie.tscn" id="8_ir5lr"]
 [ext_resource type="Script" path="res://Units/Stats.gd" id="10_6aeo4"]
 [ext_resource type="PackedScene" uid="uid://cfemajau2fdnq" path="res://UI/HighlightInfoUI.tscn" id="11_o3oh6"]
 
-[sub_resource type="Resource" id="Resource_ijrtb"]
+[sub_resource type="Resource" id="Resource_a7hcl"]
 resource_local_to_scene = true
 script = ExtResource("10_6aeo4")
 max_hp = 18
-hp_override = false
-override = 0
-attack = 4
-defense = 3
+override_HP = false
+hp_override = 0
 
 [node name="Main" type="Node2D"]
 
@@ -42,19 +41,19 @@ script = ExtResource("4_jj0xn")
 [node name="Units" type="Node2D" parent="GameBoard/Map"]
 script = ExtResource("5_pc50w")
 
-[node name="Kitty" parent="GameBoard/Map/Units" instance=ExtResource("2_n3f5l")]
+[node name="Player" parent="GameBoard/Map/Units" instance=ExtResource("2_n3f5l")]
 modulate = Color(2.959, 0.331, 0.248, 1)
 position = Vector2(136, 104)
-stats = SubResource("Resource_ijrtb")
+attack = 1
+hit_chance = 100
 move_speed = 100
+unit_name = "Player"
+stats = SubResource("Resource_a7hcl")
 
-[node name="Zombie" parent="GameBoard/Map/Units" instance=ExtResource("2_n3f5l")]
-modulate = Color(1.70864e-06, 0.557831, 0.101269, 1)
+[node name="Unit" parent="GameBoard/Map/Units" instance=ExtResource("8_ir5lr")]
 position = Vector2(152, 24)
-stats = SubResource("Resource_ijrtb")
-move_range = 4
-_faction = "Enemy"
-move_speed = 100
+attack = 1
+hit_chance = 100
 
 [node name="UnitOverlay" parent="GameBoard" instance=ExtResource("4_sf86o")]
 

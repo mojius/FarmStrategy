@@ -1,85 +1,79 @@
-[gd_scene load_steps=30 format=3 uid="uid://8rtjsul3c7ym"]
+[gd_scene load_steps=29 format=3 uid="uid://tar6m7pprnsj"]
 
-[ext_resource type="Script" path="res://Units/Unit.gd" id="1_6k3gw"]
-[ext_resource type="Script" path="res://Units/Stats.gd" id="2_l2lxx"]
-[ext_resource type="Texture2D" uid="uid://bm016eftmyd2p" path="res://Placeholder/pl-char-2.png" id="4_uumx4"]
-
-[sub_resource type="Resource" id="Resource_vrhgb"]
-script = ExtResource("2_l2lxx")
-max_hp = 20
-override_HP = false
-hp_override = 0
+[ext_resource type="Script" path="res://Units/Unit.gd" id="1_fq2nh"]
+[ext_resource type="Resource" uid="uid://vfgg8l0d8olw" path="res://Units/EnemyTypes/Zombie/ZombieStats.tres" id="2_qvvx7"]
+[ext_resource type="Texture2D" uid="uid://bm016eftmyd2p" path="res://Placeholder/pl-char-2.png" id="4_pfv33"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_50rvn"]
-atlas = ExtResource("4_uumx4")
+atlas = ExtResource("4_pfv33")
 region = Rect2(67, 1, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3oajx"]
-atlas = ExtResource("4_uumx4")
+atlas = ExtResource("4_pfv33")
 region = Rect2(67, 33, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_p7ff8"]
-atlas = ExtResource("4_uumx4")
+atlas = ExtResource("4_pfv33")
 region = Rect2(67, 65, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_va3nl"]
-atlas = ExtResource("4_uumx4")
+atlas = ExtResource("4_pfv33")
 region = Rect2(67, 97, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_n40lp"]
-atlas = ExtResource("4_uumx4")
+atlas = ExtResource("4_pfv33")
 region = Rect2(34, 1, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5qi68"]
-atlas = ExtResource("4_uumx4")
+atlas = ExtResource("4_pfv33")
 region = Rect2(34, 33, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ka2wl"]
-atlas = ExtResource("4_uumx4")
+atlas = ExtResource("4_pfv33")
 region = Rect2(34, 65, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3ai4c"]
-atlas = ExtResource("4_uumx4")
+atlas = ExtResource("4_pfv33")
 region = Rect2(34, 97, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_q3c0g"]
-atlas = ExtResource("4_uumx4")
+atlas = ExtResource("4_pfv33")
 region = Rect2(1, 33, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1a1pr"]
-atlas = ExtResource("4_uumx4")
+atlas = ExtResource("4_pfv33")
 region = Rect2(1, 65, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_e8m8d"]
-atlas = ExtResource("4_uumx4")
+atlas = ExtResource("4_pfv33")
 region = Rect2(1, 97, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7vxua"]
-atlas = ExtResource("4_uumx4")
+atlas = ExtResource("4_pfv33")
 region = Rect2(133, 33, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0w7dn"]
-atlas = ExtResource("4_uumx4")
+atlas = ExtResource("4_pfv33")
 region = Rect2(133, 65, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5yc1u"]
-atlas = ExtResource("4_uumx4")
+atlas = ExtResource("4_pfv33")
 region = Rect2(133, 97, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_lcrqh"]
-atlas = ExtResource("4_uumx4")
+atlas = ExtResource("4_pfv33")
 region = Rect2(100, 1, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_m2ltu"]
-atlas = ExtResource("4_uumx4")
+atlas = ExtResource("4_pfv33")
 region = Rect2(100, 33, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ruco5"]
-atlas = ExtResource("4_uumx4")
+atlas = ExtResource("4_pfv33")
 region = Rect2(100, 65, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_eu4r5"]
-atlas = ExtResource("4_uumx4")
+atlas = ExtResource("4_pfv33")
 region = Rect2(100, 97, 32, 32)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_byh6x"]
@@ -257,12 +251,16 @@ _data = {
 "selected": SubResource("Animation_1swme")
 }
 
-[node name="Unit" type="Path2D" groups=["Unit"]]
-script = ExtResource("1_6k3gw")
+[node name="Zombie" type="Path2D" groups=["Unit"]]
+modulate = Color(0.0244509, 0.407667, 0.0189213, 1)
+script = ExtResource("1_fq2nh")
 attack = null
 hit_chance = null
-move_speed = 300
-stats = SubResource("Resource_vrhgb")
+move_range = 1
+_faction = "Enemy"
+move_speed = 50
+unit_name = "Zombie"
+stats = ExtResource("2_qvvx7")
 shake_intensity = 5
 
 [node name="PathFollow2D" type="PathFollow2D" parent="."]

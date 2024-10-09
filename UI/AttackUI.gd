@@ -20,8 +20,8 @@ func setup(attack_func: Callable, targets: Array) -> void:
 	
 	for target in targets:
 		var b: Button = Button.new()
-		b.name = target.name
-		b.text = target.name
+		b.name = target.unit_name
+		b.text = target.unit_name
 		b.connect("pressed", attack_func.bind(target))
 		b.connect("pressed", destroy)
 		b.connect("focus_entered", Callable(reposition_fake_cursor).bind(target.cell))
