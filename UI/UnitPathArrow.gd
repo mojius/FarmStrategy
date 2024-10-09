@@ -18,7 +18,8 @@ func initialize(map: Map) -> void:
 # Finds and draws the path between `cell_start` and `cell_end`.
 func draw(unit: Unit, target_cell: Vector2) -> void:
 	clear()
-	current_path = _map.calculate_path(unit.cell, target_cell, true, unit.move_range)
+	var pi: PathInfo = PathInfo.new(unit.cell, target_cell, unit.move_range, true)
+	current_path = _map.calculate_path(pi)
 	set_cells_terrain_connect(0, current_path, 0, 0)
 
 

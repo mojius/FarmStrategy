@@ -269,7 +269,6 @@ func _cpu_turn(faction: String) -> void:
 	
 	# Change this later.
 	var target_faction = _get_opposing_faction(faction)
-
 	
 	var faction_units := get_tree().get_nodes_in_group(faction)
 	for unit: Unit in faction_units:
@@ -281,49 +280,62 @@ func _cpu_turn(faction: String) -> void:
 func _cpu_think(unit: Unit):
 	_active_unit = unit
 	_active_unit.is_selected = true
+	const INVALID_PATH = 9999
 	
 	var target_faction = _get_opposing_faction(_active_unit._faction)
 	var target_faction_units := get_tree().get_nodes_in_group(target_faction)
 	
-	_find_targets_in_range(_active_unit)
-	if (_active_targets.size() > 0):
-		await attack(_active_targets.pick_random())
-		return
+	await _try_attack_in_range()
 
 	var path := []
-	path.resize(9999)
-	
+	path.resize(INVALID_PATH)
 	
 	for enemy: Unit in target_faction_units:
-		var new_path : Array = _map.calculate_path(_active_unit.cell, enemy.cell, false, _active_unit.move_range)
+		var pi: PathInfo = PathInfo.new(_active_unit.cell, enemy.cell, _active_unit.move_range)
+		pi.is_player = false
+		
+		var new_path : Array = _map.calculate_path(pi)
 		if (not new_path.is_empty() and new_path.size() < path.size()):
 			path = new_path
 
 	# If we can't immediately attack an enemy in range or we're right next to them,
-	if path.is_empty() or path.size() == 9999:
+	if path.is_empty() or path.size() == INVALID_PATH:
 			_deselect_active_unit()
 			return
-			
+	
 	_active_path = path
 	
 	# Move the enemy to the last element in the path.
 	_move_active_unit(path[path.size() - 1], false)
 	await unit.walk_finished 
 	
-	_find_targets_in_range(_active_unit)
-	if (_active_targets.size() > 0):
-		await attack(_active_targets.pick_random())
+	if not (await _try_attack_in_range()):
 		return
 	
 	_deselect_active_unit()
 
+func _try_attack_in_range() -> bool:
+	_find_targets_in_range(_active_unit)
+	if (_active_targets.size() > 0):
+		await attack(_active_targets.pick_random())
+		return true
+	return false
 
 func _zombie_think(unit: Unit):
+	# No need to change, but move range is 1.
 	pass
 
 func _creeper_think(unit: Unit):
-pass
+	# No real need to change, but does prioritize plants... and eat them. Need switch statements for what's eaten?
+	pass
 
+func _skeleton_think(unit: Unit):
+	# Something something find_units_in_Range function.
+	pass
+	
+func _spider_think(unit: Unit):
+	# Special function to ignore terrain. Turn into PathingSettings class?
+	pass
 
 func _get_opposing_faction(faction: String):
 	if (faction == "Player" || faction == "Ally"):
