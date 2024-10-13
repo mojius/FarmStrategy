@@ -76,20 +76,20 @@ func breadth_first_search(start: Vector2, max_distance: int) -> Array:
 	
 	return cells
 
-func calculate_path(pi: PathInfo) -> Array:
+func calculate_path(pInfo: PathInfo) -> Array:
 
 	var frontier := PriorityQueue.new()
-	frontier.insert(pi.start_cell, 0)
+	frontier.insert(pInfo.start_cell, 0)
 	var came_from := {}
 	var cost_so_far := {}
-	came_from[pi.start_cell] = null
-	cost_so_far[pi.start_cell] = 0
+	came_from[pInfo.start_cell] = null
+	cost_so_far[pInfo.start_cell] = 0
 	
 	var current: Vector2
 	
 	while not frontier.is_empty():
 		current = frontier.extract()
-		if (current == pi.target_cell):
+		if (current == pInfo.target_cell):
 			break
 			
 		if not grid.is_within_bounds(current):
@@ -99,7 +99,7 @@ func calculate_path(pi: PathInfo) -> Array:
 		if get_impassable_at_tile(current) == true:
 			continue
 			
-		if is_occupied(current) and current != pi.start_cell:
+		if is_occupied(current) and current != pInfo.start_cell:
 			continue
 			
 		for direction in DIRECTIONS:
@@ -109,38 +109,36 @@ func calculate_path(pi: PathInfo) -> Array:
 			var new_cost = cost_so_far[current] + cost
 			if next not in cost_so_far or new_cost < cost_so_far[next]:
 				cost_so_far[next] = new_cost
-				var priority = new_cost + _heuristic(pi.target_cell, next)
+				var priority = new_cost + _heuristic(pInfo.target_cell, next)
 				frontier.insert(next, priority)
 				came_from[next] = current
 
 	
 	var path := []
-	while (current != pi.start_cell):
+	while (current != pInfo.start_cell):
 		path.append(current)
 		current = came_from[current]
 	
-	path.append(pi.start_cell)
+	path.append(pInfo.start_cell)
 	path.reverse()
 	
-	if (path.any(func(vector): return vector == pi.start_cell) and not pi.is_player):
+	if (path.any(func(vector): return vector == pInfo.start_cell) and not pInfo.is_player):
 		path.resize(path.size() - 1)
 	
-	if pi.unlimited_range:
+	if pInfo.unlimited_range:
 		return path
 	
 	# Path shortening algorithm
 	var limited_path := []
 	limited_path.append(path.pop_front())
-	var temp_distance: int = pi.max_distance
+	var temp_distance: int = pInfo.max_distance
 	while (temp_distance > 0 and not path.is_empty()):
 		var temp_cell = path.pop_front()
 		
-		if temp_distance - get_movement_cost_at_tile(temp_cell) < 0 or cost_so_far[temp_cell] > pi.max_distance: continue
+		if temp_distance - get_movement_cost_at_tile(temp_cell) < 0 or cost_so_far[temp_cell] > pInfo.max_distance: continue
 		
 		limited_path.append(temp_cell)
 		temp_distance -= get_movement_cost_at_tile(temp_cell)
-
-
 	
 	return limited_path
 

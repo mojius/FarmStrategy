@@ -6,10 +6,9 @@ class_name GameBoard extends Node2D
 # Once again, we use our grid resource that we explicitly define in the class.
 @export var grid: Grid = preload("res://GameBoard/Grid.tres")
 
-@onready var _action_ui = preload("res://UI/ActionUI.tscn")
-@onready var _attack_ui = preload("res://UI/AttackUI.tscn")
-@onready var _ui_container: CanvasLayer = $UIContainer
-@onready var _highlight: HighlightInfoUI = $UIContainer/HighlightInfoUI
+
+@onready var _ui_manager: UIManager = $UIManager
+@onready var _highlight: HighlightInfoUI = $UIManager/HighlightInfoUI
 @onready var _units: Units = $Map/Units
 @onready var _unit_overlay: UnitOverlay = $UnitOverlay
 @onready var _unit_path_arrow: UnitPathArrow = $UnitPathArrow
@@ -18,20 +17,11 @@ class_name GameBoard extends Node2D
 # 4 directions. For flood fill and other map-related stuff.
 const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
 
-# The currently active UI element. Highlight UIs are not part of this.
-var _active_ui: Control: 
-	set(value):
-		if not (_active_ui == null):
-			var _old_ui = _active_ui
-			_ui_container.remove_child(_old_ui)
-		
-		_active_ui = value
-		if not (value == null):
-			_ui_container.add_child(_active_ui)
-
-			_cursor_enabled = false
-
-
+var ui_functions: Dictionary = {
+	"attack" : Callable(self, "_player_try_attack"),
+	"wait": Callable(self, "_exhaust_active_unit"),
+	"move": Callable(self, "_show_movement_info")
+	}
 
 
 # Phase animation.
@@ -50,7 +40,7 @@ var _active_faction : String = "Player" :
 		
 		_refresh_factions()
 		var phase: Phase = _phase.instantiate()
-		_ui_container.add_child(phase)
+		_ui_manager.add_child(phase)
 		await phase.done	
 		
 		if (value == "Player"):
@@ -96,7 +86,6 @@ func _ready() -> void:
 	_units.connect("check_should_turn_end", _check_should_turn_end)
 	
 
-	
 
 
 # Selects the unit in the `cell` if there's one there.
@@ -116,14 +105,7 @@ func player_select_unit(cell: Vector2) -> void:
 	_cursor_enabled = false
 	
 	_find_targets_in_range(_active_unit)
-	var attackable: Callable = Callable()
-	
-	if (_active_targets.size() > 0):
-		attackable = _add_attack_ui
-	
-	_active_ui = _action_ui.instantiate()
-	_active_ui.setup(_exhaust_active_unit, _show_movement_info, attackable)
-
+	_ui_manager.add_unit_selected_ui(_active_targets.size(), ui_functions)
 
 # Shows the movement arrows and the yellow highlight, yadda yadda.
 func _show_movement_info() -> void:
@@ -182,11 +164,10 @@ func _move_active_unit(new_cell: Vector2, is_player: bool = true) -> void:
 	if not is_player: return
 	
 	_find_targets_in_range(_active_unit)
-	_add_post_move_ui()
+	_ui_manager.add_post_move_ui(_active_targets.size(), ui_functions)
 
 # Updates the interactive path's drawing if there's an active and selected unit.
 func _on_cursor_moved(new_cell: Vector2) -> void:
-
 	
 	if _units.has_unit_at(new_cell):
 		_highlight.refresh(_units.get_unit_at(new_cell))
@@ -230,7 +211,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			if _active_unit.get_state() != "Attacking" and _active_unit.get_state() != "Dead":
 				_deselect_active_unit()
 				_cursor_enabled = true
-				_active_ui = null
+				_ui_manager.clear_active_ui()
 			
 			# Undoes the finalization of the movement
 
@@ -292,10 +273,10 @@ func _cpu_think(unit: Unit):
 	path.resize(INVALID_PATH)
 	
 	for enemy: Unit in target_faction_units:
-		var pi: PathInfo = PathInfo.new(_active_unit.cell, enemy.cell, _active_unit.move_range)
-		pi.is_player = false
+		var pInfo: PathInfo = PathInfo.new(_active_unit.cell, enemy.cell, _active_unit.move_range)
+		pInfo.is_player = false
 		
-		var new_path : Array = _map.calculate_path(pi)
+		var new_path : Array = _map.calculate_path(pInfo)
 		if (not new_path.is_empty() and new_path.size() < path.size()):
 			path = new_path
 
@@ -322,60 +303,31 @@ func _try_attack_in_range() -> bool:
 		await attack(_active_targets.pick_random())
 		return true
 	return false
-
-func _zombie_think(unit: Unit):
-	# No need to change, but move range is 1.
-	pass
-
-func _creeper_think(unit: Unit):
-	# No real need to change, but does prioritize plants... and eat them. Need switch statements for what's eaten?
-	pass
-
-func _skeleton_think(unit: Unit):
-	# Something something find_units_in_Range function.
-	pass
 	
-func _spider_think(unit: Unit):
-	# Special function to ignore terrain. Turn into PathingSettings class?
-	pass
-
 func _get_opposing_faction(faction: String):
 	if (faction == "Player" || faction == "Ally"):
 		return "Enemy"
 	elif (faction == "Enemy"):
 		return "Player"
 
-# Adds a menu after moving. Let's make this a builder later or something. This is a mess.
-func _add_post_move_ui():
-	_active_ui = _action_ui.instantiate()
-	
-	if (_active_targets.size() > 0):
-		_active_ui.setup(_exhaust_active_unit, Callable(), _player_try_attack)
-	else:
-		_active_ui.setup(_exhaust_active_unit)
+
 
 # Player: See if there are targets near you, so that you may attack.
 func _player_try_attack():
 	if (_active_targets.size() <= 0):
 		return
 	
-	_add_attack_ui()
-
-# Adds the attack UI for selecting a target to attack.
-func _add_attack_ui():
-	_active_ui = _attack_ui.instantiate()
-	_active_ui.setup(attack, _active_targets)
+	_ui_manager.add_attack_ui(attack, _active_targets)
 
 func attack(unit: Unit):
 	_active_unit.set_state("Attacking")
 	_cursor_enabled = false
 	var combat_object: CombatObject = load("res://Combat/CombatObject.tscn").instantiate()
-	_active_ui = combat_object
-	_ui_container.add_child(combat_object)
+	_ui_manager.set_active_ui(combat_object) 
 	combat_object.setup(_active_unit, unit)
 	
 	await combat_object.attack_finished
-	_active_ui = null
+	_ui_manager.clear_active_ui()
 	
 	_exhaust_active_unit()
 

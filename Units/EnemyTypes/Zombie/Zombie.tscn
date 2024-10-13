@@ -254,8 +254,6 @@ _data = {
 [node name="Zombie" type="Path2D" groups=["Unit"]]
 modulate = Color(0.0244509, 0.407667, 0.0189213, 1)
 script = ExtResource("1_fq2nh")
-attack = null
-hit_chance = null
 move_range = 1
 _faction = "Enemy"
 move_speed = 50
