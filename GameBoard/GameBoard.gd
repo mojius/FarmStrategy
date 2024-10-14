@@ -10,6 +10,7 @@ class_name GameBoard extends Node2D
 @onready var _ui_manager: UIManager = $UIManager
 @onready var _highlight: HighlightInfoUI = $UIManager/HighlightInfoUI
 @onready var _units: Units = $Map/Units
+@onready var _plants: Plants = $Map/Plants
 @onready var _unit_overlay: UnitOverlay = $UnitOverlay
 @onready var _unit_path_arrow: UnitPathArrow = $UnitPathArrow
 @onready var _map: Map = $Map
@@ -22,8 +23,7 @@ var ui_functions: Dictionary = {
 	"wait": Callable(self, "_exhaust_active_unit"),
 	"move": Callable(self, "_show_movement_info")
 	}
-
-
+	
 # Phase animation.
 @onready var _phase = preload("res://Juice/Phase.tscn")
 
@@ -32,6 +32,7 @@ var ui_functions: Dictionary = {
 # The player's active faction.
 var _active_faction : String = "Player" :
 	set(value):
+		var old_value = _active_faction
 		_cursor_enabled = false
 		
 		_active_faction = value
@@ -44,7 +45,7 @@ var _active_faction : String = "Player" :
 		await phase.done	
 		
 		if (value == "Player"):
-			
+			if (old_value == "Enemy"): _plants.grow_all()
 			_cursor_enabled = true
 		
 		if not value == "Player":

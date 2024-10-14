@@ -1,9 +1,11 @@
 class_name Plant extends GridActor
 
 @export var stages = 5
-var _stage: int = 1: 
+var _stage: int = 0: 
 	set(value):
-		$PathFollow2D/Sprite.frame = _stage - 1
+		_stage = value
+		$PathFollow2D/Sprite.frame = _stage
+		print("Frame is ", $PathFollow2D/Sprite.frame)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -19,7 +21,7 @@ func _on_grown():
 func _on_harvested():
 	pass
 
-func grow(): 
+func grow():
 	_stage = _stage + 1
 	if (_stage == stages):
 		_on_grown()

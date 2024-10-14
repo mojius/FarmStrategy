@@ -6,6 +6,7 @@ class_name Map extends TileMap
 @export var grid: Resource = preload("res://GameBoard/Grid.tres")
 
 @onready var _units: Units = $"Units"
+@onready var _plants: Plants = $"Plants"
 
 var priorityQueue = preload("res://GameBoard/PriorityQueue.gd").new()
 
@@ -158,7 +159,7 @@ func is_occupied(_cell: Vector2i, target_faction: String = "Enemy") -> bool:
 	if _units.has_unit_at(_cell):
 		if _units.get_unit_at(_cell).get_faction() == target_faction:
 			return true
-	if _units.has_plant_at(_cell):
+	if _plants.has_plant_at(_cell):
 		return true
 			
 	return false
