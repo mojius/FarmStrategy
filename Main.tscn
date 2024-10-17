@@ -1,7 +1,7 @@
-[gd_scene load_steps=16 format=3 uid="uid://yp3tn4o3ikwt"]
+[gd_scene load_steps=17 format=3 uid="uid://yp3tn4o3ikwt"]
 
 [ext_resource type="PackedScene" uid="uid://de53ukdqyusan" path="res://Background/Map.tscn" id="1_khjdm"]
-[ext_resource type="Script" path="res://UIManager.gd" id="2_bhmyg"]
+[ext_resource type="Script" path="res://UI/UIManager.gd" id="2_bhmyg"]
 [ext_resource type="Script" path="res://GameBoard/GameBoard.gd" id="2_hx4vu"]
 [ext_resource type="PackedScene" uid="uid://8rtjsul3c7ym" path="res://Units/Unit.tscn" id="2_n3f5l"]
 [ext_resource type="Script" path="res://Background/Map.gd" id="4_jj0xn"]
@@ -14,8 +14,9 @@
 [ext_resource type="Script" path="res://Units/Stats.gd" id="10_6aeo4"]
 [ext_resource type="Script" path="res://Units/Plants/Plants.gd" id="10_o5bo3"]
 [ext_resource type="PackedScene" uid="uid://cfemajau2fdnq" path="res://UI/HighlightInfoUI.tscn" id="11_o3oh6"]
+[ext_resource type="Script" path="res://Units/Factions/FactionManager.gd" id="15_gqkb4"]
 
-[sub_resource type="Resource" id="Resource_v4gnb"]
+[sub_resource type="Resource" id="Resource_eju5e"]
 resource_local_to_scene = true
 script = ExtResource("10_6aeo4")
 max_hp = 18
@@ -50,7 +51,7 @@ modulate = Color(2.959, 0.331, 0.248, 1)
 position = Vector2(136, 104)
 move_speed = 100
 unit_name = "Player"
-stats = SubResource("Resource_v4gnb")
+stats = SubResource("Resource_eju5e")
 
 [node name="Zombie" parent="GameBoard/Map/Units" instance=ExtResource("8_ir5lr")]
 position = Vector2(152, 24)
@@ -77,12 +78,21 @@ texture_filter = 1
 
 [node name="Cursor" parent="GameBoard" instance=ExtResource("4_xbrol")]
 
+[node name="FactionManager" type="Node2D" parent="GameBoard"]
+script = ExtResource("15_gqkb4")
+
 [node name="Camera" type="Camera2D" parent="."]
 unique_name_in_owner = true
 offset = Vector2(-73.21, -8)
 anchor_mode = 0
 zoom = Vector2(3, 3)
 
+[connection signal="cursor_enable" from="GameBoard" to="GameBoard/Cursor" method="_on_cursor_enable"]
 [connection signal="cursor_enable" from="GameBoard" to="GameBoard/Cursor" method="_on_game_board_cursor_enable"]
 [connection signal="accept_pressed" from="GameBoard/Cursor" to="GameBoard" method="_on_cursor_accept_pressed"]
 [connection signal="moved" from="GameBoard/Cursor" to="GameBoard" method="_on_cursor_moved"]
+[connection signal="cpu_turn" from="GameBoard/FactionManager" to="GameBoard" method="_cpu_turn"]
+[connection signal="enable_cursor" from="GameBoard/FactionManager" to="GameBoard/Cursor" method="_on_cursor_enable"]
+[connection signal="enable_cursor" from="GameBoard/FactionManager" to="GameBoard/Cursor" method="_on_faction_manager_enable_cursor"]
+[connection signal="grow_plants" from="GameBoard/FactionManager" to="GameBoard/Map/Plants" method="grow_all"]
+[connection signal="next_phase" from="GameBoard/FactionManager" to="GameBoard/UIManager" method="_on_next_phase"]

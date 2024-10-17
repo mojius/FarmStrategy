@@ -57,3 +57,6 @@ func add_unit_selected_ui(num_targets: int, options: Dictionary):
 		_opt.erase("attack")
 	set_active_ui(_unit_selected_ui.instantiate())
 	_active_ui.setup(_opt)
+
+func _on_next_phase(phase: Phase):
+	add_child(phase)

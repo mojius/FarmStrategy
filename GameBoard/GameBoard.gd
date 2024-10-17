@@ -6,7 +6,7 @@ class_name GameBoard extends Node2D
 # Once again, we use our grid resource that we explicitly define in the class.
 @export var grid: Grid = preload("res://GameBoard/Grid.tres")
 
-
+@onready var _faction_manager : FactionManager = $FactionManager
 @onready var _ui_manager: UIManager = $UIManager
 @onready var _highlight: HighlightInfoUI = $UIManager/HighlightInfoUI
 @onready var _units: Units = $Map/Units
@@ -26,34 +26,9 @@ var ui_functions: Dictionary = {
 	"move": Callable(self, "_show_movement_info")
 	}
 	
-# Phase animation.
-@onready var _phase = preload("res://Juice/Phase.tscn")
-
 @export_enum("Player", "Ally", "Enemy") var starting_faction: String = "Player"
 
 var num_plants: int = 0
-
-# The player's active faction.
-var _active_faction : String = "Player" :
-	set(value):
-		var old_value = _active_faction
-		_cursor_enabled = false
-		
-		_active_faction = value
-		
-		await get_tree().create_timer(0.4).timeout
-		
-		_refresh_factions()
-		var phase: Phase = _phase.instantiate()
-		_ui_manager.add_child(phase)
-		await phase.done	
-		
-		if (value == "Player"):
-			if (old_value == "Enemy"): _plants.grow_all()
-			_cursor_enabled = true
-		
-		if not value == "Player":
-			_cpu_turn(value)
 
 # The board is going to move one unit at a time. When we select a unit, we will save it as our
 # `_active_unit` and populate the walkable cells below. This allows us to clear the unit, the
@@ -83,11 +58,8 @@ var _cursor_enabled: bool :
 # It populates our `_units` dictionary.
 func _ready() -> void:
 	randomize()
-	_active_faction = starting_faction
+	_faction_manager.set_active_faction(starting_faction)
 	_units.connect("check_should_turn_end", _check_should_turn_end)
-	
-
-
 
 # Selects the unit in the `cell` if there's one there.
 func player_select_unit(cell: Vector2) -> void:
@@ -224,26 +196,15 @@ func _exhaust_active_unit() -> void:
 
 	
 # See if everyone in the active faction has moved/acted, and the turn can end.
-func _check_should_turn_end():
-	var faction_units := get_tree().get_nodes_in_group(_active_faction)
+func _check_should_turn_end() -> bool:
+	var active_faction = _faction_manager.get_active_faction()
+	var faction_units := get_tree().get_nodes_in_group(active_faction)
 	for unit: Unit in faction_units:
 		if not unit.get_state() == "Exhausted":
-			return
-
-	_active_faction = "Enemy" if _active_faction == "Player" else "Player"
-	
-# Refresh a particular faction.
-func _refresh_faction(faction: String) -> void:	
-	var faction_units := get_tree().get_nodes_in_group(faction)
-	for unit: Unit in faction_units:
-		unit.set_state("Idle")
-
-# Refresh all factions, taking them from exhausted to normal.
-func _refresh_factions() -> void:
-	_refresh_faction("Player")
-	_refresh_faction("Ally")
-	_refresh_faction("Enemy")
-
+			return false
+	var new_faction: String = "Enemy" if active_faction == "Player" else "Player"
+	_faction_manager.set_active_faction(new_faction)
+	return true
 
 # Have the CPU take a turn. This AI is very rough and simple right now.
 func _cpu_turn(faction: String) -> void:
@@ -255,7 +216,7 @@ func _cpu_turn(faction: String) -> void:
 	for unit: Unit in faction_units:
 		await _cpu_think(unit)
 	
-	_active_faction = target_faction
+	_faction_manager.set_active_faction(target_faction)
 	
 
 func _cpu_think(unit: Unit):
@@ -309,8 +270,6 @@ func _get_opposing_faction(faction: String):
 	elif (faction == "Enemy"):
 		return "Player"
 
-
-
 # Player: See if there are targets near you, so that you may attack.
 func _player_try_attack():
 	var targets = _find_units_in_range(_active_unit)
@@ -325,7 +284,6 @@ func _player_try_harvest():
 		return
 	
 	_ui_manager.add_harvest_ui(harvest, plants)
-
 
 func attack(unit: Unit):
 	_active_unit.set_state("Attacking")

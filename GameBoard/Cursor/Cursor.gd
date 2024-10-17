@@ -135,5 +135,5 @@ func set_cell(value: Vector2) -> void:
 	_timer.start()
 
 
-func _on_game_board_cursor_enable(enabled):
+func _on_cursor_enable(enabled):
 	_enabled = enabled
