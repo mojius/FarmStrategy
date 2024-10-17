@@ -3,6 +3,7 @@ class_name UIManager extends CanvasLayer
 
 @onready var _unit_selected_ui = preload("res://UI/UnitSelectedUI.tscn")
 @onready var _attack_ui = preload("res://UI/AttackUI.tscn")
+@onready var _harvest_ui = preload("res://UI/HarvestUI.tscn")
 signal cursor_enable(enabled: bool)
 
 var _active_ui
@@ -41,6 +42,10 @@ func add_post_move_ui(num_targets: int, options: Dictionary):
 func add_attack_ui(_attack: Callable, _active_targets: Array):
 	set_active_ui(_attack_ui.instantiate())
 	_active_ui.setup(_attack, _active_targets)
+	
+func add_harvest_ui(_harvest: Callable, plants: Array):
+	set_active_ui(_harvest_ui.instantiate())
+	_active_ui.setup(_harvest, plants)
 
 func clear_active_ui() -> void:
 	set_active_ui(null)

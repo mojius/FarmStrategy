@@ -20,6 +20,8 @@ const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
 
 var ui_functions: Dictionary = {
 	"attack" : Callable(self, "_player_try_attack"),
+	"harvest": Callable(self, "_player_try_harvest"),
+	"plant": Callable(self, "_player_try_plant"),
 	"wait": Callable(self, "_exhaust_active_unit"),
 	"move": Callable(self, "_show_movement_info")
 	}
@@ -28,6 +30,8 @@ var ui_functions: Dictionary = {
 @onready var _phase = preload("res://Juice/Phase.tscn")
 
 @export_enum("Player", "Ally", "Enemy") var starting_faction: String = "Player"
+
+var num_plants: int = 0
 
 # The player's active faction.
 var _active_faction : String = "Player" :
@@ -59,16 +63,12 @@ var _active_unit: Unit
 # This is kind of hacky, I know. I think we mostly need it for enemies.
 var _active_path : PackedVector2Array
 
-# An array of targets in range of the active unit.
-var _active_targets : Array = []
-
 # This is an array of all the cells the `_active_unit` can move to. We will populate the array when
 # selecting a unit and use it in the `_move_active_unit()` function below.
 var _walkable_cells := []
 
 # The cell we were at before deciding to try and move.
 var _old_cell: Vector2 
-
 
 # BD: This is a signal I'm gonna use for now to control the cursor from the gameboard.
 signal cursor_enable(enabled: bool)
@@ -105,8 +105,8 @@ func player_select_unit(cell: Vector2) -> void:
 	
 	_cursor_enabled = false
 	
-	_find_targets_in_range(_active_unit)
-	_ui_manager.add_unit_selected_ui(_active_targets.size(), ui_functions)
+	var targets = _find_units_in_range(_active_unit)
+	_ui_manager.add_unit_selected_ui(targets.size(), ui_functions)
 
 # Shows the movement arrows and the yellow highlight, yadda yadda.
 func _show_movement_info() -> void:
@@ -120,9 +120,7 @@ func _deselect_active_unit() -> void:
 	_active_unit.is_selected = false
 	_active_unit = null
 	_clear_movement_info()
-	
-	# Come back to this.
-	_active_targets.clear()
+
 	
 # Clears the movement-related stuff to the active unit. For player units.
 func _clear_movement_info() -> void:
@@ -164,8 +162,8 @@ func _move_active_unit(new_cell: Vector2, is_player: bool = true) -> void:
 	
 	if not is_player: return
 	
-	_find_targets_in_range(_active_unit)
-	_ui_manager.add_post_move_ui(_active_targets.size(), ui_functions)
+	var targets = _find_units_in_range(_active_unit)
+	_ui_manager.add_post_move_ui(targets.size(), ui_functions)
 
 # Updates the interactive path's drawing if there's an active and selected unit.
 func _on_cursor_moved(new_cell: Vector2) -> void:
@@ -299,9 +297,9 @@ func _cpu_think(unit: Unit):
 		_deselect_active_unit()
 
 func _try_attack_in_range() -> bool:
-	_find_targets_in_range(_active_unit)
-	if (_active_targets.size() > 0):
-		await attack(_active_targets.pick_random())
+	var targets: Array = _find_units_in_range(_active_unit)
+	if (targets.size() > 0):
+		await attack(targets.pick_random())
 		return true
 	return false
 	
@@ -315,10 +313,19 @@ func _get_opposing_faction(faction: String):
 
 # Player: See if there are targets near you, so that you may attack.
 func _player_try_attack():
-	if (_active_targets.size() <= 0):
+	var targets = _find_units_in_range(_active_unit)
+	if (targets.size() <= 0):
 		return
 	
-	_ui_manager.add_attack_ui(attack, _active_targets)
+	_ui_manager.add_attack_ui(attack, targets)
+
+func _player_try_harvest():
+	var plants: Array = _find_plants_in_range(_active_unit)
+	if (plants.size() <= 0):
+		return
+	
+	_ui_manager.add_harvest_ui(harvest, plants)
+
 
 func attack(unit: Unit):
 	_active_unit.set_state("Attacking")
@@ -332,14 +339,24 @@ func attack(unit: Unit):
 	
 	_exhaust_active_unit()
 
+func harvest(plant: Plant):
+	_plants.erase_plant_at(plant.cell)
+	num_plants = num_plants+1
+	_exhaust_active_unit()
 
-# Finds all targets in range.
-func _find_targets_in_range(_unit: Unit):
-	_active_targets.clear()
-
+func _find_plants_in_range(_unit: Unit) -> Array:
+	var plants: Array
 	for direction in DIRECTIONS:
 		var coordinates: Vector2 = _unit.cell + direction
-		
-		if _units.has_unit_at(coordinates) and _units.get_unit_at(coordinates).get_faction() == _active_unit.get_enemy_faction() and _units.get_unit_at(coordinates) not in _active_targets:
-			_active_targets.append(_units.get_unit_at(coordinates))
-		
+		if _plants.has_plant_at(coordinates):
+			plants.append(_plants.get_plant_at(coordinates))
+	return plants
+
+# Finds all units in range.
+func _find_units_in_range(_unit: Unit) -> Array:
+	var active_targets: Array
+	for direction in DIRECTIONS:
+		var coordinates: Vector2 = _unit.cell + direction
+		if _units.has_unit_at(coordinates) and _units.get_unit_at(coordinates).get_faction() == _active_unit.get_enemy_faction() and _units.get_unit_at(coordinates) not in active_targets:
+			active_targets.append(_units.get_unit_at(coordinates))
+	return active_targets
