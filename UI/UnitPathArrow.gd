@@ -1,6 +1,6 @@
 # Draws the unit's movement path using an autotile.
 class_name UnitPathArrow
-extends TileMap
+extends TileMapLayer
 
 @export var grid: Resource
 
@@ -20,7 +20,7 @@ func draw(unit: Unit, target_cell: Vector2) -> void:
 	clear()
 	var pInfo: PathInfo = PathInfo.new(unit.cell, target_cell, unit.move_range, true)
 	current_path = _map.calculate_path(pInfo)
-	set_cells_terrain_connect(0, current_path, 0, 0)
+	set_cells_terrain_connect(current_path, 0, 0)
 
 
 

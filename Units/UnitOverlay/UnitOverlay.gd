@@ -1,6 +1,5 @@
 # Draws an overlay over an array of cells.
-class_name UnitOverlay
-extends TileMap
+class_name UnitOverlay extends TileMapLayer
 
 # By making the tilemap half-transparent, using the modulate property, we only have two draw the
 # cells, and we automatically get a nice overlay on the board.
@@ -9,4 +8,4 @@ func draw(cells: Array) -> void:
 	clear()
 	# We loop over the cells and assign them the only tile available in the tileset, tile 0.
 	for cell in cells:
-		set_cell(0, cell, 0, Vector2i(0,0))
+		set_cell(cell, 0, Vector2i(0,0))

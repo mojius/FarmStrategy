@@ -4,9 +4,7 @@
 [ext_resource type="Script" path="res://UI/UnitPathArrow.gd" id="2_an7ww"]
 [ext_resource type="Resource" uid="uid://btvgw2xegan2a" path="res://GameBoard/Grid.tres" id="3_588fd"]
 
-
-[node name="UnitPath" type="TileMap"]
+[node name="UnitPath" type="TileMapLayer"]
 tile_set = ExtResource("1_f7jsk")
-format = 2
 script = ExtResource("2_an7ww")
 grid = ExtResource("3_588fd")
