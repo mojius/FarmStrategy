@@ -1,4 +1,4 @@
-class_name Plants extends Node2D
+class_name PlantManager extends Node2D
 
 var _plants := {}
 const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
@@ -33,9 +33,9 @@ func grow_all() -> void:
 		_plants.get(_plant).grow()
 
 func _find_plants_in_range(_unit: Unit) -> Array:
-	var plants: Array
+	var target_plants: Array
 	for direction in DIRECTIONS:
 		var coordinates: Vector2 = _unit.cell + direction
 		if has_plant_at(coordinates):
-			plants.append(get_plant_at(coordinates))
-	return plants
+			target_plants.append(get_plant_at(coordinates))
+	return target_plants

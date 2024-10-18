@@ -1,6 +1,6 @@
 # Represents and manages the game board. Stores references to entities that are in each cell and
 # tells whether cells are occupied or not.
-# Units can only move around the grid one at a time.
+# units can only move around the grid one at a time.
 class_name GameBoard extends Node2D
 
 # Once again, we use our grid resource that we explicitly define in the class.
@@ -9,8 +9,8 @@ class_name GameBoard extends Node2D
 @onready var _faction_manager : FactionManager = $FactionManager
 @onready var _ui_manager: UIManager = $UIManager
 @onready var _highlight: HighlightInfoUI = $UIManager/HighlightInfoUI
-@onready var _units: Units = $Map/Units
-@onready var _plants: Plants = $Map/Plants
+@onready var _units: UnitManager = $Map/UnitManager
+@onready var _plants: PlantManager = $Map/PlantManager
 @onready var _unit_overlay: UnitOverlay = $UnitOverlay
 @onready var _unit_path_arrow: UnitPathArrow = $UnitPathArrow
 @onready var _map: Map = $Map
@@ -251,11 +251,11 @@ func _player_try_attack():
 	_ui_manager.add_attack_ui(attack, targets)
 
 func _player_try_harvest():
-	var plants: Array = _plants._find_plants_in_range(_active_unit)
-	if (plants.size() <= 0):
+	var target_plants: Array = _plants._find_plants_in_range(_active_unit)
+	if (target_plants.size() <= 0):
 		return
 	
-	_ui_manager.add_harvest_ui(harvest, plants)
+	_ui_manager.add_harvest_ui(harvest, target_plants)
 
 func attack(unit: Unit):
 	_active_unit.set_state("Attacking")

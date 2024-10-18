@@ -5,15 +5,14 @@ class_name Map extends TileMap
 # Grid resource, giving the node access to the grid size, and more.
 @export var grid: Resource = preload("res://GameBoard/Grid.tres")
 
-@onready var _units: Units = $"Units"
-@onready var _plants: Plants = $"Plants"
+@onready var _units: UnitManager = $"UnitManager"
+@onready var _plants: PlantManager = $"PlantManager"
 
 var priorityQueue = preload("res://GameBoard/PriorityQueue.gd").new()
 
 
 # This constant represents the directions in which a unit can move on the board.
 const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
-
 
 func _ready() -> void:
 	grid.size = get_used_rect().size

@@ -1,4 +1,4 @@
-class_name Units extends Node2D
+class_name UnitManager extends Node2D
 
 # We use a dictionary to keep track of the units that are on the board. Each key-value pair in the
 # dictionary represents a unit. The key is the position in grid coordinates, while the value is a

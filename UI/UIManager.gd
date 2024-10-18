@@ -43,9 +43,9 @@ func add_attack_ui(_attack: Callable, _active_targets: Array):
 	set_active_ui(_attack_ui.instantiate())
 	_active_ui.setup(_attack, _active_targets)
 	
-func add_harvest_ui(_harvest: Callable, plants: Array):
+func add_harvest_ui(_harvest: Callable, target_plants: Array):
 	set_active_ui(_harvest_ui.instantiate())
-	_active_ui.setup(_harvest, plants)
+	_active_ui.setup(_harvest, target_plants)
 
 func clear_active_ui() -> void:
 	set_active_ui(null)
