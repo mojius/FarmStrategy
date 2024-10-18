@@ -55,3 +55,20 @@ func _refresh_factions() -> void:
 	_refresh_faction("Player")
 	_refresh_faction("Ally")
 	_refresh_faction("Enemy")
+
+func _get_opposing_faction(faction: String):
+	if (faction == "Player" || faction == "Ally"):
+		return "Enemy"
+	elif (faction == "Enemy"):
+		return "Player"
+
+# See if everyone in the active faction has moved/acted, and the turn can end.
+func _check_should_turn_end() -> bool:
+	var active_faction = get_active_faction()
+	var faction_units := get_tree().get_nodes_in_group(active_faction)
+	for unit: Unit in faction_units:
+		if not unit.get_state() == "Exhausted":
+			return false
+	var new_faction: String = "Enemy" if active_faction == "Player" else "Player"
+	set_active_faction(new_faction)
+	return true

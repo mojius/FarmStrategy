@@ -88,11 +88,9 @@ anchor_mode = 0
 zoom = Vector2(3, 3)
 
 [connection signal="cursor_enable" from="GameBoard" to="GameBoard/Cursor" method="_on_cursor_enable"]
-[connection signal="cursor_enable" from="GameBoard" to="GameBoard/Cursor" method="_on_game_board_cursor_enable"]
 [connection signal="accept_pressed" from="GameBoard/Cursor" to="GameBoard" method="_on_cursor_accept_pressed"]
 [connection signal="moved" from="GameBoard/Cursor" to="GameBoard" method="_on_cursor_moved"]
 [connection signal="cpu_turn" from="GameBoard/FactionManager" to="GameBoard" method="_cpu_turn"]
 [connection signal="enable_cursor" from="GameBoard/FactionManager" to="GameBoard/Cursor" method="_on_cursor_enable"]
-[connection signal="enable_cursor" from="GameBoard/FactionManager" to="GameBoard/Cursor" method="_on_faction_manager_enable_cursor"]
 [connection signal="grow_plants" from="GameBoard/FactionManager" to="GameBoard/Map/Plants" method="grow_all"]
 [connection signal="next_phase" from="GameBoard/FactionManager" to="GameBoard/UIManager" method="_on_next_phase"]

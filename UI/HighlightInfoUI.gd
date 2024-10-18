@@ -6,6 +6,9 @@ class_name HighlightInfoUI extends Control
 @onready var _hp_text = $"%HealthPointsText"
 @onready var _health_point = preload("res://Combat/HealthPoint.tscn")
 
+# Grid resource, giving the node access to the grid size, and more.
+@export var grid: Resource = preload("res://GameBoard/Grid.tres")
+
 func set_bottom_left():
 	set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
 	
@@ -26,3 +29,16 @@ func refresh(unit: Unit):
 	_label_name.text = unit.unit_name
 	_hp_text.text = str(unit.stats.hp) + " / " + str(unit.stats.max_hp)
 	
+func cursor_moved(new_cell: Vector2, unit: Unit):
+	if unit != null:
+		refresh(unit)
+		show()
+	else: hide()
+		
+	var center = get_viewport_rect().size / 2
+	var pixel_pos = grid.calculate_map_position(new_cell)
+	
+	if pixel_pos.x < center.x and pixel_pos.y < center.y:
+		set_bottom_left()
+	else:
+		set_top_left()

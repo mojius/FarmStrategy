@@ -59,7 +59,7 @@ var _cursor_enabled: bool :
 func _ready() -> void:
 	randomize()
 	_faction_manager.set_active_faction(starting_faction)
-	_units.connect("check_should_turn_end", _check_should_turn_end)
+	_units.connect("check_should_turn_end", _faction_manager._check_should_turn_end)
 
 # Selects the unit in the `cell` if there's one there.
 func player_select_unit(cell: Vector2) -> void:
@@ -77,7 +77,7 @@ func player_select_unit(cell: Vector2) -> void:
 	
 	_cursor_enabled = false
 	
-	var targets = _find_units_in_range(_active_unit)
+	var targets = _units._find_units_in_range(_active_unit)
 	_ui_manager.add_unit_selected_ui(targets.size(), ui_functions)
 
 # Shows the movement arrows and the yellow highlight, yadda yadda.
@@ -134,24 +134,13 @@ func _move_active_unit(new_cell: Vector2, is_player: bool = true) -> void:
 	
 	if not is_player: return
 	
-	var targets = _find_units_in_range(_active_unit)
+	var targets = _units._find_units_in_range(_active_unit)
 	_ui_manager.add_post_move_ui(targets.size(), ui_functions)
 
 # Updates the interactive path's drawing if there's an active and selected unit.
 func _on_cursor_moved(new_cell: Vector2) -> void:
-	
-	if _units.has_unit_at(new_cell):
-		_highlight.refresh(_units.get_unit_at(new_cell))
-		_highlight.show()
-	else: _highlight.hide()
-		
-	var center = get_viewport_rect().size / 2
-	var pixel_pos = grid.calculate_map_position(new_cell)
-	
-	if pixel_pos.x < center.x and pixel_pos.y < center.y:
-		_highlight.set_bottom_left()
-	else:
-		_highlight.set_top_left()
+	var unit = _units.get_unit_at(new_cell)
+	_highlight.cursor_moved(new_cell, unit)
 	
 	# When the cursor moves, and we already have an active unit selected, we want to update the
 	# interactive path drawing.
@@ -194,23 +183,12 @@ func _exhaust_active_unit() -> void:
 		_deselect_active_unit()
 
 
-	
-# See if everyone in the active faction has moved/acted, and the turn can end.
-func _check_should_turn_end() -> bool:
-	var active_faction = _faction_manager.get_active_faction()
-	var faction_units := get_tree().get_nodes_in_group(active_faction)
-	for unit: Unit in faction_units:
-		if not unit.get_state() == "Exhausted":
-			return false
-	var new_faction: String = "Enemy" if active_faction == "Player" else "Player"
-	_faction_manager.set_active_faction(new_faction)
-	return true
 
 # Have the CPU take a turn. This AI is very rough and simple right now.
 func _cpu_turn(faction: String) -> void:
 	
 	# Change this later.
-	var target_faction = _get_opposing_faction(faction)
+	var target_faction = _faction_manager._get_opposing_faction(faction)
 	
 	var faction_units := get_tree().get_nodes_in_group(faction)
 	for unit: Unit in faction_units:
@@ -224,7 +202,7 @@ func _cpu_think(unit: Unit):
 	_active_unit.is_selected = true
 	const INVALID_PATH = 9999
 	
-	var target_faction = _get_opposing_faction(_active_unit._faction)
+	var target_faction = _faction_manager._get_opposing_faction(_active_unit._faction)
 	var target_faction_units := get_tree().get_nodes_in_group(target_faction)
 	
 	if (await _try_attack_in_range()):
@@ -258,28 +236,22 @@ func _cpu_think(unit: Unit):
 		_deselect_active_unit()
 
 func _try_attack_in_range() -> bool:
-	var targets: Array = _find_units_in_range(_active_unit)
+	var targets: Array = _units._find_units_in_range(_active_unit)
 	if (targets.size() > 0):
 		await attack(targets.pick_random())
 		return true
 	return false
-	
-func _get_opposing_faction(faction: String):
-	if (faction == "Player" || faction == "Ally"):
-		return "Enemy"
-	elif (faction == "Enemy"):
-		return "Player"
 
 # Player: See if there are targets near you, so that you may attack.
 func _player_try_attack():
-	var targets = _find_units_in_range(_active_unit)
+	var targets = _units._find_units_in_range(_active_unit)
 	if (targets.size() <= 0):
 		return
 	
 	_ui_manager.add_attack_ui(attack, targets)
 
 func _player_try_harvest():
-	var plants: Array = _find_plants_in_range(_active_unit)
+	var plants: Array = _plants._find_plants_in_range(_active_unit)
 	if (plants.size() <= 0):
 		return
 	
@@ -301,20 +273,3 @@ func harvest(plant: Plant):
 	_plants.erase_plant_at(plant.cell)
 	num_plants = num_plants+1
 	_exhaust_active_unit()
-
-func _find_plants_in_range(_unit: Unit) -> Array:
-	var plants: Array
-	for direction in DIRECTIONS:
-		var coordinates: Vector2 = _unit.cell + direction
-		if _plants.has_plant_at(coordinates):
-			plants.append(_plants.get_plant_at(coordinates))
-	return plants
-
-# Finds all units in range.
-func _find_units_in_range(_unit: Unit) -> Array:
-	var active_targets: Array
-	for direction in DIRECTIONS:
-		var coordinates: Vector2 = _unit.cell + direction
-		if _units.has_unit_at(coordinates) and _units.get_unit_at(coordinates).get_faction() == _active_unit.get_enemy_faction() and _units.get_unit_at(coordinates) not in active_targets:
-			active_targets.append(_units.get_unit_at(coordinates))
-	return active_targets

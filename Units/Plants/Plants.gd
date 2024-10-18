@@ -1,6 +1,7 @@
 class_name Plants extends Node2D
 
 var _plants := {}
+const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -18,6 +19,7 @@ func has_plant_at(cell: Vector2) -> bool:
 	return _plants.has(cell)
 
 func get_plant_at(cell: Vector2) -> Plant:
+	if not _plants.has(cell): return null
 	return _plants[cell]
 
 func set_plant_at(plant: Plant, cell: Vector2) -> void:
@@ -29,3 +31,11 @@ func erase_plant_at(cell: Vector2) -> void:
 func grow_all() -> void:
 	for _plant in _plants:
 		_plants.get(_plant).grow()
+
+func _find_plants_in_range(_unit: Unit) -> Array:
+	var plants: Array
+	for direction in DIRECTIONS:
+		var coordinates: Vector2 = _unit.cell + direction
+		if has_plant_at(coordinates):
+			plants.append(get_plant_at(coordinates))
+	return plants
