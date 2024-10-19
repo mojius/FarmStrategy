@@ -50,19 +50,11 @@ func breadth_first_search(start: Vector2, max_distance: int) -> Array:
 	while not frontier.is_empty():
 		current = frontier.extract()
 			
-		if not grid.is_within_bounds(current):
-			continue
-
-		# Check passability here.
-		if get_impassable_at_tile(current) == true:
-			continue
-			
-		if is_occupied(current) and current != start:
-			continue	
+		if not pass_grid_checks(current, start): continue
 		
 		for direction in DIRECTIONS:
 			var next: Vector2 = current + direction
-			if not grid.is_within_bounds(next): continue
+			if not pass_grid_checks(next, start): continue
 			var new_cost = cost_so_far[current] + get_movement_cost_at_tile(next)
 			if new_cost > max_distance: continue
 			if is_occupied(next): continue
@@ -75,6 +67,19 @@ func breadth_first_search(start: Vector2, max_distance: int) -> Array:
 					cells.append(next)
 	
 	return cells
+	
+func pass_grid_checks(cell: Vector2, start: Vector2) -> bool:
+	if not grid.is_within_bounds(cell):
+		return false
+
+	# Check passability here.
+	if get_impassable_at_tile(cell) == true:
+		return false
+
+	if is_occupied(cell) and cell != start:
+		return false
+		
+	return true
 
 func calculate_path(pInfo: PathInfo) -> Array:
 

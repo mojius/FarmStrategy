@@ -141,7 +141,7 @@ func _move_active_unit(new_cell: Vector2, is_player: bool = true) -> void:
 	
 	if not is_player: return
 	
-	var moved: bool = false
+	var moved: bool = true
 	prep_unit_selected_ui(moved)
 	
 # Updates the interactive path's drawing if there's an active and selected unit.
