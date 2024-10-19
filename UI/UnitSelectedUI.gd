@@ -2,8 +2,8 @@ class_name UnitSelectedUI extends PanelContainer
 
 @onready var move: Button = $MarginContainer/VBoxContainer/Move
 @onready var attack: Button = $MarginContainer/VBoxContainer/Attack
-@onready var items: Button = $MarginContainer/VBoxContainer/Items
 @onready var wait: Button = $MarginContainer/VBoxContainer/Wait
+@onready var harvest: Button = $MarginContainer/VBoxContainer/Harvest
 
 signal delete
 
@@ -11,14 +11,16 @@ signal delete
 func setup(options: Dictionary):
 	var move_func: Callable = make_callable(options, "move")
 	var attack_func: Callable = make_callable(options, "attack")
+	var harvest_func: Callable = make_callable(options, "harvest")
 	var wait_func: Callable = make_callable(options, "wait")
 	
-	move.text = tr("MOVE")
-	attack.text = tr("ATTACK")
-	wait.text = tr("WAIT")
-	items.text = tr("MOVE")
+	move.text = "Move"
+	attack.text = "Attack"
+	wait.text = "Wait"
+	harvest.text = "Harvest"
 	bind_button(move, move_func)
 	bind_button(attack, attack_func)
+	bind_button(harvest, harvest_func)
 	bind_button(wait, wait_func)
 
 

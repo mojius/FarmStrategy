@@ -32,10 +32,11 @@ func grow_all() -> void:
 	for _plant in _plants:
 		_plants.get(_plant).grow()
 
-func _find_plants_in_range(_unit: Unit) -> Array:
+func _find_plants_in_range(_unit: Unit, only_harvestable = false) -> Array:
 	var target_plants: Array
 	for direction in DIRECTIONS:
 		var coordinates: Vector2 = _unit.cell + direction
 		if has_plant_at(coordinates):
+			if (only_harvestable and not get_plant_at(coordinates).is_harvestable()): continue
 			target_plants.append(get_plant_at(coordinates))
 	return target_plants

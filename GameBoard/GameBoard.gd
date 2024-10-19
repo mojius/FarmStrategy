@@ -18,6 +18,7 @@ class_name GameBoard extends Node2D
 # 4 directions. For flood fill and other map-related stuff.
 const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
 
+
 var ui_functions: Dictionary = {
 	"attack" : Callable(self, "_player_try_attack"),
 	"harvest": Callable(self, "_player_try_harvest"),
@@ -77,8 +78,14 @@ func player_select_unit(cell: Vector2) -> void:
 	
 	_cursor_enabled = false
 	
-	var targets = _units._find_units_in_range(_active_unit)
-	_ui_manager.add_unit_selected_ui(targets.size(), ui_functions)
+
+	var moved: bool = false
+	prep_unit_selected_ui(moved)
+
+func prep_unit_selected_ui(moved: bool):
+	var seeking_targets: bool = _units._find_units_in_range(_active_unit).size() > 0
+	var seeking_plants: bool = _plants._find_plants_in_range(_active_unit, true).size() > 0
+	_ui_manager.add_unit_selected_ui(moved, seeking_targets ,seeking_plants, ui_functions)
 
 # Shows the movement arrows and the yellow highlight, yadda yadda.
 func _show_movement_info() -> void:
@@ -134,9 +141,9 @@ func _move_active_unit(new_cell: Vector2, is_player: bool = true) -> void:
 	
 	if not is_player: return
 	
-	var targets = _units._find_units_in_range(_active_unit)
-	_ui_manager.add_post_move_ui(targets.size(), ui_functions)
-
+	var moved: bool = false
+	prep_unit_selected_ui(moved)
+	
 # Updates the interactive path's drawing if there's an active and selected unit.
 func _on_cursor_moved(new_cell: Vector2) -> void:
 	var unit = _units.get_unit_at(new_cell)
@@ -251,7 +258,7 @@ func _player_try_attack():
 	_ui_manager.add_attack_ui(attack, targets)
 
 func _player_try_harvest():
-	var target_plants: Array = _plants._find_plants_in_range(_active_unit)
+	var target_plants: Array = _plants._find_plants_in_range(_active_unit, true)
 	if (target_plants.size() <= 0):
 		return
 	
@@ -270,6 +277,7 @@ func attack(unit: Unit):
 	_exhaust_active_unit()
 
 func harvest(plant: Plant):
+	_plants.get_plant_at(plant.cell).queue_free()
 	_plants.erase_plant_at(plant.cell)
 	num_plants = num_plants+1
 	_exhaust_active_unit()

@@ -46,6 +46,7 @@ func set_unit_at(unit: Unit, cell: Vector2) -> void:
 
 func erase_unit_at(cell: Vector2) -> void:
 	_units.erase(cell)
+	
 
 # Callback to check what to do when a unit's state changes.
 func _on_unit_state_changed(unit: Unit) -> void:

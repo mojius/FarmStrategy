@@ -50,11 +50,16 @@ func add_harvest_ui(_harvest: Callable, target_plants: Array):
 func clear_active_ui() -> void:
 	set_active_ui(null)
 
-	
-func add_unit_selected_ui(num_targets: int, options: Dictionary):
+func add_unit_selected_ui(moved: bool, seeking_targets: bool, seeking_plants: bool, options: Dictionary):
 	var _opt: Dictionary = options.duplicate()
-	if (num_targets < 1):
+	
+	if (moved):
+		_opt.erase("move")
+	if (not seeking_targets):
 		_opt.erase("attack")
+	if (not seeking_plants):
+		_opt.erase("harvest")
+		
 	set_active_ui(_unit_selected_ui.instantiate())
 	_active_ui.setup(_opt)
 
