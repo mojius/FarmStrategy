@@ -3,12 +3,12 @@
 class_name Map extends TileMapLayer
 
 # Grid resource, giving the node access to the grid size, and more.
-@export var grid: Resource = preload("res://GameBoard/Grid.tres")
+@export var grid: Resource = preload("res://Map/Grid.tres")
 
 @onready var _units: UnitManager = $"UnitManager"
 @onready var _plants: PlantManager = $"PlantManager"
 
-var priorityQueue = preload("res://GameBoard/PriorityQueue.gd").new()
+var priorityQueue = preload("res://Map/PriorityQueue.gd").new()
 
 
 # This constant represents the directions in which a unit can move on the board.

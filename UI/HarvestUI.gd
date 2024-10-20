@@ -5,7 +5,7 @@ var buttons: Array = []
 
 @onready var vbox: VBoxContainer = $"MarginContainer/VBoxContainer"
 @onready var cursor_prefab := preload("res://UI/FakeCursor.tscn")
-@export var grid: Resource = preload("res://GameBoard/Grid.tres")
+@export var grid: Resource = preload("res://Map/Grid.tres")
 
 var fake_cursor: Node2D
 

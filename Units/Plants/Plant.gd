@@ -5,7 +5,6 @@ var _stage: int = 0:
 	set(value):
 		_stage = value
 		$PathFollow2D/Sprite.frame = _stage
-		print("Frame is ", $PathFollow2D/Sprite.frame)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

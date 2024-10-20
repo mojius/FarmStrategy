@@ -9,7 +9,7 @@ class_name GridActor extends Path2D
 @export var shake_intensity := 50
 
 # Singleton with information about the size of the grid.
-@export var grid: Resource = preload("res://GameBoard/Grid.tres")
+@export var grid: Resource = preload("res://Map/Grid.tres")
 
 # Coordinates of the grid's cell the unit is on.
 var cell := Vector2.ZERO : set = set_cell

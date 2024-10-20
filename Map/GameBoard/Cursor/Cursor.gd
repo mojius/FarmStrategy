@@ -18,7 +18,7 @@ signal accept_pressed(cell)
 signal moved(new_cell)
 
 # Grid resource, giving the node access to the grid size, and more.
-@export var grid: Resource = preload("res://GameBoard/Grid.tres")
+@export var grid: Resource = preload("res://Map/Grid.tres")
 
 # Time before the cursor can move again in seconds.
 # You can see how we use it in the unhandled input function below.

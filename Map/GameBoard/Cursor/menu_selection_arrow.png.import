@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b6b1ghw0200hw"
-path="res://.godot/imported/arrows.png-af8acde3967023772a8007fee4165c60.ctex"
+uid="uid://ccof4xwgdx8de"
+path="res://.godot/imported/menu_selection_arrow.png-28f03f91f5d0eb262e30954600baf466.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://UI/arrows.png"
-dest_files=["res://.godot/imported/arrows.png-af8acde3967023772a8007fee4165c60.ctex"]
+source_file="res://Map/GameBoard/Cursor/menu_selection_arrow.png"
+dest_files=["res://.godot/imported/menu_selection_arrow.png-28f03f91f5d0eb262e30954600baf466.ctex"]
 
 [params]
 

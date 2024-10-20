@@ -4,7 +4,7 @@
 class_name GameBoard extends Node2D
 
 # Once again, we use our grid resource that we explicitly define in the class.
-@export var grid: Grid = preload("res://GameBoard/Grid.tres")
+@export var grid: Grid = preload("res://Map/Grid.tres")
 
 @onready var _faction_manager : FactionManager = $FactionManager
 @onready var _ui_manager: UIManager = $UIManager

@@ -7,7 +7,7 @@ class_name HighlightInfoUI extends Control
 @onready var _health_point = preload("res://Combat/HealthPoint.tscn")
 
 # Grid resource, giving the node access to the grid size, and more.
-@export var grid: Resource = preload("res://GameBoard/Grid.tres")
+@export var grid: Resource = preload("res://Map/Grid.tres")
 
 func set_bottom_left():
 	set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)

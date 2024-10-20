@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bxa20r0yxywlr"]
 
-[ext_resource type="Texture2D" uid="uid://ccof4xwgdx8de" path="res://GameBoard/Cursor/menu_selection_arrow.png" id="3_povlm"]
+[ext_resource type="Texture2D" uid="uid://ccof4xwgdx8de" path="res://Map/GameBoard/Cursor/menu_selection_arrow.png" id="3_povlm"]
 
 [node name="FakeCursor" type="Node2D"]
 
