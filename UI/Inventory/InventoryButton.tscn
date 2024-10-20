@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://23xetjokkskt"]
+
+[ext_resource type="Theme" uid="uid://f3cwprpras7p" path="res://UI/Theme/theme.tres" id="1_sl1xs"]
+
+[node name="InventoryButton" type="Button"]
+theme = ExtResource("1_sl1xs")
+text = "Test"

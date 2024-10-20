@@ -3,3 +3,4 @@
 [resource]
 font_names = PackedStringArray("Mozart NBP")
 multichannel_signed_distance_field = true
+msdf_size = -27

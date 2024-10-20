@@ -1,7 +1,7 @@
 # Represents and manages the game board. Stores references to entities that are in each cell and
 # tells whether cells are occupied or not.
 # units can only move around the grid one at a time.
-class_name GameBoard extends Node2D
+class_name PlayerManager extends Node2D
 
 # Once again, we use our grid resource that we explicitly define in the class.
 @export var grid: Grid = preload("res://Map/Grid.tres")
@@ -46,7 +46,7 @@ var _walkable_cells := []
 # The cell we were at before deciding to try and move.
 var _old_cell: Vector2 
 
-# BD: This is a signal I'm gonna use for now to control the cursor from the gameboard.
+# BD: This is a signal I'm gonna use for now to control the cursor from the player manager.
 signal cursor_enable(enabled: bool)
 
 var _cursor_enabled: bool :
