@@ -171,3 +171,16 @@ func is_occupied(_cell: Vector2i, target_faction: String = "Enemy") -> bool:
 func _heuristic(a: Vector2i, b: Vector2i):
 	# Manhattan distance on a square grid
 	return abs(a.x - b.x) + abs(a.y - b.y)
+
+func find_soil_in_range(unit: Unit):
+	var open_spots: Array = []
+	for direction in DIRECTIONS:
+		var cell = unit.cell + direction
+		if (_units.has_unit_at(cell) 
+		or _plants.has_plant_at(cell) 
+		or get_impassable_at_tile(cell)
+		or get_movement_cost_at_tile(cell) > 1):
+			continue
+		open_spots.append(cell)
+		
+	return open_spots

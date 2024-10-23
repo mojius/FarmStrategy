@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="Seed" load_steps=5 format=3 uid="uid://dfkbx4htor8td"]
+
+[ext_resource type="Script" path="res://Item/Seed.gd" id="1_00cwk"]
+[ext_resource type="PackedScene" uid="uid://doqlhcwkevql6" path="res://Units/Plants/HealthPlant/HealthPlant.tscn" id="1_mco2b"]
+[ext_resource type="Texture2D" uid="uid://c67rdvdrwrsfa" path="res://Placeholder/plants.png" id="2_pa0eh"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7lbry"]
+atlas = ExtResource("2_pa0eh")
+region = Rect2(80, 0, 16, 16)
+
+[resource]
+script = ExtResource("1_00cwk")
+corresponding_plant = ExtResource("1_mco2b")
+icon = SubResource("AtlasTexture_7lbry")
+item_name = "Health Plant Seed"

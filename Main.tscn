@@ -1,14 +1,16 @@
-[gd_scene load_steps=17 format=4 uid="uid://yp3tn4o3ikwt"]
+[gd_scene load_steps=19 format=4 uid="uid://yp3tn4o3ikwt"]
 
 [ext_resource type="PackedScene" uid="uid://de53ukdqyusan" path="res://Background/Map.tscn" id="1_khjdm"]
 [ext_resource type="Script" path="res://UI/UIManager.gd" id="2_bhmyg"]
-[ext_resource type="Script" path="res://Map/GameBoard/GameBoard.gd" id="2_hx4vu"]
+[ext_resource type="Script" path="res://Item/Item.gd" id="2_gm7pn"]
+[ext_resource type="Script" path="res://Map/PlayerManager/PlayerManager.gd" id="2_hx4vu"]
 [ext_resource type="PackedScene" uid="uid://8rtjsul3c7ym" path="res://Units/Unit.tscn" id="2_n3f5l"]
+[ext_resource type="Resource" uid="uid://dfkbx4htor8td" path="res://Item/HealthPlantSeed.tres" id="3_3iw78"]
 [ext_resource type="Script" path="res://Background/Map.gd" id="4_jj0xn"]
 [ext_resource type="PackedScene" uid="uid://cefp73bur6v0t" path="res://Units/UnitOverlay/UnitOverlay.tscn" id="4_sf86o"]
-[ext_resource type="PackedScene" uid="uid://bmuue0dlmkw5u" path="res://Map/GameBoard/Cursor/Cursor.tscn" id="4_xbrol"]
+[ext_resource type="PackedScene" uid="uid://bmuue0dlmkw5u" path="res://Map/PlayerManager/Cursor/Cursor.tscn" id="4_xbrol"]
 [ext_resource type="Script" path="res://Units/UnitManager.gd" id="5_pc50w"]
-[ext_resource type="PackedScene" uid="uid://bxbdtgea1xr7" path="res://Map/GameBoard/UnitPath.tscn" id="6_xwtul"]
+[ext_resource type="PackedScene" uid="uid://bxbdtgea1xr7" path="res://Map/PlayerManager/UnitPath.tscn" id="6_xwtul"]
 [ext_resource type="PackedScene" uid="uid://tar6m7pprnsj" path="res://Units/EnemyTypes/Zombie/Zombie.tscn" id="8_ir5lr"]
 [ext_resource type="PackedScene" uid="uid://doqlhcwkevql6" path="res://Units/Plants/HealthPlant/HealthPlant.tscn" id="9_b5d0w"]
 [ext_resource type="Script" path="res://Units/Stats.gd" id="10_6aeo4"]
@@ -16,7 +18,7 @@
 [ext_resource type="PackedScene" uid="uid://cfemajau2fdnq" path="res://UI/HighlightInfoUI.tscn" id="11_o3oh6"]
 [ext_resource type="Script" path="res://Units/Factions/FactionManager.gd" id="15_gqkb4"]
 
-[sub_resource type="Resource" id="Resource_1aix1"]
+[sub_resource type="Resource" id="Resource_3eqc0"]
 resource_local_to_scene = true
 script = ExtResource("10_6aeo4")
 max_hp = 18
@@ -28,6 +30,7 @@ hp_override = 0
 [node name="PlayerManager" type="Node2D" parent="."]
 y_sort_enabled = true
 script = ExtResource("2_hx4vu")
+inventory = Array[ExtResource("2_gm7pn")]([ExtResource("3_3iw78")])
 starting_faction = "Enemy"
 
 [node name="UIManager" type="CanvasLayer" parent="PlayerManager"]
@@ -48,10 +51,10 @@ script = ExtResource("5_pc50w")
 
 [node name="Player" parent="PlayerManager/Map/UnitManager" instance=ExtResource("2_n3f5l")]
 modulate = Color(2.959, 0.331, 0.248, 1)
-position = Vector2(136, 104)
+position = Vector2(152, 88)
 move_speed = 100
 unit_name = "Player"
-stats = SubResource("Resource_1aix1")
+stats = SubResource("Resource_3eqc0")
 
 [node name="Zombie" parent="PlayerManager/Map/UnitManager" instance=ExtResource("8_ir5lr")]
 position = Vector2(152, 24)
@@ -88,6 +91,7 @@ anchor_mode = 0
 zoom = Vector2(3, 3)
 
 [connection signal="cursor_enable" from="PlayerManager" to="PlayerManager/Cursor" method="_on_cursor_enable"]
+[connection signal="try_plant" from="PlayerManager/Map/UnitManager/Player" to="PlayerManager" method="_on_try_plant"]
 [connection signal="accept_pressed" from="PlayerManager/Cursor" to="PlayerManager" method="_on_cursor_accept_pressed"]
 [connection signal="moved" from="PlayerManager/Cursor" to="PlayerManager" method="_on_cursor_moved"]
 [connection signal="cpu_turn" from="PlayerManager/FactionManager" to="PlayerManager" method="_cpu_turn"]

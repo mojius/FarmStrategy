@@ -7,10 +7,6 @@ func _ready() -> void:
 	unit_name = "Health Plant"
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
-
 func _on_grown():
 	pass
 

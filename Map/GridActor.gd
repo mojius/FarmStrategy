@@ -22,9 +22,9 @@ func set_cell(value: Vector2) -> void:
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	if stats.hp_override:
-		stats.set_hp(stats.override)
+		stats.hp = stats.hp_override
 	else:
-		stats.set_hp(stats.max_hp)
+		stats.hp = stats.max_hp
 		
 	# The following lines initialize the `cell` property and snap the unit to the cell's center on the map.
 	self.cell = grid.calculate_grid_coordinates(position)

@@ -8,16 +8,14 @@ var _stage: int = 0:
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	await super._ready()
+	super._ready()
 	stages = stages - 1
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
-
+# ABSTRACT
 func _on_grown():
 	pass
-
+	
+# ABSTRACT
 func _on_harvested():
 	pass
 

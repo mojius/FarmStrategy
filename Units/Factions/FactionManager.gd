@@ -8,14 +8,6 @@ signal next_phase(Phase)
 signal grow_plants
 signal cpu_turn(String)
 
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
 
 # The player's active faction.
 var _active_faction : String = "Player" : set = set_active_faction, get = get_active_faction

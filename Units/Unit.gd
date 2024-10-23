@@ -13,6 +13,7 @@ class_name Unit extends GridActor
 @export var move_range := 6
 
 signal state_changed(unit: Unit)
+signal try_plant(item: Item)
 
 # Toggles the "selected" animation on the unit.
 var is_selected := false : set = set_is_selected

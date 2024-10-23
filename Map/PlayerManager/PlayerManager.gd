@@ -6,6 +6,9 @@ class_name PlayerManager extends Node2D
 # Once again, we use our grid resource that we explicitly define in the class.
 @export var grid: Grid = preload("res://Map/Grid.tres")
 
+@onready var combat_object = preload("res://Combat/CombatObject.tscn")
+
+
 @onready var _faction_manager : FactionManager = $FactionManager
 @onready var _ui_manager: UIManager = $UIManager
 @onready var _highlight: HighlightInfoUI = $UIManager/HighlightInfoUI
@@ -18,18 +21,17 @@ class_name PlayerManager extends Node2D
 # 4 directions. For flood fill and other map-related stuff.
 const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
 
+@export var inventory: Array[Item] = []
 
 var ui_functions: Dictionary = {
 	"attack" : Callable(self, "_player_try_attack"),
 	"harvest": Callable(self, "_player_try_harvest"),
-	"plant": Callable(self, "_player_try_plant"),
+	"items": Callable(self, "_open_inventory"),
 	"wait": Callable(self, "_exhaust_active_unit"),
 	"move": Callable(self, "_show_movement_info")
 	}
 	
 @export_enum("Player", "Ally", "Enemy") var starting_faction: String = "Player"
-
-var num_plants: int = 0
 
 # The board is going to move one unit at a time. When we select a unit, we will save it as our
 # `_active_unit` and populate the walkable cells below. This allows us to clear the unit, the
@@ -94,6 +96,10 @@ func _show_movement_info() -> void:
 	_unit_overlay.draw(_walkable_cells)
 	_unit_path_arrow.initialize(_map)
 
+func _open_inventory() -> void:
+	_ui_manager.add_inventory_ui(inventory, _active_unit)
+
+
 # Deselects the active unit and gets rid of its... Shtuff. 
 func _deselect_active_unit() -> void:
 	_active_unit.is_selected = false
@@ -107,7 +113,6 @@ func _clear_movement_info() -> void:
 	_unit_path_arrow.stop()
 	_walkable_cells.clear()
 
-	
 # Teleports a unit instantly to a position. Used for undoing movement for now.
 func _teleport_active_unit(new_cell: Vector2) -> void:
 	if _map.is_occupied(new_cell):
@@ -118,7 +123,6 @@ func _teleport_active_unit(new_cell: Vector2) -> void:
 	
 	_active_unit.position = grid.calculate_map_position(new_cell)
 	_active_unit.cell = new_cell
-
 
 # Updates the _units dictionary with the target position for the unit and asks the _active_unit to
 # walk to it.
@@ -267,17 +271,25 @@ func _player_try_harvest():
 func attack(unit: Unit):
 	_active_unit.set_state("Attacking")
 	_cursor_enabled = false
-	var combat_object: CombatObject = load("res://Combat/CombatObject.tscn").instantiate()
-	_ui_manager.set_active_ui(combat_object) 
-	combat_object.setup(_active_unit, unit)
-	
-	await combat_object.attack_finished
+	await _ui_manager.run_combat_ui(_active_unit, unit)
 	_ui_manager.clear_active_ui()
 	
 	_exhaust_active_unit()
 
 func harvest(plant: Plant):
-	_plants.get_plant_at(plant.cell).queue_free()
+	inventory.append(plant)
+	plant.queue_free()
 	_plants.erase_plant_at(plant.cell)
-	num_plants = num_plants+1
 	_exhaust_active_unit()
+
+
+func _on_try_plant(_seed: Seed) -> void:
+	var plantable_spots: Array = _map.find_soil_in_range(_active_unit)
+	if plantable_spots.size() > 0:
+		_ui_manager.add_plant_ui(plant, _seed, plantable_spots)
+
+func plant(cell: Vector2i, _seed: Seed):
+	inventory.erase(inventory.find(_seed))
+	var new_plant = _seed.corresponding_plant.instantiate()
+	_plants.set_plant_at(new_plant, cell)
+	_plants.add_child(new_plant)

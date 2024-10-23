@@ -46,10 +46,14 @@ text = "Attack"
 visible = false
 custom_minimum_size = Vector2(100, 60)
 layout_mode = 2
+text = "Harvest"
+
+[node name="Items" type="Button" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(100, 60)
+layout_mode = 2
 text = "Items"
 
 [node name="Wait" type="Button" parent="MarginContainer/VBoxContainer"]
-visible = false
 custom_minimum_size = Vector2(100, 60)
 layout_mode = 2
 text = "Wait"
