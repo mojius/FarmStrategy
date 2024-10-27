@@ -1,19 +1,18 @@
 [gd_scene load_steps=3 format=3 uid="uid://bmuue0dlmkw5u"]
 
-[ext_resource type="Texture2D" uid="uid://ccof4xwgdx8de" path="res://Map/PlayerManager/Cursor/menu_selection_arrow.png" id="1_0qx76"]
 [ext_resource type="Script" path="res://Map/PlayerManager/Cursor/Cursor.gd" id="1_gblby"]
+[ext_resource type="SpriteFrames" uid="uid://d25ary0x8c7pq" path="res://UI/Sprites/CursorFrames.tres" id="3_8xhtu"]
 
 [node name="Cursor" type="Node2D"]
 script = ExtResource("1_gblby")
 ui_cooldown = 0.01
 
-[node name="CursorArrow" type="Sprite2D" parent="."]
-texture_filter = 1
-position = Vector2(19, -18)
-rotation = -0.785398
-scale = Vector2(0.2, 0.2)
-texture = ExtResource("1_0qx76")
-
 [node name="Timer" type="Timer" parent="."]
 wait_time = 0.01
 one_shot = true
+
+[node name="RectangleSprite" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+sprite_frames = ExtResource("3_8xhtu")
+autoplay = "default"
+frame_progress = 0.331573

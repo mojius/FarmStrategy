@@ -5,7 +5,7 @@
 class_name Cursor
 extends Node2D
 
-@onready var arrow = $CursorArrow
+@onready var rectangle = $RectangleSprite
 @onready var _camera = %Camera
 
 # We'll use signals to keep the cursor decoupled from other nodes.
@@ -29,10 +29,10 @@ var _enabled := true:
 		_enabled = value
 
 		if _enabled:
-			arrow.show()
+			rectangle.show()
 			queue_redraw()
 		elif not _enabled:
-			arrow.hide()
+			rectangle.hide()
 			
 
 ## Coordinates of the current cell the cursor is hovering.
@@ -110,13 +110,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if (grid.calculate_map_position(self.cell).y < (_camera.offset.y)):
 		_camera.offset.y -= grid.cell_size.y		
 
-# We use the draw callback to a rectangular outline the size of a grid cell, with a width of two
-# pixels.
-func _draw() -> void:
-	if not _enabled: return
-	# Rect2 is built from the position of the rectangle's top-left corner and its size. To draw the
-	# square around the cell, the start position needs to be `-grid.cell_size / 2`.
-	draw_rect(Rect2(-grid.cell_size / 2, grid.cell_size), Color.ALICE_BLUE, false, 2.0)
+
 
 # This function controls the cursor's current position.
 func set_cell(value: Vector2) -> void:

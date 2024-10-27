@@ -87,7 +87,10 @@ func player_select_unit(cell: Vector2) -> void:
 func prep_unit_selected_ui(moved: bool):
 	var seeking_targets: bool = _units._find_units_in_range(_active_unit).size() > 0
 	var seeking_plants: bool = _plants._find_plants_in_range(_active_unit, true).size() > 0
-	_ui_manager.add_unit_selected_ui(moved, seeking_targets ,seeking_plants, ui_functions)
+	var empty_inventory: bool = inventory.is_empty()
+	
+	_ui_manager.add_unit_selected_ui(moved, seeking_targets, seeking_plants, empty_inventory, ui_functions)
+	
 
 # Shows the movement arrows and the yellow highlight, yadda yadda.
 func _show_movement_info() -> void:
@@ -276,10 +279,10 @@ func attack(unit: Unit):
 	
 	_exhaust_active_unit()
 
-func harvest(plant: Plant):
-	inventory.append(plant)
-	plant.queue_free()
-	_plants.erase_plant_at(plant.cell)
+func harvest(_plant: Plant):
+	inventory.append(_plant.corresponding_fruit)
+	_plant.queue_free()
+	_plants.erase_plant_at(_plant.cell)
 	_exhaust_active_unit()
 
 
@@ -288,8 +291,15 @@ func _on_try_plant(_seed: Seed) -> void:
 	if plantable_spots.size() > 0:
 		_ui_manager.add_plant_ui(plant, _seed, plantable_spots)
 
-func plant(cell: Vector2i, _seed: Seed):
-	inventory.erase(inventory.find(_seed))
+func plant(cell, _seed: Seed):
+	inventory.erase(_seed)
 	var new_plant = _seed.corresponding_plant.instantiate()
+	new_plant.position = grid.calculate_map_position(cell)
 	_plants.set_plant_at(new_plant, cell)
 	_plants.add_child(new_plant)
+	_exhaust_active_unit()
+
+func _on_item_used(item: Item) -> void:
+	inventory.erase(item)
+	_ui_manager.clear_active_ui()
+	_exhaust_active_unit()

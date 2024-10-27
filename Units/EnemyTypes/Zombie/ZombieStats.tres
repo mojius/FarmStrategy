@@ -7,5 +7,3 @@ script = ExtResource("1_ou16d")
 max_hp = 10
 override_HP = false
 hp_override = 0
-attack = 6
-hit_chance = 67

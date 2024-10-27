@@ -14,6 +14,7 @@ class_name Unit extends GridActor
 
 signal state_changed(unit: Unit)
 signal try_plant(item: Item)
+signal item_used(item: Item)
 
 # Toggles the "selected" animation on the unit.
 var is_selected := false : set = set_is_selected
@@ -229,3 +230,6 @@ func die():
 
 func shake():
 	_shake_timer.start()
+	
+func heal_damage(amount: int):
+	stats.hp = clamp(stats.hp + amount, 1, stats.max_hp)

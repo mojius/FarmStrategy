@@ -64,20 +64,21 @@ func run_combat_ui(attacker: Unit, target: Unit):
 func add_inventory_ui(inventory: Array[Item], unit: Unit):
 	_set_active_ui(_inventory_ui.instantiate())
 	_active_ui.setup(inventory, unit)
-	
 
 func clear_active_ui() -> void:
 	_set_active_ui(null)
 
-func add_unit_selected_ui(moved: bool, seeking_targets: bool, seeking_plants: bool, options: Dictionary):
+func add_unit_selected_ui(moved: bool, seeking_targets: bool, seeking_plants: bool, empty_inventory: bool, options: Dictionary):
 	var _opt: Dictionary = options.duplicate()
-	
+
 	if (moved):
 		_opt.erase("move")
 	if (not seeking_targets):
 		_opt.erase("attack")
 	if (not seeking_plants):
 		_opt.erase("harvest")
+	if (empty_inventory):
+		_opt.erase("items")
 		
 	_set_active_ui(_unit_selected_ui.instantiate())
 	_active_ui.setup(_opt)

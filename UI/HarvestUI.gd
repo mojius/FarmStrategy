@@ -16,6 +16,7 @@ func setup(harvest_func: Callable, targets: Array) -> void:
 	
 	_targets = targets
 	
+	var arr: Array[Button] = []
 	for target in targets:
 		var b: Button = Button.new()
 		b.name = target.unit_name
@@ -28,6 +29,10 @@ func setup(harvest_func: Callable, targets: Array) -> void:
 		b.grab_focus()
 		
 	self.connect("tree_exiting", destroy)
+	
+	if arr.size() > 1:
+		arr.back().focus_neighbor_bottom = arr.front().get_path()
+		arr.front().focus_neighbor_top = arr.back().get_path()
 
 func reposition_fake_cursor(cell: Vector2):
 	fake_cursor.position = grid.calculate_map_position(cell)

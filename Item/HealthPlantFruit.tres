@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="HealthPlantFruit" load_steps=4 format=3 uid="uid://cu3ruotw75xcp"]
+
+[ext_resource type="Texture2D" uid="uid://c67rdvdrwrsfa" path="res://Placeholder/plants.png" id="1_5yxi5"]
+[ext_resource type="Script" path="res://Item/HealthPlantFruit.gd" id="1_ynqlp"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s3qfo"]
+atlas = ExtResource("1_5yxi5")
+region = Rect2(0, 0, 16, 16)
+
+[resource]
+script = ExtResource("1_ynqlp")
+heal_amount = 3
+icon = SubResource("AtlasTexture_s3qfo")
+item_name = "Health Plant Fruit"
