@@ -1,7 +1,7 @@
 [gd_scene load_steps=30 format=3 uid="uid://8rtjsul3c7ym"]
 
-[ext_resource type="Script" path="res://Units/Unit.gd" id="1_6k3gw"]
-[ext_resource type="Script" path="res://Units/Stats.gd" id="2_l2lxx"]
+[ext_resource type="Script" uid="uid://w2jdug0no5ph" path="res://Units/Unit.gd" id="1_6k3gw"]
+[ext_resource type="Script" uid="uid://nuh0vmdumdcy" path="res://Units/Stats.gd" id="2_l2lxx"]
 [ext_resource type="Texture2D" uid="uid://bm016eftmyd2p" path="res://Placeholder/pl-char-2.png" id="4_uumx4"]
 
 [sub_resource type="Resource" id="Resource_vrhgb"]
@@ -250,11 +250,11 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_pwn11"]
 _data = {
-"RESET": SubResource("Animation_6yoks"),
-"death": SubResource("Animation_c3nts"),
-"exhausted": SubResource("Animation_haipm"),
-"idle": SubResource("Animation_ekobo"),
-"selected": SubResource("Animation_1swme")
+&"RESET": SubResource("Animation_6yoks"),
+&"death": SubResource("Animation_c3nts"),
+&"exhausted": SubResource("Animation_haipm"),
+&"idle": SubResource("Animation_ekobo"),
+&"selected": SubResource("Animation_1swme")
 }
 
 [node name="Unit" type="Path2D" groups=["Unit"]]

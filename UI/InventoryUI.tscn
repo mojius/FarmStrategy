@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bg1pi204ju00p"]
 
-[ext_resource type="Script" path="res://UI/InventoryUI.gd" id="1_8x7cc"]
+[ext_resource type="Script" uid="uid://b6tjht2qga406" path="res://UI/InventoryUI.gd" id="1_8x7cc"]
 [ext_resource type="Theme" uid="uid://f3cwprpras7p" path="res://UI/Theme/theme.tres" id="1_s4vhk"]
 
 [node name="InventoryUI" type="PanelContainer"]

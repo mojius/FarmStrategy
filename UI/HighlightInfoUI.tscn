@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cfemajau2fdnq"]
 
 [ext_resource type="Theme" uid="uid://f3cwprpras7p" path="res://UI/Theme/theme.tres" id="1_m0elq"]
-[ext_resource type="Script" path="res://UI/HighlightInfoUI.gd" id="1_v6spp"]
+[ext_resource type="Script" uid="uid://cww5jva82r2pq" path="res://UI/HighlightInfoUI.gd" id="1_v6spp"]
 
 [node name="HighlightInfoUI" type="MarginContainer"]
 offset_right = 350.0

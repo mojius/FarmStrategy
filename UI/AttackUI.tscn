@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bb2ei8xiarkye"]
 
 [ext_resource type="Theme" uid="uid://f3cwprpras7p" path="res://UI/Theme/theme.tres" id="1_7yrr0"]
-[ext_resource type="Script" path="res://UI/AttackUI.gd" id="2_mmn48"]
+[ext_resource type="Script" uid="uid://bqhuilpus8vhv" path="res://UI/AttackUI.gd" id="2_mmn48"]
 
 [node name="AttackMenu" type="PanelContainer"]
 anchors_preset = 8

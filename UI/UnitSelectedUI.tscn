@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://p1k7ttutslso"]
 
 [ext_resource type="Theme" uid="uid://f3cwprpras7p" path="res://UI/Theme/theme.tres" id="1_2ulgk"]
-[ext_resource type="Script" path="res://UI/UnitSelectedUI.gd" id="2_hiqjc"]
+[ext_resource type="Script" uid="uid://bnlo6tqd50eci" path="res://UI/UnitSelectedUI.gd" id="2_hiqjc"]
 
 [node name="UnitSelectedUI" type="PanelContainer"]
 anchors_preset = 8

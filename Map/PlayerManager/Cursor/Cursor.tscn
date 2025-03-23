@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bmuue0dlmkw5u"]
 
-[ext_resource type="Script" path="res://Map/PlayerManager/Cursor/Cursor.gd" id="1_gblby"]
+[ext_resource type="Script" uid="uid://d31o1drywvcdj" path="res://Map/PlayerManager/Cursor/Cursor.gd" id="1_gblby"]
 [ext_resource type="SpriteFrames" uid="uid://d25ary0x8c7pq" path="res://UI/Sprites/CursorFrames.tres" id="3_8xhtu"]
 
 [node name="Cursor" type="Node2D"]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://c4jkuj7chye4t"]
 
-[ext_resource type="Script" path="res://Juice/Phase.gd" id="1_ww368"]
+[ext_resource type="Script" uid="uid://cg5nxbtnfkgik" path="res://Juice/Phase.gd" id="1_ww368"]
 [ext_resource type="Texture2D" uid="uid://b174uvpjs5u35" path="res://Juice/Phase_2.png" id="2_yggmp"]
 
 [node name="Phase" type="Node2D"]

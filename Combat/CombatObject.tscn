@@ -1,8 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://le36d86k7re2"]
 
-[ext_resource type="Script" path="res://Combat/CombatObject.gd" id="1_2lhkp"]
+[ext_resource type="Script" uid="uid://b6xy2lmgcjld6" path="res://Combat/CombatObject.gd" id="1_2lhkp"]
 [ext_resource type="Theme" uid="uid://f3cwprpras7p" path="res://UI/Theme/theme.tres" id="1_rbrhj"]
-
 
 [node name="CombatObject" type="HBoxContainer"]
 anchors_preset = 8

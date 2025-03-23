@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cnbxu0ossno2h"]
 
 [ext_resource type="Theme" uid="uid://f3cwprpras7p" path="res://UI/Theme/theme.tres" id="1_77o3g"]
-[ext_resource type="Script" path="res://UI/PlantUI.gd" id="2_lp0ig"]
+[ext_resource type="Script" uid="uid://b27m2ka2mf3ns" path="res://UI/PlantUI.gd" id="2_lp0ig"]
 
 [node name="PlantUI" type="PanelContainer"]
 anchors_preset = 8

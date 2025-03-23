@@ -1,6 +1,6 @@
 [gd_scene load_steps=29 format=3 uid="uid://tar6m7pprnsj"]
 
-[ext_resource type="Script" path="res://Units/Unit.gd" id="1_fq2nh"]
+[ext_resource type="Script" uid="uid://w2jdug0no5ph" path="res://Units/Unit.gd" id="1_fq2nh"]
 [ext_resource type="Resource" uid="uid://vfgg8l0d8olw" path="res://Units/EnemyTypes/Zombie/ZombieStats.tres" id="2_qvvx7"]
 [ext_resource type="Texture2D" uid="uid://bm016eftmyd2p" path="res://Placeholder/pl-char-2.png" id="4_pfv33"]
 
@@ -244,11 +244,11 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_pwn11"]
 _data = {
-"RESET": SubResource("Animation_6yoks"),
-"death": SubResource("Animation_c3nts"),
-"exhausted": SubResource("Animation_haipm"),
-"idle": SubResource("Animation_ekobo"),
-"selected": SubResource("Animation_1swme")
+&"RESET": SubResource("Animation_6yoks"),
+&"death": SubResource("Animation_c3nts"),
+&"exhausted": SubResource("Animation_haipm"),
+&"idle": SubResource("Animation_ekobo"),
+&"selected": SubResource("Animation_1swme")
 }
 
 [node name="Zombie" type="Path2D" groups=["Unit"]]

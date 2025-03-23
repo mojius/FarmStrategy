@@ -1,11 +1,9 @@
 [gd_resource type="Resource" script_class="Stats" load_steps=2 format=3 uid="uid://3fmjilxx2461"]
 
-[ext_resource type="Script" path="res://Units/Stats.gd" id="1_eh5sn"]
+[ext_resource type="Script" uid="uid://nuh0vmdumdcy" path="res://Units/Stats.gd" id="1_eh5sn"]
 
 [resource]
 script = ExtResource("1_eh5sn")
 max_hp = 5
 override_HP = false
 hp_override = 0
-attack = 0
-hit_chance = 0

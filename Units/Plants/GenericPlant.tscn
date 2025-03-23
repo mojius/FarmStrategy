@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://bafdnuodg35bm"]
 
-[ext_resource type="Script" path="res://Units/Plants/Plant.gd" id="1_g2h4m"]
+[ext_resource type="Script" uid="uid://dljaxmotknvky" path="res://Units/Plants/Plant.gd" id="1_g2h4m"]
 [ext_resource type="SpriteFrames" uid="uid://cug3d2ydphxkt" path="res://Units/Plants/DefaultPlantSprites.tres" id="2_k8hs7"]
 
 [sub_resource type="Curve2D" id="Curve2D_086rf"]
@@ -85,11 +85,11 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_pwn11"]
 _data = {
-"RESET": SubResource("Animation_6yoks"),
-"death": SubResource("Animation_c3nts"),
-"exhausted": SubResource("Animation_haipm"),
-"idle": SubResource("Animation_ekobo"),
-"selected": SubResource("Animation_1swme")
+&"RESET": SubResource("Animation_6yoks"),
+&"death": SubResource("Animation_c3nts"),
+&"exhausted": SubResource("Animation_haipm"),
+&"idle": SubResource("Animation_ekobo"),
+&"selected": SubResource("Animation_1swme")
 }
 
 [node name="GenericPlant" type="Path2D" groups=["Plant"]]

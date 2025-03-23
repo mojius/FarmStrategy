@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://bxbdtgea1xr7"]
 
 [ext_resource type="TileSet" uid="uid://dqg14aj86so4a" path="res://Map/PlayerManager/unit_path_tileset.tres" id="1_f7jsk"]
-[ext_resource type="Script" path="res://UI/UnitPathArrow.gd" id="2_an7ww"]
-[ext_resource type="Resource" uid="uid://bhc7wor1ika10" path="res://Map/Grid.tres" id="3_588fd"]
+[ext_resource type="Script" uid="uid://70q0xriyf5u7" path="res://UI/UnitPathArrow.gd" id="2_an7ww"]
+[ext_resource type="Resource" path="res://Map/Grid.tres" id="3_588fd"]
 
 [node name="UnitPath" type="TileMapLayer"]
 tile_set = ExtResource("1_f7jsk")

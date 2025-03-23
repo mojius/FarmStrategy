@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cr65avopktv1s"]
 
 [ext_resource type="Theme" uid="uid://f3cwprpras7p" path="res://UI/Theme/theme.tres" id="1_vg7ry"]
-[ext_resource type="Script" path="res://UI/HarvestUI.gd" id="2_6pbkm"]
+[ext_resource type="Script" uid="uid://kwi1lv3f4ldg" path="res://UI/HarvestUI.gd" id="2_6pbkm"]
 
 [node name="HarvestMenu" type="PanelContainer"]
 anchors_preset = 8
